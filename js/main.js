@@ -3,6 +3,9 @@
  * Метафоричні асоціативні карти
  */
 
+// Глобальна змінна для функції оновлення каруселі
+let updateCarouselGlobal;
+
 // Очікуємо завантаження DOM перед ініціалізацією скриптів
 document.addEventListener('DOMContentLoaded', function() {
     // Ініціалізуємо прелоадер для початкового завантаження сайту
@@ -28,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initCardsCarousel();
     initCardDeck();
     initCardGrid();
-    initFallingCards();
     
     // Ініціалізуємо паралакс-ефекти
     initParallax();
@@ -41,19 +43,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ініціалізуємо модальні вікна
     initModals();
-  });
-  
-  /**
-  * Функціональність прелоадера
-  * Відображає прогрес завантаження сайту та приховує прелоадер після завершення
-  */
-  function initPreloader() {
+    
+    // Ініціалізуємо 3D ефекти для карток (VanillaTilt)
+    initVanillaTilt();
+    
+    // Ініціалізуємо фонові частинки
+    initParticles();
+});
+
+/**
+* Функціональність прелоадера
+* Відображає прогрес завантаження сайту та приховує прелоадер після завершення
+*/
+function initPreloader() {
     const preloader = document.querySelector('.preloader');
     const progressBar = document.querySelector('.preloader-progress');
     const counter = document.querySelector('.preloader-counter');
     
     if (!preloader || !progressBar || !counter) return;
-  
+
     let progress = 0;
     const totalAssets = document.querySelectorAll('img').length + 5; // Зображення + CSS + JS + Шрифти
     let loadedAssets = 0;
@@ -116,12 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
             hidePreloader();
         }
     }, 5000);
-  }
-  
-  /**
-  * Початкові анімації, які запускаються після зникнення прелоадера
-  */
-  function startInitialAnimations() {
+}
+
+/**
+* Початкові анімації, які запускаються після зникнення прелоадера
+*/
+function startInitialAnimations() {
     // Анімація елементів головної секції
     const heroTitle = document.querySelector('.hero-title');
     const heroSubtitle = document.querySelector('.hero-subtitle');
@@ -153,12 +161,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Створюємо спостерігач для відображення елементів, які спочатку видимі
     initScrollObserver();
-  }
-  
-  /**
-  * Ініціалізація спостерігача прокрутки для анімацій
-  */
-  function initScrollObserver() {
+}
+
+/**
+* Ініціалізація спостерігача прокрутки для анімацій
+*/
+function initScrollObserver() {
+    // Перевіряємо підтримку IntersectionObserver
+    if (!('IntersectionObserver' in window)) {
+        // Якщо не підтримується, просто показуємо всі елементи
+        document.querySelectorAll('.lazy-load, .visual-title, .split-text:not(.hero-title):not(.hero-subtitle), .content-item, .feature-card, .target-card, .author-card, .spread-card, .falling-card, .grid-card').forEach(el => {
+            el.classList.add('revealed');
+            el.classList.add('loaded');
+        });
+        return;
+    }
+    
     // Створюємо спостерігач
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -174,12 +192,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.lazy-load, .visual-title, .split-text:not(.hero-title):not(.hero-subtitle), .content-item, .feature-card, .target-card, .author-card, .spread-card, .falling-card, .grid-card').forEach(el => {
         observer.observe(el);
     });
-  }
-  
-  /**
-  * Функціональність кастомного курсора
-  */
-  function initCursor() {
+}
+
+/**
+* Функціональність кастомного курсора
+*/
+function initCursor() {
     const cursor = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
     const cursorText = document.querySelector('.cursor-text');
@@ -194,16 +212,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Оновлюємо положення курсора при русі миші
         document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            cursorOutline.style.left = e.clientX + 'px';
-            cursorOutline.style.top = e.clientY + 'px';
-            
-            if (cursorText) {
-                cursorText.style.left = e.clientX + 'px';
-                cursorText.style.top = e.clientY + 'px';
-            }
+            requestAnimationFrame(() => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                cursorOutline.style.left = e.clientX + 'px';
+                cursorOutline.style.top = e.clientY + 'px';
+                
+                if (cursorText) {
+                    cursorText.style.left = e.clientX + 'px';
+                    cursorText.style.top = e.clientY + 'px';
+                }
+            });
         });
         
         // Додаємо ефект при наведенні на інтерактивні елементи
@@ -243,12 +263,12 @@ document.addEventListener('DOMContentLoaded', function() {
             cursorOutline.classList.remove('cursor-click');
         });
     }
-  }
-  
-  /**
-  * Функціональність мобільного меню
-  */
-  function initMobileMenu() {
+}
+
+/**
+* Функціональність мобільного меню
+*/
+function initMobileMenu() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileMenu = document.querySelector('.mobile-menu');
     const menuClose = document.querySelector('.mobile-menu-close');
@@ -280,12 +300,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.remove('menu-open');
         });
     });
-  }
-  
-  /**
-  * Ефект прокрутки для хедера
-  */
-  function initHeaderScroll() {
+}
+
+/**
+* Ефект прокрутки для хедера
+*/
+function initHeaderScroll() {
     const header = document.querySelector('.header');
     if (!header) return;
     
@@ -301,14 +321,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Початкова перевірка
     checkScroll();
     
-    // Перевірка при прокрутці
-    window.addEventListener('scroll', checkScroll);
-  }
-  
-  /**
-  * Плавна прокрутка для якірних посилань
-  */
-  function initSmoothScroll() {
+    // Перевірка при прокрутці з оптимізацією продуктивності
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                checkScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+/**
+* Плавна прокрутка для якірних посилань
+*/
+function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -347,12 +376,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-  }
-  
-  /**
-  * Ініціалізація кнопки "повернутися нагору"
-  */
-  function initBackToTop() {
+}
+
+/**
+* Ініціалізація кнопки "повернутися нагору"
+*/
+function initBackToTop() {
     const backToTopBtn = document.querySelector('.back-to-top');
     if (!backToTopBtn) return;
     
@@ -374,17 +403,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Перевірка положення прокрутки при прокрутці
-    window.addEventListener('scroll', checkScrollPosition);
+    // Перевірка положення прокрутки при прокрутці з оптимізацією
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                checkScrollPosition();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
     
     // Початкова перевірка
     checkScrollPosition();
-  }
-  
-  /**
-  * Ініціалізація всіх анімацій
-  */
-  function initAnimations() {
+}
+
+/**
+* Ініціалізація всіх анімацій
+*/
+function initAnimations() {
     // Розділення тексту для анімацій
     initTextSplitting();
     
@@ -396,12 +434,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ініціалізуємо анімації при прокрутці
     initScrollAnimations();
-  }
-  
-  /**
-  * Розділення тексту для анімацій
-  */
-  function initTextSplitting() {
+}
+
+/**
+* Розділення тексту для анімацій
+*/
+function initTextSplitting() {
     const splitTextElements = document.querySelectorAll('.split-text');
     
     splitTextElements.forEach(element => {
@@ -427,12 +465,12 @@ document.addEventListener('DOMContentLoaded', function() {
         element.innerHTML = splitHtml;
         element.dataset.splitted = 'true';
     });
-  }
-  
-  /**
-  * Анімація плаваючих карт в hero-секції
-  */
-  function animateFloatingCards() {
+}
+
+/**
+* Анімація плаваючих карт в hero-секції
+*/
+function animateFloatingCards() {
     const floatingCards = document.querySelectorAll('.floating-card');
     
     floatingCards.forEach((card, index) => {
@@ -446,7 +484,6 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.animation = `floatingAnimation${index} ${duration}s ease-in-out ${delay}s infinite alternate`;
         
         // Додаємо keyframes для анімації
-        const styleSheet = document.styleSheets[0];
         const keyframes = `
             @keyframes floatingAnimation${index} {
                 0% {
@@ -458,25 +495,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         
-        try {
-            styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-        } catch (error) {
-            // Якщо не вдалося додати через insertRule, створюємо стиль
-            const styleElement = document.createElement('style');
-            styleElement.textContent = keyframes;
-            document.head.appendChild(styleElement);
-        }
+        // Створюємо елемент стилю і додаємо його в head
+        const styleElement = document.createElement('style');
+        styleElement.textContent = keyframes;
+        document.head.appendChild(styleElement);
     });
-  }
-  
-  /**
-  * Ініціалізація карток, що падають
-  */
-  function initFallingCards() {
+}
+
+/**
+* Ініціалізація карток, що падають
+*/
+function initFallingCards() {
     const fallingCardsContainer = document.querySelector('.falling-cards-container');
     const fallingCards = document.querySelectorAll('.falling-card');
     
     if (!fallingCardsContainer || !fallingCards.length) return;
+    
+    // Отримуємо висоту контейнера
+    const containerHeight = fallingCardsContainer.offsetHeight || window.innerHeight;
     
     fallingCards.forEach((card, index) => {
         // Встановлюємо випадкові початкові значення для кожної карти
@@ -493,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.setProperty('--rotate-start', `${rotateStart}deg`);
         card.style.setProperty('--rotate-end', `${rotateEnd}deg`);
         
-        // Додаємо анімацію падіння
+        // Додаємо keyframes для анімації падіння
         const keyframes = `
             @keyframes fallAnimation${index} {
                 0% {
@@ -504,35 +540,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     opacity: 1;
                 }
                 100% {
-                    transform: translateY(${fallingCardsContainer.offsetHeight + 100}px) rotate(${rotateEnd}deg);
+                    transform: translateY(${containerHeight + 100}px) rotate(${rotateEnd}deg);
                     opacity: 0;
                 }
             }
         `;
         
-        try {
-            const styleSheet = document.styleSheets[0];
-            styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-            
-            // Застосовуємо анімацію
-            card.style.animation = `fallAnimation${index} ${fallDuration}s linear ${startDelay}s infinite`;
-        } catch (error) {
-            // Якщо не вдалося додати через insertRule, створюємо стиль
-            const styleElement = document.createElement('style');
-            styleElement.textContent = keyframes;
-            document.head.appendChild(styleElement);
-            
-            // Застосовуємо анімацію
-            card.style.animation = `fallAnimation${index} ${fallDuration}s linear ${startDelay}s infinite`;
-        }
+        // Створюємо елемент стилю і додаємо його в head
+        const styleElement = document.createElement('style');
+        styleElement.textContent = keyframes;
+        document.head.appendChild(styleElement);
+        
+        // Застосовуємо анімацію
+        card.style.animation = `fallAnimation${index} ${fallDuration}s linear ${startDelay}s infinite`;
     });
-  }
-  
-  /**
-  * Ініціалізація анімацій при прокрутці
-  */
-  function initScrollAnimations() {
-    // Використовуємо GSAP & ScrollTrigger для анімацій
+}
+
+/**
+* Ініціалізація анімацій при прокрутці
+*/
+function initScrollAnimations() {
+    // Використовуємо GSAP & ScrollTrigger для анімацій, якщо вони доступні
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         // Анімація заголовків розділів при прокрутці
         gsap.utils.toArray('.section-title').forEach(title => {
@@ -660,16 +688,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
             });
         }
+    } else {
+        // Альтернативні анімації без GSAP
+        document.querySelectorAll('.section-title, .feature-card, .author-card, .target-card, .grid-card').forEach((el, index) => {
+            el.style.transitionDelay = `${index * 0.1}s`;
+            el.classList.add('animate-on-scroll');
+        });
     }
-  }
-  
-  /**
-  * Ініціалізація інтерактивних карток з розкладанням
-  */
-  function initCardSpread() {
+}
+
+/**
+* Ініціалізація інтерактивних карток з розкладанням
+*/
+function initCardSpread() {
     const spreadCards = document.querySelectorAll('.spread-card');
     
     spreadCards.forEach(card => {
+        if (!card) return;
+        
         card.addEventListener('mouseenter', function() {
             const rotateAngle = card.dataset.rotateAngle || 0;
             const moveX = card.dataset.moveX || 0;
@@ -703,12 +739,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-  }
-  
-  /**
-  * Ініціалізація каруселі карток
-  */
-  function initCardsCarousel() {
+}
+
+/**
+* Ініціалізація каруселі карток
+*/
+function initCardsCarousel() {
     const carousel = document.querySelector('.carousel-3d');
     const prevBtn = document.querySelector('.carousel-prev');
     const nextBtn = document.querySelector('.carousel-next');
@@ -760,6 +796,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Експортуємо функцію для глобального доступу
+    updateCarouselGlobal = updateCarousel;
+    
     // Слухаємо кліки по кнопках
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -803,10 +842,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Дозволяємо перемикання карток при кліку
-    cards.forEach((card, index) => {
+    cards.forEach((card) => {
         card.addEventListener('click', () => {
             // Переміщуємо тільки якщо картка не є активною
-            const cardIndex = parseInt(card.style.getPropertyValue('--card-index'));
+            const cardIndex = parseInt(card.style.getPropertyValue('--card-index') || '0');
             if (cardIndex !== 0) {
                 const indexDiff = cardIndex < totalCards / 2 ? cardIndex : cardIndex - totalCards;
                 currentIndex = (currentIndex + indexDiff + totalCards) % totalCards;
@@ -838,12 +877,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Запускаємо автоматичне прокручування
     startAutoplay();
-  }
-  
-  /**
-  * Ініціалізація колоди карт для витягування
-  */
-  function initCardDeck() {
+}
+
+/**
+* Ініціалізація колоди карт для витягування
+*/
+function initCardDeck() {
     const deck = document.querySelector('.deck');
     const drawButton = document.querySelector('.draw-button');
     const topCard = document.querySelector('.deck-top');
@@ -901,18 +940,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     duration: 0.5,
                     ease: 'power1.inOut'
                 }, 2.3);
+        } else {
+            // Проста CSS-анімація, якщо GSAP недоступний
+            topCard.style.transition = 'transform 0.5s ease-out';
+            topCard.style.transform = 'translateY(-80px) rotate(' + (-5 + Math.random() * 10) + 'deg)';
+            
+            setTimeout(() => {
+                topCard.style.transform = 'translateY(-80px) rotate(' + (-5 + Math.random() * 10) + 'deg) rotateY(180deg)';
+                
+                setTimeout(() => {
+                    topCard.style.transform = 'translateY(0) rotate(0) rotateY(180deg)';
+                    
+                    setTimeout(() => {
+                        topCard.style.transform = 'translateY(0) rotate(0) rotateY(0deg)';
+                    }, 800);
+                }, 800);
+            }, 300);
         }
     });
-  }
-  
-  /**
-  * Ініціалізація 3D сітки карт
-  */
-  function initCardGrid() {
+}
+
+/**
+* Ініціалізація 3D сітки карт
+*/
+function initCardGrid() {
     const gridContainer = document.querySelector('.cards-grid-container');
-    const gridCards = document.querySelectorAll('.grid-card');
+    if (!gridContainer) return;
     
-    if (!gridContainer || !gridCards.length) return;
+    const gridCards = document.querySelectorAll('.grid-card');
+    if (!gridCards.length) return;
     
     // Додаємо ефект трансформації при русі миші
     gridContainer.addEventListener('mousemove', function(e) {
@@ -927,25 +983,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const angleX = (mouseY / rect.height) * 10; // Максимальний кут 10 градусів
         const angleY = (mouseX / rect.width) * -10;
         
-        // Застосовуємо трансформацію до контейнера
-        gridContainer.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-        
-        // Застосовуємо трансформацію до карток
-        gridCards.forEach(card => {
-            // Розрахунок позиції картки відносно центру
-            const cardRect = card.getBoundingClientRect();
-            const cardCenterX = cardRect.left + cardRect.width / 2 - rect.left;
-            const cardCenterY = cardRect.top + cardRect.height / 2 - rect.top;
+        // Застосовуємо трансформацію до контейнера з використанням requestAnimationFrame
+        requestAnimationFrame(() => {
+            gridContainer.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
             
-            // Розрахунок відстані від центру
-            const distanceX = ((cardCenterX / rect.width) - 0.5) * 2;
-            const distanceY = ((cardCenterY / rect.height) - 0.5) * 2;
-            
-            // Розрахунок Z-трансформації
-            const zTransform = Math.abs(distanceX) + Math.abs(distanceY);
-            
-            // Застосовуємо трансформацію
-            card.style.transform = `scale(0.95) translateZ(${30 + zTransform * 30}px)`;
+            // Застосовуємо трансформацію до карток
+            gridCards.forEach(card => {
+                // Розрахунок позиції картки відносно центру
+                const cardRect = card.getBoundingClientRect();
+                const cardCenterX = cardRect.left + cardRect.width / 2 - rect.left;
+                const cardCenterY = cardRect.top + cardRect.height / 2 - rect.top;
+                
+                // Розрахунок відстані від центру
+                const distanceX = ((cardCenterX / rect.width) - 0.5) * 2;
+                const distanceY = ((cardCenterY / rect.height) - 0.5) * 2;
+                
+                // Розрахунок Z-трансформації
+                const zTransform = Math.abs(distanceX) + Math.abs(distanceY);
+                
+                // Застосовуємо трансформацію
+                card.style.transform = `scale(0.95) translateZ(${30 + zTransform * 30}px)`;
+            });
         });
     });
     
@@ -970,12 +1028,12 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.zIndex = '';
         });
     });
-  }
-  
-  /**
-  * Ініціалізація паралакс-ефектів
-  */
-  function initParallax() {
+}
+
+/**
+* Ініціалізація паралакс-ефектів
+*/
+function initParallax() {
     const parallaxElements = document.querySelectorAll('[data-parallax-speed]');
     
     if (!parallaxElements.length) return;
@@ -987,20 +1045,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const speed = parseFloat(element.dataset.parallaxSpeed) || 0.5;
             const offset = scrollTop * speed;
             
-            element.style.transform = `translateY(${offset}px)`;
+            requestAnimationFrame(() => {
+                element.style.transform = `translateY(${offset}px)`;
+            });
         });
     }
     
-    window.addEventListener('scroll', updateParallax);
+    // Оптимізуємо обробку прокрутки
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                updateParallax();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
     
     // Початкове оновлення
     updateParallax();
-  }
-  
-  /**
-  * Ініціалізація контактної форми
-  */
-  function initContactForm() {
+}
+
+/**
+* Ініціалізація контактної форми
+*/
+function initContactForm() {
     const contactForm = document.querySelector('.contact-form');
     
     if (!contactForm) return;
@@ -1037,8 +1107,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let isValid = true;
         
         // Перевірка імені
-        if (!name.value.trim()) {
-            name.parentElement.classList.add('error');
+        if (!name || !name.value.trim()) {
+            if (name) name.parentElement.classList.add('error');
             isValid = false;
         } else {
             name.parentElement.classList.remove('error');
@@ -1046,16 +1116,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Перевірка email
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.value.trim() || !emailPattern.test(email.value)) {
-            email.parentElement.classList.add('error');
+        if (!email || !email.value.trim() || !emailPattern.test(email.value)) {
+            if (email) email.parentElement.classList.add('error');
             isValid = false;
         } else {
             email.parentElement.classList.remove('error');
         }
         
         // Перевірка повідомлення
-        if (!message.value.trim()) {
-            message.parentElement.classList.add('error');
+        if (!message || !message.value.trim()) {
+            if (message) message.parentElement.classList.add('error');
             isValid = false;
         } else {
             message.parentElement.classList.remove('error');
@@ -1064,6 +1134,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Якщо форма валідна, симулюємо відправку
         if (isValid) {
             const submitButton = contactForm.querySelector('button[type="submit"]');
+            if (!submitButton) return;
+            
             const originalText = submitButton.textContent;
             
             // Змінюємо текст кнопки
@@ -1098,12 +1170,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1500);
         }
     });
-  }
-  
-  /**
-  * Ініціалізація модальних вікон
-  */
-  function initModals() {
+}
+
+/**
+* Ініціалізація модальних вікон
+*/
+function initModals() {
     const modalTriggers = document.querySelectorAll('.modal-trigger');
     const modalCloseButtons = document.querySelectorAll('.modal-close');
     const modals = document.querySelectorAll('.modal');
@@ -1124,6 +1196,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функція для закриття модального вікна
     function closeModal(modal) {
+        if (!modal) return;
+        
         modal.classList.remove('open');
         setTimeout(() => {
             modal.style.display = 'none';
@@ -1168,195 +1242,371 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Завантаження вмісту модальних вікон (для правових документів)
-    function loadModalContent() {
-        const privacyPolicy = document.querySelector('#privacy-policy .text-container');
-        const paymentTerms = document.querySelector('#payment-terms .text-container');
-        const deliveryTerms = document.querySelector('#delivery-terms .text-container');
-        const termsOfUse = document.querySelector('#terms-of-use .text-container');
-        
-        if (privacyPolicy) {
-            privacyPolicy.innerHTML = `
-                <h3>Політика конфіденційності</h3>
-                <p>Остання редакція: 16 квітня 2025 року</p>
-                
-                <h4>1. Вступ</h4>
-                <p>Дякуємо, що вибрали продукцію "Коріння та Крила". Ми серйозно ставимося до вашої конфіденційності та захисту ваших особистих даних. Ця політика конфіденційності пояснює, як ми збираємо, використовуємо та захищаємо вашу особисту інформацію.</p>
-                
-                <h4>2. Які дані ми збираємо</h4>
-                <p>Ми можемо збирати наступні типи інформації:</p>
-                <ul>
-                    <li>Особиста ідентифікаційна інформація (ім'я, електронна адреса, телефон, поштова адреса)</li>
-                    <li>Інформація про замовлення та транзакції</li>
-                    <li>Технічна інформація (IP-адреса, тип браузера, інформація про пристрій)</li>
-                    <li>Інформація про використання веб-сайту та взаємодію з нашими продуктами</li>
-                </ul>
-                
-                <h4>3. Як ми використовуємо ваші дані</h4>
-                <p>Ми використовуємо вашу інформацію, щоб:</p>
-                <ul>
-                    <li>Обробляти та доставляти ваші замовлення</li>
-                    <li>Керувати вашим обліковим записом</li>
-                    <li>Надсилати вам важливі повідомлення та оновлення</li>
-                    <li>Покращувати наші продукти та послуги</li>
-                    <li>Надсилати маркетингові повідомлення (за вашою згодою)</li>
-                </ul>
-                
-                <h4>4. Захист даних</h4>
-                <p>Ми впроваджуємо відповідні технічні та організаційні заходи для захисту ваших даних від несанкціонованого доступу, втрати або знищення.</p>
-                
-                <h4>5. Ваші права</h4>
-                <p>Ви маєте право:</p>
-                <ul>
-                    <li>Доступу до своїх персональних даних</li>
-                    <li>Виправлення неточних даних</li>
-                    <li>Видалення своїх даних</li>
-                    <li>Обмеження обробки своїх даних</li>
-                    <li>Заперечення проти обробки своїх даних</li>
-                    <li>Перенесення даних</li>
-                </ul>
-                
-                <h4>6. Контактна інформація</h4>
-                <p>Якщо у вас є запитання щодо цієї політики конфіденційності або ви хочете реалізувати свої права, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
-            `;
-        }
-        
-        if (paymentTerms) {
-            paymentTerms.innerHTML = `
-                <h3>Умови оплати</h3>
-                <p>Остання редакція: 16 квітня 2025 року</p>
-                
-                <h4>1. Способи оплати</h4>
-                <p>Ми приймаємо наступні способи оплати:</p>
-                <ul>
-                    <li>Банківські картки (Visa, MasterCard)</li>
-                    <li>Банківський переказ</li>
-                    <li>Оплата через платіжні системи (PayPal, Apple Pay, Google Pay)</li>
-                    <li>Накладений платіж (при доставці)</li>
-                </ul>
-                
-                <h4>2. Процес оплати</h4>
-                <p>При оформленні замовлення ви зможете вибрати зручний для вас спосіб оплати. При оплаті банківською карткою, ви будете перенаправлені на захищену сторінку платіжної системи, де вам потрібно буде ввести дані своєї картки.</p>
-                
-                <h4>3. Безпека платежів</h4>
-                <p>Всі платежі проходять через захищені канали зв'язку з використанням протоколу SSL. Ми не зберігаємо дані ваших банківських карт.</p>
-                
-                <h4>4. Термін оплати</h4>
-                <p>При виборі способу оплати "Банківський переказ" замовлення зберігається в системі протягом 3 банківських днів. Якщо протягом цього терміну оплата не надходить, замовлення автоматично скасовується.</p>
-                
-                <h4>5. Повернення коштів</h4>
-                <p>У випадку скасування замовлення або повернення товару, кошти повертаються на той же рахунок, з якого була здійснена оплата. Термін повернення коштів залежить від способу оплати та зазвичай становить від 3 до 14 банківських днів.</p>
-                
-                <h4>6. Валюта розрахунків</h4>
-                <p>Всі розрахунки на сайті проводяться в національній валюті України - гривні (UAH).</p>
-                
-                <h4>7. Чеки та документи</h4>
-                <p>Після оплати замовлення ви отримаєте електронний чек на вказану вами електронну пошту. За запитом ми можемо надати повний пакет бухгалтерських документів.</p>
-            `;
-        }
-        
-        if (deliveryTerms) {
-            deliveryTerms.innerHTML = `
-                <h3>Умови доставки</h3>
-                <p>Остання редакція: 16 квітня 2025 року</p>
-                
-                <h4>1. Способи доставки</h4>
-                <p>Ми пропонуємо наступні варіанти доставки:</p>
-                <ul>
-                    <li>Нова Пошта (відділення, поштомат, адресна доставка)</li>
-                    <li>Укрпошта</li>
-                    <li>Самовивіз з нашого офісу в м. Київ</li>
-                    <li>Міжнародна доставка (за окремим тарифом)</li>
-                </ul>
-                
-                <h4>2. Термін доставки</h4>
-                <p>Термін доставки залежить від обраного способу:</p>
-                <ul>
-                    <li>Нова Пошта - 1-3 робочих дні після відправлення</li>
-                    <li>Укрпошта - 3-7 робочих днів після відправлення</li>
-                    <li>Самовивіз - в день оплати (при наявності товару на складі)</li>
-                    <li>Міжнародна доставка - 7-21 день (залежно від країни)</li>
-                </ul>
-                
-                <h4>3. Вартість доставки</h4>
-                <p>Вартість доставки розраховується автоматично при оформленні замовлення і залежить від обраного способу доставки, ваги та габаритів замовлення.</p>
-                <p>При замовленні на суму від 2000 грн доставка по Україні безкоштовна (крім адресної доставки).</p>
-                
-                <h4>4. Відстеження замовлення</h4>
-                <p>Після відправлення замовлення ви отримаєте номер для відстеження на вказану вами електронну пошту. Ви можете відстежити статус доставки на сайті відповідної служби доставки.</p>
-                
-                <h4>5. Отримання замовлення</h4>
-                <p>Для отримання замовлення необхідно пред'явити документ, що посвідчує особу, та номер замовлення або номер ТТН.</p>
-                
-                <h4>6. Перевірка товару при отриманні</h4>
-                <p>Ми рекомендуємо перевіряти цілісність упаковки та відповідність товару при отриманні. У разі виявлення пошкоджень або невідповідностей, будь ласка, зафіксуйте це в присутності представника служби доставки.</p>
-                
-                <h4>7. Затримки доставки</h4>
-                <p>У випадку форс-мажорних обставин термін доставки може бути збільшений. У такому випадку ми повідомимо вас про це.</p>
-            `;
-        }
-        
-        if (termsOfUse) {
-            termsOfUse.innerHTML = `
-                <h3>Умови використання</h3>
-                <p>Остання редакція: 16 квітня 2025 року</p>
-                
-                <h4>1. Загальні положення</h4>
-                <p>Ці умови використання регулюють ваше використання веб-сайту та продукції "Коріння та Крила". Використовуючи наш веб-сайт або купуючи нашу продукцію, ви погоджуєтеся з цими умовами.</p>
-                
-                <h4>2. Інтелектуальна власність</h4>
-                <p>Весь вміст веб-сайту, включаючи тексти, графіку, логотипи, зображення, аудіо-кліпи, цифрові завантаження, та програмне забезпечення, є власністю компанії або її постачальників вмісту і захищений законами України та міжнародними законами про авторське право.</p>
-                
-                <h4>3. Використання продукції</h4>
-                <p>Метафоричні асоціативні карти "Коріння та Крила" призначені для особистого використання або для використання у професійній практиці психологами, коучами та іншими фахівцями у відповідності до їх професійної етики та кваліфікації.</p>
-                <p>Карти не призначені для діагностики або лікування психічних розладів і не можуть замінити професійну психологічну або медичну допомогу.</p>
-                
-                <h4>4. Обмеження відповідальності</h4>
-                <p>Ми не несемо відповідальності за будь-які прямі, непрямі, випадкові, особливі або штрафні збитки, що виникають в результаті використання або неможливості використання наших продуктів або послуг.</p>
-                
-                <h4>5. Відгуки та коментарі</h4>
-                <p>Коли ви залишаєте відгуки, коментарі або інший контент на нашому веб-сайті, ви надаєте нам право використовувати, відтворювати, змінювати, адаптувати, публікувати, перекладати, створювати похідні роботи, розповсюджувати та відображати такий контент у всьому світі в будь-яких ЗМІ.</p>
-                
-                <h4>6. Зміни умов</h4>
-                <p>Ми можемо оновлювати ці умови використання час від часу. Продовжуючи використовувати наш веб-сайт після внесення змін, ви приймаєте нові умови.</p>
-                
-                <h4>7. Контактна інформація</h4>
-                <p>Якщо у вас є питання щодо цих умов, будь ласка, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
-            `;
-        }
+    loadModalContent();
+}
+
+/**
+* Завантаження текстового вмісту для модальних вікон
+*/
+function loadModalContent() {
+    const privacyPolicy = document.querySelector('#privacy-policy .text-container');
+    const paymentTerms = document.querySelector('#payment-terms .text-container');
+    const deliveryTerms = document.querySelector('#delivery-terms .text-container');
+    const termsOfUse = document.querySelector('#terms-of-use .text-container');
+    
+    if (privacyPolicy) {
+        privacyPolicy.innerHTML = `
+            <h3>Політика конфіденційності</h3>
+            <p>Остання редакція: 16 квітня 2025 року</p>
+            
+            <h4>1. Вступ</h4>
+            <p>Дякуємо, що вибрали продукцію "Коріння та Крила". Ми серйозно ставимося до вашої конфіденційності та захисту ваших особистих даних. Ця політика конфіденційності пояснює, як ми збираємо, використовуємо та захищаємо вашу особисту інформацію.</p>
+            
+            <h4>2. Які дані ми збираємо</h4>
+            <p>Ми можемо збирати наступні типи інформації:</p>
+            <ul>
+                <li>Особиста ідентифікаційна інформація (ім'я, електронна адреса, телефон, поштова адреса)</li>
+                <li>Інформація про замовлення та транзакції</li>
+                <li>Технічна інформація (IP-адреса, тип браузера, інформація про пристрій)</li>
+                <li>Інформація про використання веб-сайту та взаємодію з нашими продуктами</li>
+            </ul>
+            
+            <h4>3. Як ми використовуємо ваші дані</h4>
+            <p>Ми використовуємо вашу інформацію, щоб:</p>
+            <ul>
+                <li>Обробляти та доставляти ваші замовлення</li>
+                <li>Керувати вашим обліковим записом</li>
+                <li>Надсилати вам важливі повідомлення та оновлення</li>
+                <li>Покращувати наші продукти та послуги</li>
+                <li>Надсилати маркетингові повідомлення (за вашою згодою)</li>
+            </ul>
+            
+            <h4>4. Захист даних</h4>
+            <p>Ми впроваджуємо відповідні технічні та організаційні заходи для захисту ваших даних від несанкціонованого доступу, втрати або знищення.</p>
+            
+            <h4>5. Ваші права</h4>
+            <p>Ви маєте право:</p>
+            <ul>
+                <li>Доступу до своїх персональних даних</li>
+                <li>Виправлення неточних даних</li>
+                <li>Видалення своїх даних</li>
+                <li>Обмеження обробки своїх даних</li>
+                <li>Заперечення проти обробки своїх даних</li>
+                <li>Перенесення даних</li>
+            </ul>
+            
+            <h4>6. Контактна інформація</h4>
+            <p>Якщо у вас є запитання щодо цієї політики конфіденційності або ви хочете реалізувати свої права, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
+        `;
     }
     
-    // Завантажуємо вміст модальних вікон при ініціалізації
-    loadModalContent();
-  }
-  
-  // Ініціалізуємо слухачі подій для вікна
-  window.addEventListener('load', function() {
+    if (paymentTerms) {
+        paymentTerms.innerHTML = `
+            <h3>Умови оплати</h3>
+            <p>Остання редакція: 16 квітня 2025 року</p>
+            
+            <h4>1. Способи оплати</h4>
+            <p>Ми приймаємо наступні способи оплати:</p>
+            <ul>
+                <li>Банківські картки (Visa, MasterCard)</li>
+                <li>Банківський переказ</li>
+                <li>Оплата через платіжні системи (PayPal, Apple Pay, Google Pay)</li>
+                <li>Накладений платіж (при доставці)</li>
+            </ul>
+            
+            <h4>2. Процес оплати</h4>
+            <p>При оформленні замовлення ви зможете вибрати зручний для вас спосіб оплати. При оплаті банківською карткою, ви будете перенаправлені на захищену сторінку платіжної системи, де вам потрібно буде ввести дані своєї картки.</p>
+            
+            <h4>3. Безпека платежів</h4>
+            <p>Всі платежі проходять через захищені канали зв'язку з використанням протоколу SSL. Ми не зберігаємо дані ваших банківських карт.</p>
+            
+            <h4>4. Термін оплати</h4>
+            <p>При виборі способу оплати "Банківський переказ" замовлення зберігається в системі протягом 3 банківських днів. Якщо протягом цього терміну оплата не надходить, замовлення автоматично скасовується.</p>
+            
+            <h4>5. Повернення коштів</h4>
+            <p>У випадку скасування замовлення або повернення товару, кошти повертаються на той же рахунок, з якого була здійснена оплата. Термін повернення коштів залежить від способу оплати та зазвичай становить від 3 до 14 банківських днів.</p>
+            
+            <h4>6. Валюта розрахунків</h4>
+            <p>Всі розрахунки на сайті проводяться в національній валюті України - гривні (UAH).</p>
+            
+            <h4>7. Чеки та документи</h4>
+            <p>Після оплати замовлення ви отримаєте електронний чек на вказану вами електронну пошту. За запитом ми можемо надати повний пакет бухгалтерських документів.</p>
+        `;
+    }
+    
+    if (deliveryTerms) {
+        deliveryTerms.innerHTML = `
+            <h3>Умови доставки</h3>
+            <p>Остання редакція: 16 квітня 2025 року</p>
+            
+            <h4>1. Способи доставки</h4>
+            <p>Ми пропонуємо наступні варіанти доставки:</p>
+            <ul>
+                <li>Нова Пошта (відділення, поштомат, адресна доставка)</li>
+                <li>Укрпошта</li>
+                <li>Самовивіз з нашого офісу в м. Київ</li>
+                <li>Міжнародна доставка (за окремим тарифом)</li>
+            </ul>
+            
+            <h4>2. Термін доставки</h4>
+            <p>Термін доставки залежить від обраного способу:</p>
+            <ul>
+                <li>Нова Пошта - 1-3 робочих дні після відправлення</li>
+                <li>Укрпошта - 3-7 робочих днів після відправлення</li>
+                <li>Самовивіз - в день оплати (при наявності товару на складі)</li>
+                <li>Міжнародна доставка - 7-21 день (залежно від країни)</li>
+            </ul>
+            
+            <h4>3. Вартість доставки</h4>
+            <p>Вартість доставки розраховується автоматично при оформленні замовлення і залежить від обраного способу доставки, ваги та габаритів замовлення.</p>
+            <p>При замовленні на суму від 2000 грн доставка по Україні безкоштовна (крім адресної доставки).</p>
+            
+            <h4>4. Відстеження замовлення</h4>
+            <p>Після відправлення замовлення ви отримаєте номер для відстеження на вказану вами електронну пошту. Ви можете відстежити статус доставки на сайті відповідної служби доставки.</p>
+            
+            <h4>5. Отримання замовлення</h4>
+            <p>Для отримання замовлення необхідно пред'явити документ, що посвідчує особу, та номер замовлення або номер ТТН.</p>
+            
+            <h4>6. Перевірка товару при отриманні</h4>
+            <p>Ми рекомендуємо перевіряти цілісність упаковки та відповідність товару при отриманні. У разі виявлення пошкоджень або невідповідностей, будь ласка, зафіксуйте це в присутності представника служби доставки.</p>
+            
+            <h4>7. Затримки доставки</h4>
+            <p>У випадку форс-мажорних обставин термін доставки може бути збільшений. У такому випадку ми повідомимо вас про це.</p>
+        `;
+    }
+    
+    if (termsOfUse) {
+        termsOfUse.innerHTML = `
+            <h3>Умови використання</h3>
+            <p>Остання редакція: 16 квітня 2025 року</p>
+            
+            <h4>1. Загальні положення</h4>
+            <p>Ці умови використання регулюють ваше використання веб-сайту та продукції "Коріння та Крила". Використовуючи наш веб-сайт або купуючи нашу продукцію, ви погоджуєтеся з цими умовами.</p>
+            
+            <h4>2. Інтелектуальна власність</h4>
+            <p>Весь вміст веб-сайту, включаючи тексти, графіку, логотипи, зображення, аудіо-кліпи, цифрові завантаження, та програмне забезпечення, є власністю компанії або її постачальників вмісту і захищений законами України та міжнародними законами про авторське право.</p>
+            
+            <h4>3. Використання продукції</h4>
+            <p>Метафоричні асоціативні карти "Коріння та Крила" призначені для особистого використання або для використання у професійній практиці психологами, коучами та іншими фахівцями у відповідності до їх професійної етики та кваліфікації.</p>
+            <p>Карти не призначені для діагностики або лікування психічних розладів і не можуть замінити професійну психологічну або медичну допомогу.</p>
+            
+            <h4>4. Обмеження відповідальності</h4>
+            <p>Ми не несемо відповідальності за будь-які прямі, непрямі, випадкові, особливі або штрафні збитки, що виникають в результаті використання або неможливості використання наших продуктів або послуг.</p>
+            
+            <h4>5. Відгуки та коментарі</h4>
+            <p>Коли ви залишаєте відгуки, коментарі або інший контент на нашому веб-сайті, ви надаєте нам право використовувати, відтворювати, змінювати, адаптувати, публікувати, перекладати, створювати похідні роботи, розповсюджувати та відображати такий контент у всьому світі в будь-яких ЗМІ.</p>
+            
+            <h4>6. Зміни умов</h4>
+            <p>Ми можемо оновлювати ці умови використання час від часу. Продовжуючи використовувати наш веб-сайт після внесення змін, ви приймаєте нові умови.</p>
+            
+            <h4>7. Контактна інформація</h4>
+            <p>Якщо у вас є питання щодо цих умов, будь ласка, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
+        `;
+    }
+}
+
+/**
+* Ініціалізація 3D ефектів для карток з використанням VanillaTilt
+*/
+function initVanillaTilt() {
+    // Перевіряємо, чи завантажено бібліотеку VanillaTilt
+    if (typeof VanillaTilt === 'undefined') {
+        console.warn('VanillaTilt library not loaded. 3D card effects will not work.');
+        return;
+    }
+    
+    // Ініціалізуємо 3D-ефект для карток
+    const tiltElements = document.querySelectorAll('.feature-card, .grid-card, .target-card, .carousel-card:not(.active)');
+    
+    VanillaTilt.init(tiltElements, {
+        max: 15, // максимальний нахил (в градусах)
+        speed: 300, // швидкість перетворення
+        glare: true, // ефект блиску
+        'max-glare': 0.2, // максимальна інтенсивність блиску
+        scale: 1.05, // збільшення при наведенні
+        transition: true, // плавне перетворення
+        gyroscope: true // використання гіроскопа на мобільних пристроях
+    });
+}
+
+/**
+* Ініціалізація фонових частинок з використанням Particles.js
+*/
+function initParticles() {
+    // Перевіряємо, чи завантажено бібліотеку particlesJS
+    if (typeof particlesJS === 'undefined') {
+        console.warn('Particles.js library not loaded. Background particles will not work.');
+        return;
+    }
+    
+    // Ініціалізуємо фонові частинки для hero-секції
+    const particlesContainer = document.getElementById('particles-js');
+    if (!particlesContainer) return;
+    
+    particlesJS('particles-js', {
+        "particles": {
+            "number": {
+                "value": 70,
+                "density": {
+                    "enable": true,
+                    "value_area": 800
+                }
+            },
+            "color": {
+                "value": "#f5f5f5"
+            },
+            "shape": {
+                "type": "circle",
+                "stroke": {
+                    "width": 0,
+                    "color": "#000000"
+                },
+                "polygon": {
+                    "nb_sides": 5
+                }
+            },
+            "opacity": {
+                "value": 0.5,
+                "random": true,
+                "anim": {
+                    "enable": true,
+                    "speed": 1,
+                    "opacity_min": 0.1,
+                    "sync": false
+                }
+            },
+            "size": {
+                "value": 3,
+                "random": true,
+                "anim": {
+                    "enable": true,
+                    "speed": 2,
+                    "size_min": 0.3,
+                    "sync": false
+                }
+            },
+            "line_linked": {
+                "enable": true,
+                "distance": 150,
+                "color": "#f5f5f5",
+                "opacity": 0.4,
+                "width": 1
+            },
+            "move": {
+                "enable": true,
+                "speed": 1,
+                "direction": "none",
+                "random": true,
+                "straight": false,
+                "out_mode": "out",
+                "bounce": false,
+                "attract": {
+                    "enable": false,
+                    "rotateX": 600,
+                    "rotateY": 1200
+                }
+            }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+                "onhover": {
+                    "enable": true,
+                    "mode": "grab"
+                },
+                "onclick": {
+                    "enable": true,
+                    "mode": "push"
+                },
+                "resize": true
+            },
+            "modes": {
+                "grab": {
+                    "distance": 140,
+                    "line_linked": {
+                        "opacity": 1
+                    }
+                },
+                "bubble": {
+                    "distance": 400,
+                    "size": 40,
+                    "duration": 2,
+                    "opacity": 8,
+                    "speed": 3
+                },
+                "repulse": {
+                    "distance": 200,
+                    "duration": 0.4
+                },
+                "push": {
+                    "particles_nb": 4
+                },
+                "remove": {
+                    "particles_nb": 2
+                }
+            }
+        },
+        "retina_detect": true
+    });
+}
+
+// Ініціалізуємо слухачі подій для вікна
+window.addEventListener('load', function() {
     // Перевіряємо, чи вже було завантажено сторінку
     if (document.body.classList.contains('loaded')) {
         // Якщо так, запускаємо початкові анімації
         startInitialAnimations();
     }
-  });
-  
-  window.addEventListener('resize', function() {
-    // Перевіряємо, чи змінився розмір вікна для адаптації інтерфейсу
-    // Оновлюємо карусель карт
-    const carousel = document.querySelector('.carousel-3d');
-    if (carousel) {
-        const updateCarouselFn = window.updateCarousel;
-        if (typeof updateCarouselFn === 'function') {
-            updateCarouselFn();
+});
+
+window.addEventListener('resize', function() {
+    // Оптимізуємо подію resize
+    if (typeof debounce !== 'function') {
+        // Проста реалізація debounce, якщо вона недоступна
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
         }
+        window.debounce = debounce;
     }
     
-    // Оновлюємо сітку карт для адаптації до нового розміру екрану
-    const gridContainer = document.querySelector('.cards-grid-container');
-    if (gridContainer) {
-        gridContainer.style.transform = 'rotateX(0) rotateY(0)';
+    // Використовуємо debounce для обробки resize
+    const debouncedResize = debounce(function() {
+        // Оновлюємо карусель карт
+        if (typeof updateCarouselGlobal === 'function') {
+            updateCarouselGlobal();
+        }
         
-        const gridCards = gridContainer.querySelectorAll('.grid-card');
-        gridCards.forEach(card => {
-            card.style.transform = 'scale(0.95) translateZ(0)';
-        });
+        // Оновлюємо сітку карт для адаптації до нового розміру екрану
+        const gridContainer = document.querySelector('.cards-grid-container');
+        if (gridContainer) {
+            gridContainer.style.transform = 'rotateX(0) rotateY(0)';
+            
+            const gridCards = gridContainer.querySelectorAll('.grid-card');
+            gridCards.forEach(card => {
+                card.style.transform = 'scale(0.95) translateZ(0)';
+            });
+        }
+        
+        // Оновлюємо контейнер падаючих карт
+        const fallingCardsContainer = document.querySelector('.falling-cards-container');
+        if (fallingCardsContainer) {
+            // Повторно ініціалізуємо падаючі карти при зміні розміру
+            initFallingCards();
+        }
+    }, 150); // 150ms delay
+    
+    debouncedResize();
+});
+
+// Експортуємо функцію updateCarousel у глобальну область видимості
+window.updateCarousel = function() {
+    if (typeof updateCarouselGlobal === 'function') {
+        updateCarouselGlobal();
     }
-  });
+};
