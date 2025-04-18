@@ -1321,10 +1321,9 @@ function initImprovedCarousel() {
     // Додаємо клас smooth-carousel для єдиної ідентифікації
     carousel.classList.add('smooth-carousel');
     
-    // Перевіряємо наявність контейнера
+    // Отримуємо або створюємо контейнер для карток
     let cardsContainer = carousel.querySelector('.carousel-cards-container');
     if (!cardsContainer) {
-        // Створюємо контейнер для карток, якщо він відсутній
         cardsContainer = document.createElement('div');
         cardsContainer.className = 'carousel-cards-container';
         
@@ -1353,11 +1352,20 @@ function initImprovedCarousel() {
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     }
     
-    // Додаємо кнопки навігації, якщо їх немає
-    const prevBtn = carousel.querySelector('.carousel-prev');
-    const nextBtn = carousel.querySelector('.carousel-next');
+    // Забезпечуємо, що кожна картка має унікальний індекс
+    cards.forEach((card, index) => {
+        card.dataset.index = index;
+        
+        // Додаємо активний клас для центральної картки
+        if (index === 2) {
+            card.classList.add('active');
+        } else {
+            card.classList.remove('active');
+        }
+    });
     
-    if (!prevBtn && !nextBtn) {
+    // Додаємо кнопки навігації, якщо їх немає
+    if (!carousel.querySelector('.carousel-prev') && !carousel.querySelector('.carousel-next')) {
         const controlsContainer = document.createElement('div');
         controlsContainer.className = 'carousel-controls';
         
@@ -1377,184 +1385,28 @@ function initImprovedCarousel() {
         carousel.appendChild(controlsContainer);
     }
     
-    // Додаємо або оновлюємо стилі для каруселі
-    let carouselStyles = document.getElementById('smooth-carousel-styles');
-    if (!carouselStyles) {
-        carouselStyles = document.createElement('style');
-        carouselStyles.id = 'smooth-carousel-styles';
-        document.head.appendChild(carouselStyles);
+    // Функція для оновлення активного стану карток
+    function updateActiveCard() {
+        cards.forEach((card, index) => {
+            if (index === 2) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
     }
     
-    carouselStyles.textContent = `
-        .smooth-carousel {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            padding: 2rem 0;
-            margin: 2rem 0;
-        }
+    // Функція для обробки навігації
+    function moveCarousel(direction) {
+        // Зупиняємо автоматичну анімацію
+        carousel.setAttribute('data-auto-play', 'false');
         
-        .carousel-cards-container {
-            display: flex;
-            transition: transform 0.6s ease;
-            width: max-content;
-        }
-        
-        .carousel-card {
-            flex: 0 0 auto;
-            margin: 0 15px;
-            width: 240px;
-            height: 360px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .carousel-card .card-inner {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-        }
-        
-        .carousel-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        
-        .carousel-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            z-index: 5;
-        }
-        
-        .carousel-card:hover img {
-            transform: scale(1.1);
-        }
-        
-        .carousel-controls {
-            position: absolute;
-            width: 100%;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .carousel-prev, .carousel-next {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            pointer-events: auto;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .carousel-prev:hover, .carousel-next:hover {
-            background-color: white;
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .carousel-prev i, .carousel-next i {
-            font-size: 1.2rem;
-            color: #333;
-        }
-        
-        @media (max-width: 768px) {
-            .carousel-card {
-                width: 180px;
-                height: 270px;
-                margin: 0 10px;
-            }
-            
-            .carousel-prev, .carousel-next {
-                width: 40px;
-                height: 40px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .carousel-card {
-                width: 160px;
-                height: 240px;
-                margin: 0 8px;
-            }
-        }
-        
-        /* Aнімація для каруселі */
-        @keyframes carouselSlide {
-            from {
-                transform: translateX(0);
-            }
-            to {
-                transform: translateX(-20%);
-            }
-        }
-        
-        .smooth-carousel[data-auto-play="true"] .carousel-cards-container {
-            animation: carouselSlide 20s linear infinite;
-        }
-        
-        .smooth-carousel[data-auto-play="true"][data-pause-on-hover="true"] .carousel-cards-container:hover {
-            animation-play-state: paused;
-        }
-    `;
-    
-    // Додаємо атрибути для авторотації і зупинки при наведенні
-    carousel.setAttribute('data-auto-play', 'true');
-    carousel.setAttribute('data-pause-on-hover', 'true');
-    carousel.setAttribute('data-direction', 'left-to-right');
-    
-    // Встановлюємо правильний напрямок руху (зліва направо)
-    if (carousel.getAttribute('data-direction') === 'left-to-right') {
-        let carouselAnimation = document.getElementById('carousel-animation-style');
-        if (!carouselAnimation) {
-            carouselAnimation = document.createElement('style');
-            carouselAnimation.id = 'carousel-animation-style';
-            document.head.appendChild(carouselAnimation);
-        }
-        
-        carouselAnimation.textContent = `
-            @keyframes carouselSlide {
-                from {
-                    transform: translateX(0);
-                }
-                to {
-                    transform: translateX(-20%);
-                }
-            }
-        `;
-    }
-    
-    // Функція для обробки кліку на кнопку навігації
-    function handleNavigation(direction) {
-        // Зупиняємо анімацію
-        cardsContainer.style.animation = 'none';
-        
-        // Клонуємо необхідну кількість карток
         if (direction === 'prev') {
-            // Беремо останню картку і переміщуємо на початок
+            // Беремо останню картку і переміщуємо її на початок
             const lastCard = cards[cards.length - 1];
             cardsContainer.insertBefore(lastCard, cardsContainer.firstChild);
         } else {
-            // Беремо першу картку і переміщуємо в кінець
+            // Беремо першу картку і переміщуємо її в кінець
             const firstCard = cards[0];
             cardsContainer.appendChild(firstCard);
         }
@@ -1562,39 +1414,53 @@ function initImprovedCarousel() {
         // Оновлюємо список карток
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
         
-        // Відновлюємо анімацію після короткої затримки
+        // Оновлюємо активну картку
+        updateActiveCard();
+        
+        // Відновлюємо автоматичну анімацію через певний час
         setTimeout(() => {
-            cardsContainer.style.animation = '';
-        }, 50);
+            carousel.setAttribute('data-auto-play', 'true');
+        }, 2000);
     }
     
-    // Додаємо обробники подій для кнопок
+    // Додаємо обробники для кнопок
     const prevButton = carousel.querySelector('.carousel-prev');
     const nextButton = carousel.querySelector('.carousel-next');
     
     if (prevButton) {
-        prevButton.addEventListener('click', () => handleNavigation('prev'));
+        prevButton.addEventListener('click', () => moveCarousel('prev'));
     }
     
     if (nextButton) {
-        nextButton.addEventListener('click', () => handleNavigation('next'));
+        nextButton.addEventListener('click', () => moveCarousel('next'));
     }
     
-    // Функція для оновлення каруселі, експортується глобально
-    function updateCarousel() {
-        // Зупиняємо анімацію
-        cardsContainer.style.animation = 'none';
+    // Функція для автоматичного обертання каруселі
+    function autoRotateCarousel() {
+        if (carousel.getAttribute('data-auto-play') !== 'false') {
+            moveCarousel('next');
+        }
         
-        // Відновлюємо анімацію після короткої затримки
-        setTimeout(() => {
-            cardsContainer.style.animation = '';
-        }, 50);
+        // Продовжуємо автоматичне обертання
+        setTimeout(autoRotateCarousel, 3000);
     }
     
-    // Експортуємо функцію оновлення глобально
-    updateCarouselGlobal = updateCarousel;
+    // Запускаємо автоматичне обертання
+    setTimeout(autoRotateCarousel, 3000);
     
-    // Індикатор ініціалізації каруселі
+    // Зупиняємо обертання при наведенні (CSS вже має відповідний стиль)
+    carousel.setAttribute('data-pause-on-hover', 'true');
+    
+    // Функція для оновлення каруселі, доступна глобально
+    function updateCarousel() {
+        // Оновлюємо активну картку
+        updateActiveCard();
+    }
+    
+    // Експортуємо функцію оновлення
+    window.updateCarouselGlobal = updateCarousel;
+    
+    // Встановлюємо флаг ініціалізації
     carousel.dataset.initialized = 'true';
 }
 
@@ -2998,11 +2864,6 @@ function initEnhancedFallingCards() {
     const sectionWrapper = fallingCardsSection || fallingCardsContainer.parentElement;
     if (!sectionWrapper) return;
     
-    // Додаємо атрибути для ініціалізації карт
-    sectionWrapper.setAttribute('data-animation-trigger', 'scroll');
-    fallingCardsContainer.setAttribute('data-initially-hidden', 'true');
-    fallingCardsContainer.setAttribute('data-scroll-trigger', 'true');
-    
     // Очищаємо контейнер
     fallingCardsContainer.innerHTML = '';
     
@@ -3015,178 +2876,46 @@ function initEnhancedFallingCards() {
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg'
     ];
     
-    // Додаємо стилі для карт
-    const cardsStyle = document.createElement('style');
-    cardsStyle.textContent = `
-        .falling-cards-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            z-index: 1;
-        }
+    // Створюємо карти з випадковими параметрами
+    for (let i = 0; i < 10; i++) {
+        const cardIndex = Math.floor(Math.random() * cardImages.length);
+        const imageUrl = cardImages[cardIndex];
         
-        .falling-cards-container[data-initially-hidden="true"] .falling-card {
-            opacity: 0;
-            transform: translateY(-150px);
-        }
+        const card = document.createElement('div');
+        card.className = 'falling-card';
         
-        .falling-cards-container.animate-trigger .falling-card {
-            opacity: 1;
-            transform: translateY(0);
-            animation: fallAnimation var(--fall-duration, 8s) ease-in-out forwards;
-            animation-delay: var(--fall-delay, 0s);
-        }
+        // Випадкові параметри для падіння
+        const leftPosition = 5 + Math.random() * 90; // від 5% до 95% ширини
+        const rotateStart = -20 + Math.random() * 40; // від -20 до 20 градусів
+        const rotateEnd = -20 + Math.random() * 40; // від -20 до 20 градусів
+        const fallingDelay = Math.random() * 5; // від 0 до 5 секунд
         
-        .falling-card {
-            position: absolute;
-            width: 150px;
-            height: 220px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            transform-origin: center center;
-            will-change: transform, opacity;
-            top: -220px;
-            left: var(--card-left, 10%);
-        }
+        // Встановлюємо CSS змінні для анімації
+        card.style.setProperty('--data-x-position', leftPosition);
+        card.style.setProperty('--data-rotate-start', rotateStart);
+        card.style.setProperty('--data-rotate-end', rotateEnd);
+        card.style.setProperty('--data-falling-delay', fallingDelay);
         
-        .falling-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-        }
+        // Додаємо зображення
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = 'Метафорична карта';
+        img.loading = 'lazy';
+        card.appendChild(img);
         
-        @keyframes fallAnimation {
-            0% {
-                transform: translateY(-220px) rotate(var(--rotate-start, 0deg));
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(calc(100vh + 220px)) rotate(var(--rotate-end, 0deg));
-                opacity: 1;
-            }
-        }
-        
-        /* Градієнти для плавного зникнення */
-        .falling-cards-fadeout-top,
-        .falling-cards-fadeout-bottom {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            z-index: 2;
-            pointer-events: none;
-        }
-        
-        .falling-cards-fadeout-top {
-            top: 0;
-            background: linear-gradient(to bottom, white 0%, rgba(255,255,255,0) 100%);
-        }
-        
-        .falling-cards-fadeout-bottom {
-            bottom: 0;
-            background: linear-gradient(to top, white 0%, rgba(255,255,255,0) 100%);
-        }
-        
-        /* Адаптивність для мобільних */
-        @media (max-width: 767px) {
-            .falling-card {
-                width: 100px;
-                height: 146px;
-            }
-        }
-    `;
-    document.head.appendChild(cardsStyle);
-    
-    // Додаємо градієнти для плавного зникнення карток на кордонах секції
-    const fadeoutTop = document.createElement('div');
-    fadeoutTop.className = 'falling-cards-fadeout-top';
-    fallingCardsContainer.appendChild(fadeoutTop);
-    
-    const fadeoutBottom = document.createElement('div');
-    fadeoutBottom.className = 'falling-cards-fadeout-bottom';
-    fallingCardsContainer.appendChild(fadeoutBottom);
-    
-    // Створюємо карти
-    const createCards = () => {
-        // Очищаємо контейнер перед створенням нових карт
-        const cardElements = fallingCardsContainer.querySelectorAll('.falling-card');
-        cardElements.forEach(card => card.remove());
-        
-        // Створюємо 10 карт з випадковими параметрами
-        for (let i = 0; i < 10; i++) {
-            const cardIndex = Math.floor(Math.random() * cardImages.length);
-            const imageUrl = cardImages[cardIndex];
-            
-            const card = document.createElement('div');
-            card.className = 'falling-card random-position';
-            
-            // Випадкові параметри для падіння
-            const leftPosition = 5 + Math.random() * 90; // від 5% до 95% ширини
-            const rotateStart = -20 + Math.random() * 40; // від -20 до 20 градусів
-            const rotateEnd = -20 + Math.random() * 40; // від -20 до 20 градусів
-            const fallDelay = Math.random() * 5; // від 0 до 5 секунд
-            const fallDuration = 5 + Math.random() * 10; // від 5 до 15 секунд
-            
-            // Встановлюємо CSS змінні для анімації
-            card.style.setProperty('--card-left', `${leftPosition}%`);
-            card.style.setProperty('--rotate-start', `${rotateStart}deg`);
-            card.style.setProperty('--rotate-end', `${rotateEnd}deg`);
-            card.style.setProperty('--fall-delay', `${fallDelay}s`);
-            card.style.setProperty('--fall-duration', `${fallDuration}s`);
-            
-            // Додаємо зображення
-            const img = document.createElement('img');
-            img.src = imageUrl;
-            img.alt = 'Метафорична карта';
-            img.loading = 'lazy';
-            card.appendChild(img);
-            
-            // Додаємо атрибути для затримки
-            card.dataset.fallingDelay = fallDelay;
-            card.dataset.rotateStart = rotateStart;
-            card.dataset.rotateEnd = rotateEnd;
-            card.dataset.xPosition = leftPosition;
-            
-            // Додаємо картку в контейнер
-            fallingCardsContainer.appendChild(card);
-        }
-    };
-    
-    // Створюємо початкові карти
-    createCards();
+        // Додаємо картку в контейнер
+        fallingCardsContainer.appendChild(card);
+    }
     
     // Додаємо спостерігач для анімації при прокрутці
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Додаємо клас для запуску анімації
-                    fallingCardsContainer.classList.add('animate-trigger');
-                    
-                    // Повторюємо анімацію з новими картами через певний час
-                    setTimeout(() => {
-                        // Перевіряємо, чи секція все ще в полі зору
-                        if (entry.isIntersecting) {
-                            fallingCardsContainer.classList.remove('animate-trigger');
-                            // Затримка для плавного переходу
-                            setTimeout(() => {
-                                createCards();
-                                setTimeout(() => {
-                                    fallingCardsContainer.classList.add('animate-trigger');
-                                }, 100);
-                            }, 500);
-                        }
-                    }, 12000); // Тривалість анімації + запас
-                } else {
-                    // Зупиняємо анімацію, коли секція виходить з поля зору
-                    fallingCardsContainer.classList.remove('animate-trigger');
+                    // Додаємо клас для запуску анімації до всіх карток
+                    fallingCardsContainer.querySelectorAll('.falling-card').forEach(card => {
+                        card.classList.add('animated');
+                    });
                 }
             });
         }, {
@@ -3197,26 +2926,10 @@ function initEnhancedFallingCards() {
         observer.observe(sectionWrapper);
     } else {
         // Запасний варіант для старих браузерів
-        fallingCardsContainer.classList.add('animate-trigger');
+        fallingCardsContainer.querySelectorAll('.falling-card').forEach(card => {
+            card.classList.add('animated');
+        });
     }
-    
-    // Функція для перезапуску анімації (при зміні розміру вікна)
-    function restartAnimation() {
-        // Видаляємо клас анімації
-        fallingCardsContainer.classList.remove('animate-trigger');
-        
-        // Створюємо нові карти з параметрами, відповідними новому розміру екрана
-        setTimeout(() => {
-            createCards();
-            // Затримка перед запуском анімації
-            setTimeout(() => {
-                fallingCardsContainer.classList.add('animate-trigger');
-            }, 100);
-        }, 300);
-    }
-    
-    // Відстежуємо зміну розміру вікна з debounce
-    window.addEventListener('resize', debounce(restartAnimation, 500));
 }
 
 /**
