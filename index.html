@@ -42,47 +42,50 @@
     <!-- Хедер -->
     <header class="header">
         <div class="container">
-            <div class="header-content">
-                <div class="logo-container">
-                    <a href="#" class="logo">Roots & Wings</a>
-                    <span class="logo-accent"></span>
+            <div class="header-wrapper">
+                <div class="logo">
+                    <a href="#" class="logo-link">
+                        <img src="img/logo.png" alt="Roots & Wings Logo" class="logo-img">
+                        <span class="logo-text">Roots & Wings</span>
+                    </a>
                 </div>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="#hero" class="nav-link" data-hover="Головна"><span>Головна</span></a></li>
-                        <li><a href="#features" class="nav-link" data-hover="Особливості"><span>Особливості</span></a></li>
-                        <li><a href="#audience" class="nav-link" data-hover="Кому підійде"><span>Кому підійде</span></a></li>
-                        <li><a href="#authors" class="nav-link" data-hover="Автори"><span>Автори</span></a></li>
-                        <li><a href="#contact" class="nav-link" data-hover="Контакт"><span>Контакт</span></a></li>
+                
+                <!-- Desktop navigation -->
+                <nav class="nav desktop-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#about" class="nav-link">Про карти</a></li>
+                        <li class="nav-item"><a href="#features" class="nav-link">Особливості</a></li>
+                        <li class="nav-item"><a href="#target" class="nav-link">Для кого</a></li>
+                        <li class="nav-item"><a href="#authors" class="nav-link">Автори</a></li>
+                        <li class="nav-item"><a href="#contact" class="nav-link">Контакти</a></li>
                     </ul>
                 </nav>
-                <div class="mobile-menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+                
+                <!-- Mobile menu button - visible only on mobile -->
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span class="toggle-line"></span>
+                    <span class="toggle-line"></span>
+                    <span class="toggle-line"></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile menu - hidden by default -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-container">
+                <button class="mobile-menu-close" aria-label="Close Menu">×</button>
+                <nav class="mobile-nav">
+                    <ul class="mobile-nav-list">
+                        <li class="mobile-nav-item"><a href="#about" class="mobile-nav-link">Про карти</a></li>
+                        <li class="mobile-nav-item"><a href="#features" class="mobile-nav-link">Особливості</a></li>
+                        <li class="mobile-nav-item"><a href="#target" class="mobile-nav-link">Для кого</a></li>
+                        <li class="mobile-nav-item"><a href="#authors" class="mobile-nav-link">Автори</a></li>
+                        <li class="mobile-nav-item"><a href="#contact" class="mobile-nav-link">Контакти</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
-    
-    <!-- Мобільне меню -->
-    <div class="mobile-menu">
-        <div class="mobile-menu-inner">
-            <div class="mobile-menu-close">
-                <i class="fas fa-times"></i>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#hero" class="mobile-nav-link">Головна</a></li>
-                    <li><a href="#features" class="mobile-nav-link">Особливості</a></li>
-                    <li><a href="#audience" class="mobile-nav-link">Кому підійде</a></li>
-                    <li><a href="#authors" class="mobile-nav-link">Автори</a></li>
-                    <li><a href="#contact" class="mobile-nav-link">Контакт</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div class="mobile-menu-bg"></div>
-    </div>
     
     <!-- Головна секція -->
     <section id="hero" class="hero-section section">
@@ -708,12 +711,20 @@
                 </div>
                 <div class="footer-legal">
                     <h3>Документи</h3>
-                    <ul>
-                        <li><a href="#privacy-policy" class="modal-trigger" data-modal="privacy-policy">Політика конфіденційності</a></li>
-                        <li><a href="#payment-terms" class="modal-trigger" data-modal="payment-terms">Умови оплати</a></li>
-                        <li><a href="#delivery-terms" class="modal-trigger" data-modal="delivery-terms">Умови доставки</a></li>
-                        <li><a href="#terms-of-use" class="modal-trigger" data-modal="terms-of-use">Умови використання</a></li>
-                    </ul>
+                    <div class="legal-buttons">
+                        <button class="btn-modal modal-trigger" data-modal="privacy-policy">
+                            <i class="fas fa-shield-alt"></i> Політика конфіденційності
+                        </button>
+                        <button class="btn-modal modal-trigger" data-modal="payment-terms">
+                            <i class="fas fa-credit-card"></i> Умови оплати
+                        </button>
+                        <button class="btn-modal modal-trigger" data-modal="delivery-terms">
+                            <i class="fas fa-truck"></i> Умови доставки
+                        </button>
+                        <button class="btn-modal modal-trigger" data-modal="terms-of-use">
+                            <i class="fas fa-file-contract"></i> Умови використання
+                        </button>
+                    </div>
                 </div>
                 <div class="footer-social">
                     <h3>Слідкуйте за нами</h3>

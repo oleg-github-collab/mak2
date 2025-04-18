@@ -8,48 +8,126 @@ let updateCarouselGlobal;
 
 // Очікуємо завантаження DOM перед ініціалізацією скриптів
 document.addEventListener('DOMContentLoaded', function() {
-    // Ініціалізуємо прелоадер для початкового завантаження сайту
-    initPreloader();
-    
-    // Ініціалізуємо кастомний курсор
-    initCursor();
-    
-    // Ініціалізуємо мобільне меню
-    initMobileMenu();
-    
-    // Ініціалізуємо ефект прокрутки для хедера
-    initHeaderScroll();
-    
-    // Ініціалізуємо плавну прокрутку для якорів
-    initSmoothScroll();
-    
-    // Ініціалізуємо анімації
-    initAnimations();
-    
-    // Ініціалізуємо інтерактивні компоненти
-    initCardSpread();
-    initCardsCarousel();
-    initCardDeck();
-    initCardGrid();
-    
-    // Ініціалізуємо паралакс-ефекти
-    initParallax();
-    
-    // Ініціалізуємо контактну форму
-    initContactForm();
-    
-    // Ініціалізуємо кнопку "повернутися нагору"
-    initBackToTop();
-    
-    // Ініціалізуємо модальні вікна
-    initModals();
-    
-    // Ініціалізуємо 3D ефекти для карток (VanillaTilt)
-    initVanillaTilt();
-    
-    // Ініціалізуємо фонові частинки
-    initParticles();
+    // Завантажуємо необхідні зовнішні бібліотеки динамічно, якщо вони відсутні
+    loadExternalLibraries().then(() => {
+        // Ініціалізуємо прелоадер для початкового завантаження сайту
+        initPreloader();
+        
+        // Ініціалізуємо кастомний курсор
+        initCursor();
+        
+        // Ініціалізуємо мобільне меню
+        initMobileMenu();
+        
+        // Ініціалізуємо ефект прокрутки для хедера
+        initHeaderScroll();
+        
+        // Ініціалізуємо плавну прокрутку для якорів
+        initSmoothScroll();
+        
+        // Ініціалізуємо анімації
+        initAnimations();
+        
+        // Ініціалізуємо інтерактивні компоненти
+        initCardSpread();
+        initCardsCarousel();
+        initCardDeck();
+        initCardGrid();
+        
+        // Ініціалізуємо паралакс-ефекти
+        initParallax();
+        
+        // Ініціалізуємо контактну форму
+        initContactForm();
+        
+        // Ініціалізуємо кнопку "повернутися нагору"
+        initBackToTop();
+        
+        // Ініціалізуємо модальні вікна
+        initModals();
+        
+        // Ініціалізуємо 3D ефекти для карток (VanillaTilt)
+        initVanillaTilt();
+        
+        // Ініціалізуємо фонові частинки
+        initParticles();
+
+        // Ініціалізуємо кнопки правових документів у футері
+        initLegalButtons();
+    }).catch(error => {
+        console.error('Помилка при завантаженні зовнішніх бібліотек:', error);
+        // Ініціалізуємо базову функціональність навіть при помилці завантаження бібліотек
+        initBasicFunctionality();
+    });
 });
+
+/**
+ * Динамічне завантаження зовнішніх бібліотек
+ * Завантажує VanillaTilt та Particles.js, якщо вони відсутні
+ */
+function loadExternalLibraries() {
+    return new Promise((resolve, reject) => {
+        let librariesLoaded = 0;
+        const requiredLibraries = 2; // VanillaTilt та Particles.js
+        
+        function checkIfComplete() {
+            librariesLoaded++;
+            if (librariesLoaded >= requiredLibraries) {
+                resolve();
+            }
+        }
+
+        // Завантаження VanillaTilt, якщо він відсутній
+        if (typeof VanillaTilt === 'undefined') {
+            const vanillaTiltScript = document.createElement('script');
+            vanillaTiltScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js';
+            vanillaTiltScript.onload = checkIfComplete;
+            vanillaTiltScript.onerror = () => {
+                console.warn('Не вдалося завантажити VanillaTilt.js');
+                checkIfComplete();
+            };
+            document.head.appendChild(vanillaTiltScript);
+        } else {
+            checkIfComplete();
+        }
+        
+        // Завантаження Particles.js, якщо він відсутній
+        if (typeof particlesJS === 'undefined') {
+            const particlesScript = document.createElement('script');
+            particlesScript.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+            particlesScript.onload = checkIfComplete;
+            particlesScript.onerror = () => {
+                console.warn('Не вдалося завантажити Particles.js');
+                checkIfComplete();
+            };
+            document.head.appendChild(particlesScript);
+        } else {
+            checkIfComplete();
+        }
+        
+        // Встановлюємо таймаут для завантаження, щоб уникнути нескінченного очікування
+        setTimeout(() => {
+            if (librariesLoaded < requiredLibraries) {
+                console.warn('Деякі бібліотеки не вдалося завантажити вчасно');
+                resolve();
+            }
+        }, 5000);
+    });
+}
+
+/**
+ * Ініціалізація основних функцій, які не залежать від зовнішніх бібліотек
+ */
+function initBasicFunctionality() {
+    initPreloader();
+    initMobileMenu();
+    initHeaderScroll();
+    initSmoothScroll();
+    initBackToTop();
+    initContactForm();
+    initModals();
+    initLegalButtons();
+}
 
 /**
 * Функціональність прелоадера
@@ -210,24 +288,43 @@ function initCursor() {
     if (!isTouchDevice) {
         document.body.classList.add('cursor-enabled');
         
-        // Оновлюємо положення курсора при русі миші
+        // Оновлюємо положення курсора при русі миші з використанням requestAnimationFrame
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let frameId;
+        
         document.addEventListener('mousemove', e => {
-            requestAnimationFrame(() => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-                
-                cursorOutline.style.left = e.clientX + 'px';
-                cursorOutline.style.top = e.clientY + 'px';
-                
-                if (cursorText) {
-                    cursorText.style.left = e.clientX + 'px';
-                    cursorText.style.top = e.clientY + 'px';
-                }
-            });
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (!frameId) {
+                frameId = requestAnimationFrame(updateCursor);
+            }
         });
         
+        function updateCursor() {
+            // Плавне слідування за курсором
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            
+            cursor.style.left = `${mouseX}px`;
+            cursor.style.top = `${mouseY}px`;
+            
+            cursorOutline.style.left = `${cursorX}px`;
+            cursorOutline.style.top = `${cursorY}px`;
+            
+            if (cursorText) {
+                cursorText.style.left = `${cursorX}px`;
+                cursorText.style.top = `${cursorY}px`;
+            }
+            
+            frameId = requestAnimationFrame(updateCursor);
+        }
+        
         // Додаємо ефект при наведенні на інтерактивні елементи
-        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card');
+        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card, .legal-button');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -262,6 +359,9 @@ function initCursor() {
             cursor.classList.remove('cursor-click');
             cursorOutline.classList.remove('cursor-click');
         });
+        
+        // Приховуємо стандартний курсор
+        document.documentElement.style.cursor = 'none';
     }
 }
 
@@ -273,33 +373,101 @@ function initMobileMenu() {
     const mobileMenu = document.querySelector('.mobile-menu');
     const menuClose = document.querySelector('.mobile-menu-close');
     const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+    const header = document.querySelector('.header');
     
     if (!menuToggle || !mobileMenu) return;
     
     // Перемикання меню
-    menuToggle.addEventListener('click', function() {
+    menuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         menuToggle.classList.toggle('active');
         mobileMenu.classList.toggle('open');
         document.body.classList.toggle('menu-open');
+        
+        // Фокусуємося на першому елементі меню для кращої доступності
+        if (mobileMenu.classList.contains('open') && mobileLinks.length > 0) {
+            mobileLinks[0].focus();
+        }
     });
     
     // Закриття меню
     if (menuClose) {
-        menuClose.addEventListener('click', function() {
+        menuClose.addEventListener('click', function(e) {
+            e.preventDefault();
             menuToggle.classList.remove('active');
             mobileMenu.classList.remove('open');
             document.body.classList.remove('menu-open');
+            menuToggle.focus(); // Повертаємо фокус на кнопку меню
         });
     }
     
     // Закриття меню при натисканні на посилання
     mobileLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
+            // Не закриваємо меню, якщо посилання відкриває підменю
+            if (this.classList.contains('has-submenu')) {
+                e.preventDefault();
+                this.classList.toggle('submenu-open');
+                return;
+            }
+            
             menuToggle.classList.remove('active');
             mobileMenu.classList.remove('open');
             document.body.classList.remove('menu-open');
         });
     });
+    
+    // Закриття меню при натисканні поза ним
+    document.addEventListener('click', function(e) {
+        if (document.body.classList.contains('menu-open') && 
+            !mobileMenu.contains(e.target) && 
+            e.target !== menuToggle && 
+            !menuToggle.contains(e.target)) {
+            menuToggle.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.classList.remove('menu-open');
+        }
+    });
+    
+    // Обробка клавіші Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.body.classList.contains('menu-open')) {
+            menuToggle.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            document.body.classList.remove('menu-open');
+            menuToggle.focus(); // Повертаємо фокус на кнопку меню
+        }
+    });
+    
+    // Виправлення для меню, щоб уникнути дублювання навігаційних елементів
+    // Приховуємо стандартну навігацію на мобільних пристроях
+    function adjustMenuVisibility() {
+        const desktopNav = document.querySelector('.desktop-nav');
+        const isMobile = window.innerWidth < 768;
+        
+        if (desktopNav) {
+            if (isMobile) {
+                desktopNav.setAttribute('aria-hidden', 'true');
+                desktopNav.style.display = 'none';
+                if (menuToggle) menuToggle.style.display = 'block';
+            } else {
+                desktopNav.removeAttribute('aria-hidden');
+                desktopNav.style.display = 'flex';
+                if (menuToggle) menuToggle.style.display = 'none';
+                // Закриваємо мобільне меню
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.classList.remove('menu-open');
+            }
+        }
+    }
+    
+    // Виклик функції при завантаженні
+    adjustMenuVisibility();
+    
+    // І при зміні розміру екрану
+    window.addEventListener('resize', adjustMenuVisibility);
 }
 
 /**
@@ -357,6 +525,16 @@ function initSmoothScroll() {
                 top: targetPosition,
                 behavior: 'smooth'
             });
+            
+            // Встановлюємо фокус на ціль для кращої доступності
+            targetElement.setAttribute('tabindex', '-1');
+            targetElement.focus({preventScroll: true});
+            
+            // Додаємо клас для анімації цілі
+            targetElement.classList.add('target-active');
+            setTimeout(() => {
+                targetElement.classList.remove('target-active');
+            }, 1500);
         });
     });
     
@@ -373,6 +551,10 @@ function initSmoothScroll() {
                     top: targetPosition,
                     behavior: 'smooth'
                 });
+                
+                // Встановлюємо фокус на наступну секцію
+                nextSection.setAttribute('tabindex', '-1');
+                nextSection.focus({preventScroll: true});
             }
         });
     }
@@ -401,6 +583,13 @@ function initBackToTop() {
             top: 0,
             behavior: 'smooth'
         });
+        
+        // Встановлюємо фокус на верхній елемент сторінки
+        const focusTarget = document.querySelector('header, body');
+        if (focusTarget) {
+            focusTarget.setAttribute('tabindex', '-1');
+            focusTarget.focus({preventScroll: true});
+        }
     });
     
     // Перевірка положення прокрутки при прокрутці з оптимізацією
@@ -452,7 +641,7 @@ function initTextSplitting() {
         const words = text.split(' ');
         
         words.forEach((word, wordIndex) => {
-            splitHtml += `<span class="word">`;
+            splitHtml += `<span class="word" aria-hidden="true">`;
             
             // Розділяємо за символами
             Array.from(word).forEach((char, charIndex) => {
@@ -462,7 +651,13 @@ function initTextSplitting() {
             splitHtml += `</span> `;
         });
         
+        // Зберігаємо оригінальний текст для доступності
+        const originalText = document.createElement('span');
+        originalText.className = 'sr-only';
+        originalText.textContent = text;
+        
         element.innerHTML = splitHtml;
+        element.appendChild(originalText);
         element.dataset.splitted = 'true';
     });
 }
@@ -480,25 +675,18 @@ function animateFloatingCards() {
         const translateY = -10 - Math.random() * 10; // Зміщення по Y
         const rotate = -5 + Math.random() * 10; // Обертання
         
-        // Встановлюємо стилі анімації
-        card.style.animation = `floatingAnimation${index} ${duration}s ease-in-out ${delay}s infinite alternate`;
+        // Використовуємо CSS-змінні для простішого управління анімацією
+        card.style.setProperty('--float-duration', `${duration}s`);
+        card.style.setProperty('--float-delay', `${delay}s`);
+        card.style.setProperty('--translate-y', `${translateY}px`);
+        card.style.setProperty('--rotate-angle', `${rotate}deg`);
         
-        // Додаємо keyframes для анімації
-        const keyframes = `
-            @keyframes floatingAnimation${index} {
-                0% {
-                    transform: translateY(0) rotate(0deg);
-                }
-                100% {
-                    transform: translateY(${translateY}px) rotate(${rotate}deg);
-                }
-            }
-        `;
+        // Додаємо клас для запуску анімації
+        card.classList.add('animate-float');
         
-        // Створюємо елемент стилю і додаємо його в head
-        const styleElement = document.createElement('style');
-        styleElement.textContent = keyframes;
-        document.head.appendChild(styleElement);
+        // Додаємо атрибути для доступності
+        card.setAttribute('aria-label', 'Декоративна картка');
+        card.setAttribute('role', 'img');
     });
 }
 
@@ -522,37 +710,20 @@ function initFallingCards() {
         const rotateStart = -30 + Math.random() * 60; // Випадковий початковий кут
         const rotateEnd = rotateStart + (-20 + Math.random() * 40); // Випадковий кінцевий кут
         
-        // Встановлюємо стилі карти
-        card.style.left = `${horizontalPosition}%`;
-        card.style.animationDelay = `${startDelay}s`;
-        card.style.animationDuration = `${fallDuration}s`;
+        // Використовуємо CSS-змінні для анімації
+        card.style.setProperty('--fall-delay', `${startDelay}s`);
+        card.style.setProperty('--fall-duration', `${fallDuration}s`);
+        card.style.setProperty('--horizontal-position', `${horizontalPosition}%`);
         card.style.setProperty('--rotate-start', `${rotateStart}deg`);
         card.style.setProperty('--rotate-end', `${rotateEnd}deg`);
+        card.style.setProperty('--container-height', `${containerHeight}px`);
         
-        // Додаємо keyframes для анімації падіння
-        const keyframes = `
-            @keyframes fallAnimation${index} {
-                0% {
-                    transform: translateY(-100%) rotate(${rotateStart}deg);
-                    opacity: 0;
-                }
-                10% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(${containerHeight + 100}px) rotate(${rotateEnd}deg);
-                    opacity: 0;
-                }
-            }
-        `;
+        // Додаємо клас для запуску анімації
+        card.classList.add('animate-fall');
         
-        // Створюємо елемент стилю і додаємо його в head
-        const styleElement = document.createElement('style');
-        styleElement.textContent = keyframes;
-        document.head.appendChild(styleElement);
-        
-        // Застосовуємо анімацію
-        card.style.animation = `fallAnimation${index} ${fallDuration}s linear ${startDelay}s infinite`;
+        // Додаємо атрибути для доступності
+        card.setAttribute('aria-label', 'Декоративна картка, що падає');
+        card.setAttribute('role', 'img');
     });
 }
 
@@ -706,43 +877,65 @@ function initCardSpread() {
     spreadCards.forEach(card => {
         if (!card) return;
         
+        // Створюємо дані для анімації
+        const rotateAngle = card.dataset.rotateAngle || 0;
+        const moveX = card.dataset.moveX || 0;
+        const moveY = card.dataset.moveY || 0;
+        const rotateAdd = card.dataset.rotateAdd || 5; // Додаткове обертання при наведенні
+        
+        // Додаємо ARIA-атрибути для доступності
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-pressed', 'false');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', 'Інтерактивна метафорична карта');
+        
+        // Додаємо класи для початкового положення
+        card.classList.add('spread-card-positioned');
+        
+        // Встановлюємо початкове трансформування
+        card.style.transform = `translate(-50%, -50%) translateX(${moveX}px) translateY(${moveY}px) rotate(${rotateAngle}deg)`;
+        
+        // Ефект при наведенні
         card.addEventListener('mouseenter', function() {
-            const rotateAngle = card.dataset.rotateAngle || 0;
-            const moveX = card.dataset.moveX || 0;
-            const moveY = card.dataset.moveY || 0;
-            const rotateAdd = card.dataset.rotateAdd || 0;
-            
-            // Додаємо "підйом" картки і додаткове обертання при наведенні
             this.style.transform = `translate(-50%, -50%) translateX(${moveX}px) translateY(${moveY}px) translateZ(30px) rotate(${parseFloat(rotateAngle) + parseFloat(rotateAdd)}deg)`;
             this.style.zIndex = '10';
+            this.classList.add('hover');
         });
         
         card.addEventListener('mouseleave', function() {
-            const rotateAngle = card.dataset.rotateAngle || 0;
-            const moveX = card.dataset.moveX || 0;
-            const moveY = card.dataset.moveY || 0;
-            
-            // Повертаємо картку у початкове положення
             this.style.transform = `translate(-50%, -50%) translateX(${moveX}px) translateY(${moveY}px) rotate(${rotateAngle}deg)`;
             this.style.zIndex = '';
+            this.classList.remove('hover');
         });
         
-        // Додаємо можливість перевертання картки при кліку
+        // Перевертання картки при кліку
         card.addEventListener('click', function() {
             this.classList.toggle('flipped');
+            
+            // Оновлюємо ARIA-атрибути
+            this.setAttribute('aria-pressed', this.classList.contains('flipped'));
             
             // Повертаємо картку через 2 секунди
             if (this.classList.contains('flipped')) {
                 setTimeout(() => {
                     this.classList.remove('flipped');
+                    this.setAttribute('aria-pressed', 'false');
                 }, 2000);
+            }
+        });
+        
+        // Додаємо підтримку клавіатури
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
             }
         });
     });
 }
 
 /**
-* Ініціалізація каруселі карток
+* Ініціалізація каруселі карток з 3D ефектом
 */
 function initCardsCarousel() {
     const carousel = document.querySelector('.carousel-3d');
@@ -755,17 +948,43 @@ function initCardsCarousel() {
     let currentIndex = 0;
     const totalCards = cards.length;
     
+    // Додаємо ARIA-атрибути для доступності
+    carousel.setAttribute('role', 'region');
+    carousel.setAttribute('aria-roledescription', 'карусель');
+    carousel.setAttribute('aria-label', 'Карусель метафоричних карт');
+    
+    if (prevBtn) {
+        prevBtn.setAttribute('aria-label', 'Попередня карта');
+        prevBtn.setAttribute('aria-controls', 'carousel-container');
+    }
+    
+    if (nextBtn) {
+        nextBtn.setAttribute('aria-label', 'Наступна карта');
+        nextBtn.setAttribute('aria-controls', 'carousel-container');
+    }
+    
+    cards.forEach((card, index) => {
+        card.setAttribute('role', 'group');
+        card.setAttribute('aria-roledescription', 'слайд');
+        card.setAttribute('aria-label', `Карта ${index + 1} з ${totalCards}`);
+        card.setAttribute('tabindex', index === 0 ? '0' : '-1');
+    });
+    
     // Функція для оновлення позицій карток
     function updateCarousel() {
         cards.forEach((card, index) => {
             let newIndex = (index - currentIndex + totalCards) % totalCards;
             card.style.setProperty('--card-index', newIndex);
             
-            // Встановлюємо клас активної картки
+            // Встановлюємо клас активної картки та tabindex
             if (newIndex === 0) {
                 card.classList.add('active');
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('aria-hidden', 'false');
             } else {
                 card.classList.remove('active');
+                card.setAttribute('tabindex', '-1');
+                card.setAttribute('aria-hidden', 'true');
             }
             
             // Застосовуємо різні трансформації залежно від позиції картки
@@ -794,6 +1013,18 @@ function initCardsCarousel() {
                 card.style.zIndex = '2';
             }
         });
+        
+        // Оновлюємо стан кнопок та ARIA-атрибути
+        carousel.setAttribute('aria-live', 'polite');
+        carousel.setAttribute('aria-atomic', 'true');
+        
+        // Оголошуємо поточну картку для скрінрідерів
+        const liveRegion = carousel.querySelector('.carousel-live-region') || document.createElement('div');
+        if (!carousel.querySelector('.carousel-live-region')) {
+            liveRegion.className = 'carousel-live-region sr-only';
+            carousel.appendChild(liveRegion);
+        }
+        liveRegion.textContent = `Картка ${currentIndex + 1} з ${totalCards}`;
     }
     
     // Експортуємо функцію для глобального доступу
@@ -813,6 +1044,19 @@ function initCardsCarousel() {
             updateCarousel();
         });
     }
+    
+    // Додаємо підтримку клавіатури
+    carousel.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            updateCarousel();
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            currentIndex = (currentIndex + 1) % totalCards;
+            updateCarousel();
+        }
+    });
     
     // Додаємо можливість перетягування для мобільних пристроїв
     let touchStartX = 0;
@@ -871,9 +1115,16 @@ function initCardsCarousel() {
         clearInterval(autoplayInterval);
     }
     
-    // Зупиняємо автоматичне прокручування при наведенні
+    // Зупиняємо автоматичне прокручування при наведенні чи фокусі
     carousel.addEventListener('mouseenter', stopAutoplay);
     carousel.addEventListener('mouseleave', startAutoplay);
+    carousel.addEventListener('focusin', stopAutoplay);
+    carousel.addEventListener('focusout', event => {
+        // Перезапускаємо автопрокрутку, тільки якщо фокус вийшов за межі каруселі
+        if (!carousel.contains(event.relatedTarget)) {
+            startAutoplay();
+        }
+    });
     
     // Запускаємо автоматичне прокручування
     startAutoplay();
@@ -889,74 +1140,128 @@ function initCardDeck() {
     
     if (!deck || !drawButton || !topCard) return;
     
+    // Додаємо ARIA-атрибути для доступності
+    deck.setAttribute('role', 'region');
+    deck.setAttribute('aria-label', 'Колода метафоричних карт');
+    drawButton.setAttribute('aria-controls', 'deck-top');
+    
     drawButton.addEventListener('click', function() {
         // Змінюємо стан кнопки, щоб уникнути повторних натискань
         if (this.classList.contains('disabled')) return;
         this.classList.add('disabled');
+        this.setAttribute('aria-disabled', 'true');
         
         // Перевертаємо верхню картку
         topCard.classList.add('flipped');
+        topCard.setAttribute('aria-live', 'polite');
+        topCard.setAttribute('aria-atomic', 'true');
         
-        // Через 1.5 секунди повертаємо картку назад
-        setTimeout(() => {
-            topCard.classList.remove('flipped');
-            
-            // Перемішуємо карти в колоді після повернення
-            const deckCards = document.querySelectorAll('.deck-card:not(.deck-top)');
-            deckCards.forEach(card => {
-                const randomRotate = -2 + Math.random() * 4; // Випадкове обертання
-                const randomY = Math.random() * -3; // Випадкове зміщення по Y
-                
-                card.style.transform = `translateY(${randomY}px) rotate(${randomRotate}deg)`;
-            });
-            
-            // Дозволяємо знову натискати кнопку
-            drawButton.classList.remove('disabled');
-        }, 3000);
+        // Анімація витягування картки з використанням requestAnimationFrame
+        let startTime;
+        const animationDuration = 500; // 0.5 секунди для підняття
+        const returnDuration = 500; // 0.5 секунди для повернення
+        const flipDuration = 500; // 0.5 секунди для перевертання
+        const waitTime = 800; // 0.8 секунди очікування перед поверненням
+        const rotation = -5 + Math.random() * 10; // Випадкове обертання
         
-        // Анімація витягування картки
-        // Створюємо анімацію, використовуючи GSAP, якщо він доступний
-        if (typeof gsap !== 'undefined') {
-            gsap.timeline()
-                .to(topCard, { 
-                    y: '-80px', 
-                    rotation: -5 + Math.random() * 10,
-                    duration: 0.5,
-                    ease: 'power2.out'
-                })
-                .to(topCard, { 
-                    rotationY: 180, 
-                    duration: 0.5,
-                    ease: 'power1.inOut'
-                }, 0.3)
-                .to(topCard, { 
-                    y: 0, 
-                    rotation: 0,
-                    duration: 0.5,
-                    ease: 'power2.in'
-                }, 1.5)
-                .to(topCard, { 
-                    rotationY: 0, 
-                    duration: 0.5,
-                    ease: 'power1.inOut'
-                }, 2.3);
-        } else {
-            // Проста CSS-анімація, якщо GSAP недоступний
-            topCard.style.transition = 'transform 0.5s ease-out';
-            topCard.style.transform = 'translateY(-80px) rotate(' + (-5 + Math.random() * 10) + 'deg)';
+        // Функція анімації підняття картки
+        function animateUp(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / animationDuration, 1);
             
-            setTimeout(() => {
-                topCard.style.transform = 'translateY(-80px) rotate(' + (-5 + Math.random() * 10) + 'deg) rotateY(180deg)';
-                
+            // Плавне піднімання
+            const y = -80 * progress;
+            topCard.style.transform = `translateY(${y}px) rotate(${rotation * progress}deg)`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateUp);
+            } else {
+                // Почати перевертання
                 setTimeout(() => {
-                    topCard.style.transform = 'translateY(0) rotate(0) rotateY(180deg)';
-                    
-                    setTimeout(() => {
-                        topCard.style.transform = 'translateY(0) rotate(0) rotateY(0deg)';
-                    }, 800);
-                }, 800);
-            }, 300);
+                    requestAnimationFrame(animateFlip);
+                }, 50);
+            }
         }
+        
+        // Функція анімації перевертання
+        function animateFlip(timestamp) {
+            startTime = timestamp;
+            requestAnimationFrame(function flipFrame(timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / flipDuration, 1);
+                
+                // Перевертання
+                const rotateY = 180 * progress;
+                topCard.style.transform = `translateY(-80px) rotate(${rotation}deg) rotateY(${rotateY}deg)`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(flipFrame);
+                } else {
+                    // Чекаємо, потім повертаємо картку
+                    setTimeout(() => {
+                        startTime = null;
+                        requestAnimationFrame(animateDown);
+                    }, waitTime);
+                }
+            });
+        }
+        
+        // Функція анімації опускання картки
+        function animateDown(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / returnDuration, 1);
+            
+            // Плавне повернення на місце
+            const y = -80 * (1 - progress);
+            const rotate = rotation * (1 - progress);
+            topCard.style.transform = `translateY(${y}px) rotate(${rotate}deg) rotateY(180deg)`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateDown);
+            } else {
+                // Перевертаємо картку в початкове положення
+                setTimeout(() => {
+                    startTime = null;
+                    requestAnimationFrame(animateFlipBack);
+                }, waitTime);
+            }
+        }
+        
+        // Функція анімації перевертання назад
+        function animateFlipBack(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / flipDuration, 1);
+            
+            // Перевертання назад
+            const rotateY = 180 * (1 - progress);
+            topCard.style.transform = `translateY(0) rotate(0) rotateY(${rotateY}deg)`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateFlipBack);
+            } else {
+                // Перемішуємо карти в колоді після повернення
+                const deckCards = document.querySelectorAll('.deck-card:not(.deck-top)');
+                deckCards.forEach(card => {
+                    const randomRotate = -2 + Math.random() * 4; // Випадкове обертання
+                    const randomY = Math.random() * -3; // Випадкове зміщення по Y
+                    
+                    card.style.transform = `translateY(${randomY}px) rotate(${randomRotate}deg)`;
+                });
+                
+                // Анімація закінчена, повертаємо картку в початковий стан
+                topCard.classList.remove('flipped');
+                
+                // Дозволяємо знову натискати кнопку
+                drawButton.classList.remove('disabled');
+                drawButton.setAttribute('aria-disabled', 'false');
+            }
+        }
+        
+        // Запускаємо анімацію
+        requestAnimationFrame(animateUp);
     });
 }
 
@@ -970,6 +1275,23 @@ function initCardGrid() {
     const gridCards = document.querySelectorAll('.grid-card');
     if (!gridCards.length) return;
     
+    // Додаємо ARIA-атрибути для доступності
+    gridContainer.setAttribute('role', 'region');
+    gridContainer.setAttribute('aria-label', 'Інтерактивна сітка метафоричних карт');
+    
+    gridCards.forEach((card, index) => {
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Метафорична карта ${index + 1}`);
+        card.setAttribute('tabindex', '0');
+    });
+    
+    // Змінні для плавної анімації
+    let targetRotateX = 0;
+    let targetRotateY = 0;
+    let currentRotateX = 0;
+    let currentRotateY = 0;
+    let animationFrameId;
+    
     // Додаємо ефект трансформації при русі миші
     gridContainer.addEventListener('mousemove', function(e) {
         const rect = gridContainer.getBoundingClientRect();
@@ -980,39 +1302,62 @@ function initCardGrid() {
         const mouseY = e.clientY - centerY;
         
         // Розрахунок кута нахилу
-        const angleX = (mouseY / rect.height) * 10; // Максимальний кут 10 градусів
-        const angleY = (mouseX / rect.width) * -10;
+        targetRotateX = (mouseY / rect.height) * 10; // Максимальний кут 10 градусів
+        targetRotateY = (mouseX / rect.width) * -10;
         
-        // Застосовуємо трансформацію до контейнера з використанням requestAnimationFrame
-        requestAnimationFrame(() => {
-            gridContainer.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-            
-            // Застосовуємо трансформацію до карток
-            gridCards.forEach(card => {
-                // Розрахунок позиції картки відносно центру
-                const cardRect = card.getBoundingClientRect();
-                const cardCenterX = cardRect.left + cardRect.width / 2 - rect.left;
-                const cardCenterY = cardRect.top + cardRect.height / 2 - rect.top;
-                
-                // Розрахунок відстані від центру
-                const distanceX = ((cardCenterX / rect.width) - 0.5) * 2;
-                const distanceY = ((cardCenterY / rect.height) - 0.5) * 2;
-                
-                // Розрахунок Z-трансформації
-                const zTransform = Math.abs(distanceX) + Math.abs(distanceY);
-                
-                // Застосовуємо трансформацію
-                card.style.transform = `scale(0.95) translateZ(${30 + zTransform * 30}px)`;
-            });
-        });
+        if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(updateGridAnimation);
+        }
     });
+    
+    // Функція для плавної анімації
+    function updateGridAnimation() {
+        // Плавне наближення до цільового кута
+        currentRotateX += (targetRotateX - currentRotateX) * 0.1;
+        currentRotateY += (targetRotateY - currentRotateY) * 0.1;
+        
+        // Застосовуємо трансформацію до контейнера
+        gridContainer.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+        
+        // Застосовуємо трансформацію до карток
+        gridCards.forEach(card => {
+            // Розрахунок позиції картки відносно центру
+            const cardRect = card.getBoundingClientRect();
+            const containerRect = gridContainer.getBoundingClientRect();
+            const cardCenterX = cardRect.left + cardRect.width / 2 - containerRect.left;
+            const cardCenterY = cardRect.top + cardRect.height / 2 - containerRect.top;
+            
+            // Розрахунок відстані від центру
+            const distanceX = ((cardCenterX / containerRect.width) - 0.5) * 2;
+            const distanceY = ((cardCenterY / containerRect.height) - 0.5) * 2;
+            
+            // Розрахунок Z-трансформації
+            const zTransform = Math.abs(distanceX) + Math.abs(distanceY);
+            
+            // Застосовуємо трансформацію
+            card.style.transform = `scale(0.95) translateZ(${30 + zTransform * 30}px)`;
+        });
+        
+        // Продовжуємо анімацію, якщо є значна різниця
+        if (Math.abs(targetRotateX - currentRotateX) > 0.01 || Math.abs(targetRotateY - currentRotateY) > 0.01) {
+            animationFrameId = requestAnimationFrame(updateGridAnimation);
+        } else {
+            animationFrameId = null;
+        }
+    }
     
     // Повертаємо до початкового стану, коли миша покидає контейнер
     gridContainer.addEventListener('mouseleave', function() {
-        gridContainer.style.transform = 'rotateX(0) rotateY(0)';
+        targetRotateX = 0;
+        targetRotateY = 0;
+        
+        if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(updateGridAnimation);
+        }
         
         gridCards.forEach(card => {
             card.style.transform = 'scale(0.95) translateZ(0)';
+            card.style.zIndex = '';
         });
     });
     
@@ -1027,6 +1372,25 @@ function initCardGrid() {
             this.style.transform = 'scale(0.95) translateZ(0)';
             this.style.zIndex = '';
         });
+        
+        // Додаємо підтримку клавіатури
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                // Анімація для фокусу з клавіатури
+                this.style.transform = 'scale(1.05) translateZ(50px)';
+                this.style.zIndex = '10';
+                
+                // Імітуємо клік
+                this.click();
+                
+                // Повертаємо початковий стан
+                setTimeout(() => {
+                    this.style.transform = 'scale(0.95) translateZ(0)';
+                    this.style.zIndex = '';
+                }, 300);
+            }
+        });
     });
 }
 
@@ -1037,6 +1401,10 @@ function initParallax() {
     const parallaxElements = document.querySelectorAll('[data-parallax-speed]');
     
     if (!parallaxElements.length) return;
+    
+    // Використовуємо requestAnimationFrame для плавної анімації
+    let lastScrollY = window.pageYOffset;
+    let ticking = false;
     
     function updateParallax() {
         const scrollTop = window.pageYOffset;
@@ -1049,11 +1417,14 @@ function initParallax() {
                 element.style.transform = `translateY(${offset}px)`;
             });
         });
+        
+        ticking = false;
     }
     
     // Оптимізуємо обробку прокрутки
-    let ticking = false;
     window.addEventListener('scroll', function() {
+        lastScrollY = window.pageYOffset;
+        
         if (!ticking) {
             window.requestAnimationFrame(function() {
                 updateParallax();
@@ -1075,10 +1446,30 @@ function initContactForm() {
     
     if (!contactForm) return;
     
+    // Додаємо атрибути для доступності
+    contactForm.setAttribute('aria-live', 'polite');
+    
     // Додаємо анімацію для фокусу на полях форми
     const formInputs = contactForm.querySelectorAll('input, textarea');
     
     formInputs.forEach(input => {
+        // Додаємо обгортку для підпису, якщо її ще немає
+        const wrapper = input.parentElement;
+        if (!wrapper.classList.contains('input-wrapper')) {
+            const newWrapper = document.createElement('div');
+            newWrapper.className = 'input-wrapper';
+            input.parentElement.insertBefore(newWrapper, input);
+            newWrapper.appendChild(input);
+            
+            // Створюємо підпис, якщо його ще немає
+            if (!wrapper.querySelector('label')) {
+                const label = document.createElement('label');
+                label.textContent = input.placeholder || input.name;
+                label.setAttribute('for', input.id || input.name);
+                newWrapper.appendChild(label);
+            }
+        }
+        
         input.addEventListener('focus', function() {
             this.parentElement.classList.add('focused');
         });
@@ -1095,6 +1486,31 @@ function initContactForm() {
         }
     });
     
+    // Додаємо повідомлення про валідацію
+    formInputs.forEach(input => {
+        input.addEventListener('invalid', function(e) {
+            e.preventDefault();
+            const errorMessage = input.validationMessage;
+            const errorElement = document.createElement('div');
+            errorElement.className = 'error-message';
+            errorElement.textContent = errorMessage;
+            
+            // Видаляємо старі повідомлення
+            const oldError = input.parentElement.querySelector('.error-message');
+            if (oldError) oldError.remove();
+            
+            input.parentElement.appendChild(errorElement);
+            input.parentElement.classList.add('error');
+        });
+        
+        // Видаляємо повідомлення про помилку при зміні значення
+        input.addEventListener('input', function() {
+            const errorElement = this.parentElement.querySelector('.error-message');
+            if (errorElement) errorElement.remove();
+            this.parentElement.classList.remove('error');
+        });
+    });
+    
     // Обробка відправки форми
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -1108,26 +1524,41 @@ function initContactForm() {
         
         // Перевірка імені
         if (!name || !name.value.trim()) {
-            if (name) name.parentElement.classList.add('error');
+            if (name) {
+                name.parentElement.classList.add('error');
+                name.setCustomValidity('Будь ласка, введіть своє ім\'я');
+                name.reportValidity();
+            }
             isValid = false;
         } else {
+            name.setCustomValidity('');
             name.parentElement.classList.remove('error');
         }
         
         // Перевірка email
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !email.value.trim() || !emailPattern.test(email.value)) {
-            if (email) email.parentElement.classList.add('error');
+            if (email) {
+                email.parentElement.classList.add('error');
+                email.setCustomValidity('Будь ласка, введіть коректну електронну адресу');
+                email.reportValidity();
+            }
             isValid = false;
         } else {
+            email.setCustomValidity('');
             email.parentElement.classList.remove('error');
         }
         
         // Перевірка повідомлення
         if (!message || !message.value.trim()) {
-            if (message) message.parentElement.classList.add('error');
+            if (message) {
+                message.parentElement.classList.add('error');
+                message.setCustomValidity('Будь ласка, введіть повідомлення');
+                message.reportValidity();
+            }
             isValid = false;
         } else {
+            message.setCustomValidity('');
             message.parentElement.classList.remove('error');
         }
         
@@ -1149,6 +1580,7 @@ function initContactForm() {
                 // Показуємо повідомлення про успіх
                 const successMessage = document.createElement('div');
                 successMessage.className = 'success-message';
+                successMessage.setAttribute('role', 'alert');
                 successMessage.textContent = 'Ваше повідомлення успішно відправлено. Ми зв\'яжемося з вами найближчим часом.';
                 
                 contactForm.appendChild(successMessage);
@@ -1173,6 +1605,38 @@ function initContactForm() {
 }
 
 /**
+* Ініціалізація кнопок правових документів у футері
+*/
+function initLegalButtons() {
+    const legalButtons = document.querySelectorAll('.legal-button');
+    
+    if (!legalButtons.length) return;
+    
+    legalButtons.forEach(button => {
+        // Додаємо атрибути для доступності
+        button.setAttribute('role', 'button');
+        button.setAttribute('tabindex', '0');
+        
+        // Додаємо обробники подій
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalId = this.dataset.modal;
+            if (modalId) {
+                openModal(modalId);
+            }
+        });
+        
+        // Додаємо підтримку клавіатури
+        button.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+}
+
+/**
 * Ініціалізація модальних вікон
 */
 function initModals() {
@@ -1180,18 +1644,52 @@ function initModals() {
     const modalCloseButtons = document.querySelectorAll('.modal-close');
     const modals = document.querySelectorAll('.modal');
     
-    if (!modalTriggers.length) return;
+    if (!modalTriggers.length && !modals.length) return;
+    
+    // Додаємо ARIA-атрибути
+    modals.forEach(modal => {
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-hidden', 'true');
+        
+        // Додаємо елемент для фокуса
+        const focusTrap = document.createElement('div');
+        focusTrap.setAttribute('tabindex', '0');
+        focusTrap.style.position = 'absolute';
+        focusTrap.style.opacity = '0';
+        focusTrap.className = 'focus-trap';
+        modal.appendChild(focusTrap.cloneNode(true));
+        modal.appendChild(focusTrap);
+    });
     
     // Функція для відкриття модального вікна
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
         
+        // Зберігаємо елемент, який мав фокус до відкриття модального вікна
+        const activeElement = document.activeElement;
+        modal.dataset.previouslyFocused = activeElement ? activeElement.id : '';
+        
         modal.style.display = 'block';
         setTimeout(() => {
             modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
         }, 10);
         document.body.classList.add('modal-open');
+        
+        // Встановлюємо фокус на перший елемент у модальному вікні
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        } else {
+            // Якщо немає фокусованих елементів, фокусуємося на самому модальному вікні
+            modal.setAttribute('tabindex', '-1');
+            modal.focus();
+        }
+        
+        // Додаємо обробку фокуса (trap focus)
+        modal.addEventListener('keydown', trapFocus);
     }
     
     // Функція для закриття модального вікна
@@ -1199,11 +1697,53 @@ function initModals() {
         if (!modal) return;
         
         modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
         setTimeout(() => {
             modal.style.display = 'none';
         }, 300);
         document.body.classList.remove('modal-open');
+        
+        // Видаляємо обробку фокуса
+        modal.removeEventListener('keydown', trapFocus);
+        
+        // Повертаємо фокус на елемент, який мав фокус до відкриття модального вікна
+        const previouslyFocusedId = modal.dataset.previouslyFocused;
+        if (previouslyFocusedId) {
+            const element = document.getElementById(previouslyFocusedId);
+            if (element) element.focus();
+        }
     }
+    
+    // Функція для утримання фокуса всередині модального вікна
+    function trapFocus(e) {
+        if (e.key !== 'Tab') return;
+        
+        const modal = e.currentTarget;
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey) {
+            if (document.activeElement === firstElement || document.activeElement === modal) {
+                e.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            if (document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+    
+    // Додаємо глобальну функцію для відкриття модального вікна
+    window.openModal = openModal;
+    
+    // Додаємо глобальну функцію для закриття модального вікна
+    window.closeModal = function(modalId) {
+        const modal = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
+        closeModal(modal);
+    };
     
     // Додаємо слухачі для тригерів
     modalTriggers.forEach(trigger => {
@@ -1425,7 +1965,11 @@ function initVanillaTilt() {
         'max-glare': 0.2, // максимальна інтенсивність блиску
         scale: 1.05, // збільшення при наведенні
         transition: true, // плавне перетворення
-        gyroscope: true // використання гіроскопа на мобільних пристроях
+        gyroscope: true, // використання гіроскопа на мобільних пристроях
+        gyroscopeMinAngleX: -15, // мінімальний кут нахилу для гіроскопа по осі X
+        gyroscopeMaxAngleX: 15, // максимальний кут нахилу для гіроскопа по осі X
+        gyroscopeMinAngleY: -15, // мінімальний кут нахилу для гіроскопа по осі Y
+        gyroscopeMaxAngleY: 15 // максимальний кут нахилу для гіроскопа по осі Y
     });
 }
 
@@ -1559,50 +2103,70 @@ window.addEventListener('load', function() {
     }
 });
 
-window.addEventListener('resize', function() {
-    // Оптимізуємо подію resize
-    if (typeof debounce !== 'function') {
-        // Проста реалізація debounce, якщо вона недоступна
-        function debounce(func, wait) {
-            let timeout;
-            return function() {
-                const context = this;
-                const args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(context, args), wait);
-            };
-        }
-        window.debounce = debounce;
+// Оптимізація для обробки зміни розміру вікна
+window.addEventListener('resize', debounce(function() {
+    // Оновлюємо карусель карт
+    if (typeof updateCarouselGlobal === 'function') {
+        updateCarouselGlobal();
     }
     
-    // Використовуємо debounce для обробки resize
-    const debouncedResize = debounce(function() {
-        // Оновлюємо карусель карт
-        if (typeof updateCarouselGlobal === 'function') {
-            updateCarouselGlobal();
-        }
+    // Оновлюємо сітку карт для адаптації до нового розміру екрану
+    const gridContainer = document.querySelector('.cards-grid-container');
+    if (gridContainer) {
+        gridContainer.style.transform = 'rotateX(0) rotateY(0)';
         
-        // Оновлюємо сітку карт для адаптації до нового розміру екрану
-        const gridContainer = document.querySelector('.cards-grid-container');
-        if (gridContainer) {
-            gridContainer.style.transform = 'rotateX(0) rotateY(0)';
-            
-            const gridCards = gridContainer.querySelectorAll('.grid-card');
-            gridCards.forEach(card => {
-                card.style.transform = 'scale(0.95) translateZ(0)';
-            });
-        }
-        
-        // Оновлюємо контейнер падаючих карт
-        const fallingCardsContainer = document.querySelector('.falling-cards-container');
-        if (fallingCardsContainer) {
-            // Повторно ініціалізуємо падаючі карти при зміні розміру
-            initFallingCards();
-        }
-    }, 150); // 150ms delay
+        const gridCards = gridContainer.querySelectorAll('.grid-card');
+        gridCards.forEach(card => {
+            card.style.transform = 'scale(0.95) translateZ(0)';
+        });
+    }
     
-    debouncedResize();
-});
+    // Оновлюємо контейнер падаючих карт
+    const fallingCardsContainer = document.querySelector('.falling-cards-container');
+    if (fallingCardsContainer) {
+        // Повторно ініціалізуємо падаючі карти при зміні розміру
+        initFallingCards();
+    }
+    
+    // Перевіряємо видимість елементів меню
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const desktopNav = document.querySelector('.desktop-nav');
+    
+    if (mobileMenuToggle && desktopNav) {
+        const isMobile = window.innerWidth < 768;
+        
+        if (isMobile) {
+            desktopNav.setAttribute('aria-hidden', 'true');
+            desktopNav.style.display = 'none';
+            mobileMenuToggle.style.display = 'block';
+        } else {
+            desktopNav.removeAttribute('aria-hidden');
+            desktopNav.style.display = 'flex';
+            mobileMenuToggle.style.display = 'none';
+            
+            // Закриваємо мобільне меню, якщо воно відкрите
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if (mobileMenu && mobileMenu.classList.contains('open')) {
+                mobileMenu.classList.remove('open');
+                document.body.classList.remove('menu-open');
+                mobileMenuToggle.classList.remove('active');
+            }
+        }
+    }
+}, 150));
+
+/**
+ * Функція debounce для оптимізації обробки частих подій
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
 
 // Експортуємо функцію updateCarousel у глобальну область видимості
 window.updateCarousel = function() {
