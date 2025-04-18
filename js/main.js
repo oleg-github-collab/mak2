@@ -155,81 +155,60 @@ function initPreloader() {
     const preloader = document.querySelector('.preloader');
     if (!preloader) return;
     
-    // Додаємо резервний таймер на випадок, якщо стандартний івент не спрацює
-    const forceHideTimeout = setTimeout(() => {
-      preloader.classList.add('preloader--hide');
-    }, 5000); // Максимум 5 секунд на завантаження
-    
-    window.addEventListener('load', function() {
-      clearTimeout(forceHideTimeout);
-      preloader.classList.add('preloader--hide');
-    });
-    
-    // Додатковий слухач на випадок, якщо 'load' вже відбувся
-    if (document.readyState === 'complete') {
-      clearTimeout(forceHideTimeout);
-      preloader.classList.add('preloader--hide');
-    }
-  }
-    
-    // Функція для оновлення прогресу
-    function updateProgress() {
-        loadedAssets++;
-        progress = Math.min(Math.ceil((loadedAssets / totalAssets) * 100), 100);
-        progressBar.style.width = progress + '%';
-        counter.textContent = progress + '%';
-        
-        if (progress >= 100) {
-            setTimeout(hidePreloader, 500);
-        }
-    }
-    
-    // Функція для приховування прелоадера після завершення завантаження
-    function hidePreloader() {
-        preloader.classList.add('hidden');
+    // Примусове видалення прелоадера після короткої затримки
+    const removePreloader = () => {
+        // Спочатку приховуємо з анімацією
+        preloader.style.opacity = '0';
+        preloader.style.visibility = 'hidden';
+        document.body.classList.remove('no-scroll');
         document.body.classList.add('loaded');
         
-        // Запускаємо початкові анімації
-        startInitialAnimations();
-    }
-    
-    // Відстежуємо завантаження зображень
-    const images = document.querySelectorAll('img');
-    let imagesLoaded = 0;
-    
-    function imageLoaded() {
-        imagesLoaded++;
-        updateProgress();
-    }
-    
-    // Якщо зображень немає, все одно оновлюємо прогрес
-    if (images.length === 0) {
-        for (let i = 0; i < 5; i++) {
-            setTimeout(updateProgress, i * 200);
-        }
-    } else {
-        // Відстежуємо завантаження кожного зображення
-        images.forEach(img => {
-            if (img.complete) {
-                imageLoaded();
-            } else {
-                img.addEventListener('load', imageLoaded);
-                img.addEventListener('error', imageLoaded); // Враховуємо помилки як завантажені, щоб уникнути зависання
+        // Повністю видаляємо елемент через 1.5 секунди
+        setTimeout(() => {
+            if (preloader && preloader.parentNode) {
+                preloader.parentNode.removeChild(preloader);
             }
-        });
-        
-        // Додаємо додаткові лічильники для інших ресурсів (CSS, JS, шрифти)
-        for (let i = 0; i < 5; i++) {
-            setTimeout(updateProgress, i * 200);
-        }
+            // Запускаємо початкові анімації
+            startInitialAnimations();
+        }, 1500);
+    };
+    
+    // Негайний запуск видалення прелоадера після короткої затримки
+    setTimeout(removePreloader, 2000);
+    
+    // Додаткові обробники для надійності
+    window.addEventListener('load', removePreloader);
+    
+    // Якщо сторінка вже завантажена, видаляємо прелоадер негайно
+    if (document.readyState === 'complete') {
+        removePreloader();
     }
     
-    // Переконуємося, що прелоадер зникне, навіть якщо деякі ресурси не завантажаться
-    setTimeout(() => {
-        if (preloader && !preloader.classList.contains('hidden')) {
-            hidePreloader();
+    // Додаємо CSS для гарантованого приховування
+    const style = document.createElement('style');
+    style.textContent = `
+        .preloader {
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-    }, 5000);
+        
+        body.loaded .preloader,
+        .preloader[style*="visibility: hidden"],
+        .preloader[style*="opacity: 0"] {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+        
+        /* Додаткова страховка - приховати через 8 секунд */
+        @keyframes forceHidePreloader {
+            to { opacity: 0; visibility: hidden; z-index: -1; display: none; }
+        }
+        
+        .preloader {
+            animation: forceHidePreloader 0s 8s forwards !important;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 /**
@@ -731,189 +710,217 @@ function animateFloatingCards() {
 
 /**
  * Покращена анімація падаючих карт з випадковим розташуванням та природною фізикою
+ * Карти падають зверху вниз, під рандомним кутом та повільно зникають під секцією
  */
 function initEnhancedFallingCards() {
+    const fallingCardsSection = document.querySelector('.falling-cards-section');
     const fallingCardsContainer = document.querySelector('.falling-cards-container');
+    
+    // Якщо немає відповідних елементів, виходимо
+    if (!fallingCardsContainer) return;
+    
+    // Додаємо обгортку, якщо її немає
+    const sectionWrapper = fallingCardsSection || fallingCardsContainer.parentElement;
+    if (!sectionWrapper) return;
+    
+    // Очищаємо контейнер
+    while (fallingCardsContainer.firstChild) {
+        fallingCardsContainer.removeChild(fallingCardsContainer.firstChild);
+    }
+    
+    // Конфігурація для карт
+    const totalCards = 20; // Загальна кількість карт
+    const cardTypes = [
+        'card-type-1',
+        'card-type-2',
+        'card-type-3',
+        'card-type-4',
+        'card-type-5'
+    ];
+    
+    // Додаємо стилі для карт
+    const cardsStyle = document.createElement('style');
+    cardsStyle.textContent = `
+        .falling-cards-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .falling-card {
+            position: absolute;
+            top: -150px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            width: 150px;
+            height: 230px;
+            opacity: 0;
+            will-change: transform, opacity;
+            pointer-events: none;
+            z-index: 2;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .falling-card.card-type-1 { background-color: #FDF5E6; }
+        .falling-card.card-type-2 { background-color: #F0FFF0; }
+        .falling-card.card-type-3 { background-color: #FFF0F5; }
+        .falling-card.card-type-4 { background-color: #F5F5DC; }
+        .falling-card.card-type-5 { background-color: #F0F8FF; }
+        
+        .falling-cards-section {
+            position: relative;
+            overflow: hidden;
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        /* Градієнти для зникнення карток на кордонах секції */
+        .cards-fadeout-top,
+        .cards-fadeout-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        .cards-fadeout-top {
+            top: 0;
+            background: linear-gradient(to bottom, white 0%, rgba(255,255,255,0) 100%);
+        }
+        
+        .cards-fadeout-bottom {
+            bottom: 0;
+            background: linear-gradient(to top, white 0%, rgba(255,255,255,0) 100%);
+        }
+    `;
+    document.head.appendChild(cardsStyle);
+    
+    // Додаємо градієнти для плавного зникнення карток на кордонах секції
+    const fadeoutTop = document.createElement('div');
+    fadeoutTop.className = 'cards-fadeout-top';
+    sectionWrapper.appendChild(fadeoutTop);
+    
+    const fadeoutBottom = document.createElement('div');
+    fadeoutBottom.className = 'cards-fadeout-bottom';
+    sectionWrapper.appendChild(fadeoutBottom);
+    
+    // Створюємо карти
+    for (let i = 0; i < totalCards; i++) {
+        const card = document.createElement('div');
+        card.className = `falling-card ${cardTypes[Math.floor(Math.random() * cardTypes.length)]}`;
+        
+        // Додаємо контент карти, якщо потрібно (наприклад, зображення або текст)
+        // card.innerHTML = '<div class="card-inner"></div>';
+        
+        fallingCardsContainer.appendChild(card);
+    }
+    
+    // Отримуємо всі карти
     const fallingCards = document.querySelectorAll('.falling-card');
     
-    if (!fallingCardsContainer || !fallingCards.length) return;
-    
-    // Встановлюємо базові стилі для контейнера
-    fallingCardsContainer.style.position = 'relative';
-    fallingCardsContainer.style.minHeight = '500px';
-    fallingCardsContainer.classList.add('individual-falling');
-    
-    // Параметри фізики падіння
-    const gravity = 0.05;
-    const friction = 0.99;
-    const turbulence = 0.1;
-    const cardsData = [];
-    
-    // Налаштовуємо кожну карту окремо для реалістичного падіння
-    fallingCards.forEach((card, index) => {
-        // Отримуємо параметри з атрибутів або генеруємо випадкові значення
-        const delay = parseFloat(card.dataset.fallingDelay) || (index * 0.5 + Math.random() * 0.5);
-        const rotateStart = parseFloat(card.dataset.rotateStart) || (-15 + Math.random() * 30);
-        const rotateEnd = parseFloat(card.dataset.rotateEnd) || (-10 + Math.random() * 20);
-        let xPosition = parseFloat(card.dataset.xPosition) || (5 + Math.random() * 90);
-        let yPosition = parseFloat(card.dataset.yPosition) || (-20 - Math.random() * 100);
-        
-        // Додаємо клас для рандомного розташування
-        card.classList.add('random-position');
-        
-        // Створюємо об'єкт даних для анімації
-        cardsData.push({
-            element: card,
-            delay: delay * 1000, // переводимо в мілісекунди
-            startTime: null,
-            x: xPosition,
-            y: yPosition,
-            vx: Math.random() * 0.4 - 0.2, // швидкість по X
-            vy: 0, // початкова швидкість по Y
-            rotation: rotateStart,
-            rotationSpeed: (rotateEnd - rotateStart) / 100, // швидкість обертання
-            active: false,
-            finalY: 10 + Math.random() * 70 // кінцева позиція Y
-        });
-        
-        // Налаштовуємо початковий стан карт
-        card.style.position = 'absolute';
-        card.style.left = `${xPosition}%`;
-        card.style.top = `${yPosition}%`;
-        card.style.opacity = '0';
-        card.style.transform = `translateY(0) rotate(${rotateStart}deg)`;
-        card.style.transition = 'opacity 0.5s ease';
-        
-        // Додаємо ефект при наведенні миші
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = `translateY(-20px) rotate(${card.style.getPropertyValue('--rotation') || rotateEnd}deg) scale(1.1)`;
-            card.style.zIndex = '10';
-            card.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
-            card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `translateY(0) rotate(${card.style.getPropertyValue('--rotation') || rotateEnd}deg) scale(1)`;
-            card.style.zIndex = '';
-            card.style.boxShadow = '';
-            card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-        });
-    });
-    
     // Функція для анімації падіння карт
-    let animationFrameId;
-    let lastTime = 0;
-    
-    function animateFallingCards(timestamp) {
-        if (!lastTime) lastTime = timestamp;
-        const deltaTime = timestamp - lastTime;
-        lastTime = timestamp;
+    function animateFallingCards() {
+        // Отримуємо розміри секції для правильного позиціонування
+        const sectionRect = sectionWrapper.getBoundingClientRect();
+        const sectionHeight = sectionRect.height;
         
-        // Перевіряємо, чи потрібно активувати карти
-        cardsData.forEach(cardData => {
-            if (!cardData.active && (!cardData.startTime || timestamp - cardData.startTime > cardData.delay)) {
-                if (!cardData.startTime) cardData.startTime = timestamp;
-                cardData.active = true;
-                cardData.element.style.opacity = '1';
-            }
-        });
-        
-        // Оновлюємо позиції активних карт
-        let allSettled = true;
-        
-        cardsData.forEach(cardData => {
-            if (!cardData.active) {
-                allSettled = false;
-                return;
-            }
+        fallingCards.forEach((card, index) => {
+            // Рандомні початкові положення та швидкості
+            const xPos = 5 + Math.random() * 90; // від 5% до 95% ширини екрану
+            const startDelay = Math.random() * 10; // затримка від 0 до 10 секунд
+            const fallingDuration = 10 + Math.random() * 15; // тривалість падіння від 10 до 25 секунд
+            const rotateStart = -15 + Math.random() * 30; // початковий кут від -15 до 15 градусів
+            const rotateEnd = rotateStart + (-10 + Math.random() * 20); // фінальний кут
+            const fadeInDuration = 1 + Math.random() * 1; // тривалість появи
             
-            // Додаємо гравітацію
-            cardData.vy += gravity;
+            // Застосовуємо стилі з рандомними параметрами
+            card.style.left = `${xPos}%`;
+            card.style.transform = `rotate(${rotateStart}deg)`;
+            card.style.transition = `opacity ${fadeInDuration}s ease, transform ${fallingDuration}s cubic-bezier(0.25, 0.1, 0.25, 1.05) ${startDelay}s`;
             
-            // Додаємо турбулентність (випадкові мікро-рухи)
-            cardData.vx += (Math.random() * 2 - 1) * turbulence;
-            cardData.vy += (Math.random() * 2 - 1) * turbulence * 0.5;
-            
-            // Застосовуємо тертя
-            cardData.vx *= friction;
-            cardData.vy *= friction;
-            
-            // Оновлюємо позицію
-            cardData.x += cardData.vx;
-            cardData.y += cardData.vy;
-            
-            // Оновлюємо обертання
-            cardData.rotation += cardData.rotationSpeed;
-            
-            // Перевіряємо досягнення кінцевої позиції
-            if (cardData.y >= cardData.finalY) {
-                cardData.y = cardData.finalY;
-                cardData.vy *= -0.3; // легкий відскок
+            // Затримка перед появою карти
+            setTimeout(() => {
+                // Показуємо карту
+                card.style.opacity = '1';
                 
-                // Якщо швидкість вертикального руху мала, зупиняємо рух
-                if (Math.abs(cardData.vy) < 0.1) {
-                    cardData.vy = 0;
-                } else {
-                    allSettled = false;
-                }
-            } else {
-                allSettled = false;
-            }
-            
-            // Обмежуємо горизонтальний рух
-            if (cardData.x < 5) cardData.x = 5;
-            if (cardData.x > 95) cardData.x = 95;
-            
-            // Застосовуємо нову позицію та обертання
-            cardData.element.style.left = `${cardData.x}%`;
-            cardData.element.style.top = `${cardData.y}%`;
-            cardData.element.style.setProperty('--rotation', `${cardData.rotation}deg`);
-            cardData.element.style.transform = `rotate(${cardData.rotation}deg)`;
+                // Падіння карти
+                setTimeout(() => {
+                    // Розраховуємо кінцеву позицію (за межами секції)
+                    const finalY = sectionHeight + 300;
+                    card.style.transform = `translateY(${finalY}px) rotate(${rotateEnd}deg)`;
+                    
+                    // Зникнення карти в кінці анімації з затримкою
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        
+                        // Після завершення анімації, повертаємо карту у початкове положення для повторення
+                        setTimeout(() => {
+                            card.style.transition = 'none';
+                            card.style.opacity = '0';
+                            card.style.transform = `rotate(${rotateStart}deg)`;
+                            
+                            // Знову запускаємо анімацію для цієї карти з невеликою затримкою
+                            setTimeout(() => {
+                                card.style.transition = `opacity ${fadeInDuration}s ease, transform ${fallingDuration}s cubic-bezier(0.25, 0.1, 0.25, 1.05)`;
+                                card.style.opacity = '1';
+                                card.style.transform = `translateY(${finalY}px) rotate(${rotateEnd}deg)`;
+                            }, 100);
+                        }, 1000);
+                    }, fallingDuration * 800); // Зникнення карти відбувається протягом останньої частини падіння
+                }, startDelay * 1000);
+            }, index * 150);
         });
-        
-        // Продовжуємо анімацію, якщо не всі карти досягли фінальної позиції
-        if (!allSettled) {
-            animationFrameId = requestAnimationFrame(animateFallingCards);
-        }
     }
     
-    // Запускаємо анімацію
-    function startFallingAnimation() {
-        // Скидаємо всі значення для повторної анімації
-        cardsData.forEach(cardData => {
-            cardData.startTime = null;
-            cardData.active = false;
-            cardData.y = -20 - Math.random() * 100;
-            cardData.vy = 0;
-            cardData.element.style.opacity = '0';
+    // Функція для перезапуску анімації при зміні розміру вікна
+    function restartAnimation() {
+        // Скидаємо стилі всіх карт
+        fallingCards.forEach(card => {
+            card.style.transition = 'none';
+            card.style.opacity = '0';
+            card.style.transform = 'none';
         });
         
-        lastTime = 0;
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = requestAnimationFrame(animateFallingCards);
+        // Через коротку затримку запускаємо анімацію знову
+        setTimeout(animateFallingCards, 100);
     }
     
-    // Додаємо спостерігач, щоб перезапускати анімацію, коли секція з'являється у зоні видимості
+    // Додаємо спостерігач IntersectionObserver для запуску анімації, коли секція у вьюпорті
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    startFallingAnimation();
+                    animateFallingCards();
                 }
             });
         }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -10% 0px'
+            threshold: 0.1
         });
         
-        observer.observe(fallingCardsContainer);
+        observer.observe(sectionWrapper);
+    } else {
+        // Запускаємо анімацію одразу, якщо немає підтримки IntersectionObserver
+        animateFallingCards();
     }
     
-    // Додаємо можливість перезапуску анімації при кліку на контейнер
-    fallingCardsContainer.addEventListener('click', startFallingAnimation);
+    // Перезапускаємо анімацію при зміні розміру вікна
+    window.addEventListener('resize', debounce(restartAnimation, 500));
     
-    // Початковий запуск анімації
-    startFallingAnimation();
+    // Також запускаємо анімацію при завантаженні
+    if (document.readyState === 'complete') {
+        animateFallingCards();
+    } else {
+        window.addEventListener('load', animateFallingCards);
+    }
 }
 
 /**
@@ -1934,7 +1941,7 @@ function initContactForm() {
 */
 function initLegalButtons() {
     // Перевіряємо, чи існує футер
-    const footer = document.querySelector('footer');
+    let footer = document.querySelector('footer');
     if (!footer) {
         console.warn('Елемент footer не знайдено. Створюємо його.');
         const newFooter = document.createElement('footer');
