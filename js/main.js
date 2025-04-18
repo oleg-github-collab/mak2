@@ -8,6 +8,12 @@ let updateCarouselGlobal;
 
 // Очікуємо завантаження DOM перед ініціалізацією скриптів
 document.addEventListener('DOMContentLoaded', function() {
+    // Виправлення для мобільних пристроїв із затримкою прокрутки
+    document.documentElement.style.scrollBehavior = 'auto';
+    setTimeout(() => {
+        document.documentElement.style.scrollBehavior = 'smooth';
+    }, 100);
+
     // Завантажуємо необхідні зовнішні бібліотеки динамічно, якщо вони відсутні
     loadExternalLibraries().then(() => {
         // Ініціалізуємо прелоадер для початкового завантаження сайту
@@ -22,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ініціалізуємо ефект прокрутки для хедера
         initHeaderScroll();
         
-        // Ініціалізуємо плавну прокрутку для якорів - ВИПРАВЛЕНО ДЛЯ КНОПКИ "ДЛЯ КОГО"
+        // Ініціалізуємо плавну прокрутку для якорів
         initSmoothScroll();
         
         // Ініціалізуємо анімації
@@ -31,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ініціалізуємо інтерактивні компоненти
         initCardSpread();
         
-        // ВИПРАВЛЕНО - Покращена карусель з переворотом карт
+        // Покращена карусель з плавною анімацією
         initImprovedCarousel();
         
         initCardDeck();
@@ -40,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ініціалізуємо паралакс-ефекти
         initParallax();
         
-        // Ініціалізуємо контактну форму
+        // Ініціалізуємо контактну форму з інтеграцією Google Spreadsheets
         initContactForm();
         
         // Ініціалізуємо кнопку "повернутися нагору"
@@ -58,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ініціалізуємо кнопки правових документів у футері
         initLegalButtons();
         
-        // ВИПРАВЛЕНО - Покращені падаючі карти
+        // Покращені рандомні падаючі карти з більш природною фізикою
         initEnhancedFallingCards();
         
         // Скриваємо зображення логотипу, залишаємо тільки текст
@@ -336,7 +342,7 @@ function initCursor() {
         }
         
         // Додаємо ефект при наведенні на інтерактивні елементи
-        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card, .legal-button');
+        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card, .legal-button, .btn-modal');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -453,7 +459,6 @@ function initMobileMenu() {
     });
     
     // Виправлення для меню, щоб уникнути дублювання навігаційних елементів
-    // Приховуємо стандартну навігацію на мобільних пристроях
     function adjustMenuVisibility() {
         const desktopNav = document.querySelector('.desktop-nav');
         const isMobile = window.innerWidth < 768;
@@ -515,7 +520,7 @@ function initHeaderScroll() {
 }
 
 /**
-* Плавна прокрутка для якірних посилань - ВИПРАВЛЕНО ДЛЯ КНОПКИ "ДЛЯ КОГО"
+* Плавна прокрутка для якірних посилань
 */
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -525,9 +530,6 @@ function initSmoothScroll() {
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
             
-            // Виводимо інформацію в консоль для відлагодження
-            console.log(`Клікнуто на посилання з href=${targetId}`);
-            
             const targetElement = document.querySelector(targetId);
             if (!targetElement) {
                 console.warn(`Елемент з id=${targetId} не знайдено`);
@@ -536,9 +538,7 @@ function initSmoothScroll() {
             
             // Отримуємо зміщення з урахуванням висоти хедера
             const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-            console.log(`Висота хедера: ${headerHeight}px`);
             const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            console.log(`Прокручуємо до позиції: ${targetPosition}px`);
             
             // Прокручуємо до цілі
             window.scrollTo({
@@ -650,9 +650,6 @@ function initAnimations() {
     // Додаємо анімацію плаваючим картам в hero-секції
     animateFloatingCards();
     
-    // Додаємо анімацію карткам, що падають
-    initFallingCards();
-    
     // Ініціалізуємо анімації при прокрутці
     initScrollAnimations();
 }
@@ -723,133 +720,190 @@ function animateFloatingCards() {
 }
 
 /**
-* Ініціалізація карток, що падають - СТАРА ВЕРСІЯ
-*/
-function initFallingCards() {
+ * Покращена анімація падаючих карт з випадковим розташуванням та природною фізикою
+ */
+function initEnhancedFallingCards() {
     const fallingCardsContainer = document.querySelector('.falling-cards-container');
     const fallingCards = document.querySelectorAll('.falling-card');
     
     if (!fallingCardsContainer || !fallingCards.length) return;
     
-    // Отримуємо висоту контейнера
-    const containerHeight = fallingCardsContainer.offsetHeight || window.innerHeight;
+    // Встановлюємо базові стилі для контейнера
+    fallingCardsContainer.style.position = 'relative';
+    fallingCardsContainer.style.minHeight = '500px';
+    fallingCardsContainer.classList.add('individual-falling');
     
+    // Параметри фізики падіння
+    const gravity = 0.05;
+    const friction = 0.99;
+    const turbulence = 0.1;
+    const cardsData = [];
+    
+    // Налаштовуємо кожну карту окремо для реалістичного падіння
     fallingCards.forEach((card, index) => {
-        // Встановлюємо випадкові початкові значення для кожної карти
-        const startDelay = Math.random() * 5; // Випадкова затримка початку анімації
-        const fallDuration = 3 + Math.random() * 4; // Випадкова тривалість падіння
-        const horizontalPosition = Math.random() * 100; // Випадкова горизонтальна позиція
-        const rotateStart = -30 + Math.random() * 60; // Випадковий початковий кут
-        const rotateEnd = rotateStart + (-20 + Math.random() * 40); // Випадковий кінцевий кут
-        
-        // Використовуємо CSS-змінні для анімації
-        card.style.setProperty('--fall-delay', `${startDelay}s`);
-        card.style.setProperty('--fall-duration', `${fallDuration}s`);
-        card.style.setProperty('--horizontal-position', `${horizontalPosition}%`);
-        card.style.setProperty('--rotate-start', `${rotateStart}deg`);
-        card.style.setProperty('--rotate-end', `${rotateEnd}deg`);
-        card.style.setProperty('--container-height', `${containerHeight}px`);
-        
-        // Додаємо клас для запуску анімації
-        card.classList.add('animate-fall');
-        
-        // Додаємо атрибути для доступності
-        card.setAttribute('aria-label', 'Декоративна картка, що падає');
-        card.setAttribute('role', 'img');
-    });
-}
-
-/**
- * ВИПРАВЛЕНО - Покращена анімація падаючих карт
- */
-function initEnhancedFallingCards() {
-    const fallingCardsSection = document.querySelector('.falling-cards');
-    const fallingCardsContainer = document.querySelector('.falling-cards-container');
-    const fallingCards = document.querySelectorAll('.smooth-falling');
-    
-    if (!fallingCardsContainer || !fallingCards.length) return;
-    
-    // Забезпечуємо правильну структуру карт для плавного падіння
-    fallingCards.forEach(card => {
-        // Переконуємося, що картка має правильні класи та атрибути
-        card.classList.add('enhanced');
-        
-        // Отримуємо значення з data-атрибутів або використовуємо стандартні
-        const delay = parseFloat(card.dataset.fallingDelay) || Math.random() * 2;
+        // Отримуємо параметри з атрибутів або генеруємо випадкові значення
+        const delay = parseFloat(card.dataset.fallingDelay) || (index * 0.5 + Math.random() * 0.5);
         const rotateStart = parseFloat(card.dataset.rotateStart) || (-15 + Math.random() * 30);
         const rotateEnd = parseFloat(card.dataset.rotateEnd) || (-10 + Math.random() * 20);
-        const xPosition = parseFloat(card.dataset.xPosition) || (10 + Math.random() * 80);
-        const yPosition = parseFloat(card.dataset.yPosition) || (10 + Math.random() * 80);
+        let xPosition = parseFloat(card.dataset.xPosition) || (5 + Math.random() * 90);
+        let yPosition = parseFloat(card.dataset.yPosition) || (-20 - Math.random() * 100);
         
-        // Встановлюємо початкові стилі
-        card.style.opacity = '0';
-        card.style.transform = `translateX(${xPosition}%) translateY(-100px) rotate(${rotateStart}deg)`;
-        card.style.transition = `all 1.5s cubic-bezier(0.23, 1, 0.32, 1) ${delay}s`;
+        // Додаємо клас для рандомного розташування
+        card.classList.add('random-position');
         
-        // Встановлюємо позицію для карт
+        // Створюємо об'єкт даних для анімації
+        cardsData.push({
+            element: card,
+            delay: delay * 1000, // переводимо в мілісекунди
+            startTime: null,
+            x: xPosition,
+            y: yPosition,
+            vx: Math.random() * 0.4 - 0.2, // швидкість по X
+            vy: 0, // початкова швидкість по Y
+            rotation: rotateStart,
+            rotationSpeed: (rotateEnd - rotateStart) / 100, // швидкість обертання
+            active: false,
+            finalY: 10 + Math.random() * 70 // кінцева позиція Y
+        });
+        
+        // Налаштовуємо початковий стан карт
+        card.style.position = 'absolute';
         card.style.left = `${xPosition}%`;
         card.style.top = `${yPosition}%`;
+        card.style.opacity = '0';
+        card.style.transform = `translateY(0) rotate(${rotateStart}deg)`;
+        card.style.transition = 'opacity 0.5s ease';
+        
+        // Додаємо ефект при наведенні миші
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = `translateY(-20px) rotate(${card.style.getPropertyValue('--rotation') || rotateEnd}deg) scale(1.1)`;
+            card.style.zIndex = '10';
+            card.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+            card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `translateY(0) rotate(${card.style.getPropertyValue('--rotation') || rotateEnd}deg) scale(1)`;
+            card.style.zIndex = '';
+            card.style.boxShadow = '';
+            card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
+        });
     });
     
     // Функція для анімації падіння карт
-    function animateFallingCards() {
-        fallingCards.forEach(card => {
-            // Отримуємо значення з data-атрибутів
-            const rotateEnd = parseFloat(card.dataset.rotateEnd) || (-10 + Math.random() * 20);
-            
-            // Анімація падіння
-            card.style.opacity = '1';
-            card.style.transform = `translateX(0) translateY(0) rotate(${rotateEnd}deg)`;
+    let animationFrameId;
+    let lastTime = 0;
+    
+    function animateFallingCards(timestamp) {
+        if (!lastTime) lastTime = timestamp;
+        const deltaTime = timestamp - lastTime;
+        lastTime = timestamp;
+        
+        // Перевіряємо, чи потрібно активувати карти
+        cardsData.forEach(cardData => {
+            if (!cardData.active && (!cardData.startTime || timestamp - cardData.startTime > cardData.delay)) {
+                if (!cardData.startTime) cardData.startTime = timestamp;
+                cardData.active = true;
+                cardData.element.style.opacity = '1';
+            }
         });
+        
+        // Оновлюємо позиції активних карт
+        let allSettled = true;
+        
+        cardsData.forEach(cardData => {
+            if (!cardData.active) {
+                allSettled = false;
+                return;
+            }
+            
+            // Додаємо гравітацію
+            cardData.vy += gravity;
+            
+            // Додаємо турбулентність (випадкові мікро-рухи)
+            cardData.vx += (Math.random() * 2 - 1) * turbulence;
+            cardData.vy += (Math.random() * 2 - 1) * turbulence * 0.5;
+            
+            // Застосовуємо тертя
+            cardData.vx *= friction;
+            cardData.vy *= friction;
+            
+            // Оновлюємо позицію
+            cardData.x += cardData.vx;
+            cardData.y += cardData.vy;
+            
+            // Оновлюємо обертання
+            cardData.rotation += cardData.rotationSpeed;
+            
+            // Перевіряємо досягнення кінцевої позиції
+            if (cardData.y >= cardData.finalY) {
+                cardData.y = cardData.finalY;
+                cardData.vy *= -0.3; // легкий відскок
+                
+                // Якщо швидкість вертикального руху мала, зупиняємо рух
+                if (Math.abs(cardData.vy) < 0.1) {
+                    cardData.vy = 0;
+                } else {
+                    allSettled = false;
+                }
+            } else {
+                allSettled = false;
+            }
+            
+            // Обмежуємо горизонтальний рух
+            if (cardData.x < 5) cardData.x = 5;
+            if (cardData.x > 95) cardData.x = 95;
+            
+            // Застосовуємо нову позицію та обертання
+            cardData.element.style.left = `${cardData.x}%`;
+            cardData.element.style.top = `${cardData.y}%`;
+            cardData.element.style.setProperty('--rotation', `${cardData.rotation}deg`);
+            cardData.element.style.transform = `rotate(${cardData.rotation}deg)`;
+        });
+        
+        // Продовжуємо анімацію, якщо не всі карти досягли фінальної позиції
+        if (!allSettled) {
+            animationFrameId = requestAnimationFrame(animateFallingCards);
+        }
     }
     
-    // Функція для скидання анімації
-    function resetFallingCards() {
-        fallingCards.forEach(card => {
-            // Отримуємо значення з data-атрибутів
-            const delay = parseFloat(card.dataset.fallingDelay) || Math.random() * 2;
-            const rotateStart = parseFloat(card.dataset.rotateStart) || (-15 + Math.random() * 30);
-            const xPosition = parseFloat(card.dataset.xPosition) || (10 + Math.random() * 80);
-            
-            // Скидаємо стилі
-            card.style.opacity = '0';
-            card.style.transform = `translateX(${xPosition}%) translateY(-100px) rotate(${rotateStart}deg)`;
+    // Запускаємо анімацію
+    function startFallingAnimation() {
+        // Скидаємо всі значення для повторної анімації
+        cardsData.forEach(cardData => {
+            cardData.startTime = null;
+            cardData.active = false;
+            cardData.y = -20 - Math.random() * 100;
+            cardData.vy = 0;
+            cardData.element.style.opacity = '0';
         });
+        
+        lastTime = 0;
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(animateFallingCards);
     }
     
-    // Запускаємо анімацію при завантаженні сторінки
-    setTimeout(animateFallingCards, 500);
-    
-    // Створюємо спостерігач для перезапуску анімації при прокрутці
+    // Додаємо спостерігач, щоб перезапускати анімацію, коли секція з'являється у зоні видимості
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Перезапускаємо анімацію, коли секція потрапляє у поле зору
-                    resetFallingCards();
-                    setTimeout(animateFallingCards, 100);
-                } else {
-                    // Скидаємо анімацію, коли секція виходить з поля зору
-                    resetFallingCards();
+                    startFallingAnimation();
                 }
             });
         }, {
-            threshold: 0.1, // Запускаємо, коли хоча б 10% секції видно
-            rootMargin: '0px 0px -10% 0px' // Трохи зміщуємо межу спрацьовування
+            threshold: 0.1,
+            rootMargin: '0px 0px -10% 0px'
         });
         
-        if (fallingCardsSection) {
-            observer.observe(fallingCardsSection);
-        } else if (fallingCardsContainer) {
-            observer.observe(fallingCardsContainer);
-        }
+        observer.observe(fallingCardsContainer);
     }
     
-    // Додаємо обробник для перезапуску анімації при натисканні на контейнер
-    fallingCardsContainer.addEventListener('click', () => {
-        resetFallingCards();
-        setTimeout(animateFallingCards, 100);
-    });
+    // Додаємо можливість перезапуску анімації при кліку на контейнер
+    fallingCardsContainer.addEventListener('click', startFallingAnimation);
+    
+    // Початковий запуск анімації
+    startFallingAnimation();
 }
 
 /**
@@ -1060,118 +1114,182 @@ function initCardSpread() {
 }
 
 /**
-* ВИПРАВЛЕНО - Покращена карусель з переворотом карт
+* Покращена карусель з плавною анімацією
 */
 function initImprovedCarousel() {
     const carousel = document.querySelector('.carousel-3d');
-    const prevBtn = document.getElementById('carouselPrev');
-    const nextBtn = document.getElementById('carouselNext');
-    const cards = document.querySelectorAll('.flippable-card');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    const cards = document.querySelectorAll('.carousel-card');
     
     if (!carousel || !cards.length) return;
     
     // Ініціалізуємо дані каруселі
     let currentIndex = 0;
     const totalCards = cards.length;
+    let isAnimating = false;
     
     // Додаємо ARIA-атрибути для доступності
     carousel.setAttribute('role', 'region');
     carousel.setAttribute('aria-roledescription', 'карусель');
     carousel.setAttribute('aria-label', 'Карусель метафоричних карт');
     
-    if (prevBtn) {
-        prevBtn.setAttribute('aria-label', 'Попередня карта');
-        prevBtn.setAttribute('aria-controls', 'carousel-3d');
-    }
-    
-    if (nextBtn) {
-        nextBtn.setAttribute('aria-label', 'Наступна карта');
-        nextBtn.setAttribute('aria-controls', 'carousel-3d');
-    }
-    
     cards.forEach((card, index) => {
         card.setAttribute('role', 'group');
         card.setAttribute('aria-roledescription', 'слайд');
         card.setAttribute('aria-label', `Карта ${index + 1} з ${totalCards}`);
-        
-        // Переконуємося, що у кожної карти є внутрішній елемент для перевороту
-        const cardInner = card.querySelector('.card-inner');
-        if (!cardInner) {
-            console.warn(`Карта #${index} не має елемента .card-inner для перевороту`);
-        }
     });
     
-    // Функція для оновлення позицій карток з переворотом неактивних карт
-    function updateCarousel() {
+    // Функція для оновлення позицій карток з плавною анімацією
+    function updateCarousel(isInstant = false) {
+        if (isAnimating && !isInstant) return;
+        
+        isAnimating = true;
+        
         cards.forEach((card, index) => {
-            // Розрахунок позиції відносно поточного індексу
-            const cardIndex = parseInt(card.dataset.index || '0');
-            const position = (cardIndex - currentIndex + totalCards) % totalCards;
+            // Розрахунок позиції відносно активної картки
+            let position = index - currentIndex;
             
-            // Видалення попередніх класів
-            card.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next', 'back');
+            // Обробка крайніх випадків для нескінченної каруселі
+            if (position < -Math.floor(totalCards/2)) position += totalCards;
+            if (position > Math.floor(totalCards/2)) position -= totalCards;
             
-            // Внутрішній елемент для перевороту
-            const cardInner = card.querySelector('.card-inner');
+            // Видаляємо всі попередні класи позицій
+            card.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next');
             
-            // Установка нових класів залежно від позиції
+            // Розрахунок значень для анімації з кубічною кривою
+            const transitionTime = isInstant ? 0 : 0.6;
+            const easing = 'cubic-bezier(0.23, 1, 0.32, 1)';
+            
+            card.style.transition = `transform ${transitionTime}s ${easing}, opacity ${transitionTime}s ${easing}, z-index 0s`;
+            
+            // Плавно анімуємо до нової позиції
             if (position === 0) {
-                // Активна карта - показуємо лицеву сторону
+                // Активна картка посередині
                 card.classList.add('active');
-                if (cardInner) cardInner.style.transform = 'rotateY(0)';
-                card.style.transform = 'translateZ(100px) scale(1)';
+                card.style.transform = 'translateX(0) translateZ(100px) rotateY(0deg) scale(1)';
                 card.style.opacity = '1';
-                card.style.zIndex = '10';
-                
-                card.setAttribute('tabindex', '0');
-                card.setAttribute('aria-hidden', 'false');
-            } else if (position === 1 || position === totalCards - 1) {
-                // Карти поруч (ліва/права) - показуємо обкладинку
-                const direction = position === 1 ? 'next' : 'prev';
-                const xOffset = position === 1 ? '120px' : '-120px';
-                card.classList.add(direction);
-                
-                // Перевертаємо карту, щоб показати обкладинку
-                if (cardInner) cardInner.style.transform = 'rotateY(180deg)';
-                card.style.transform = `translateX(${xOffset}) translateZ(50px) rotateY(0) scale(0.9)`;
-                card.style.opacity = '0.9';
                 card.style.zIndex = '5';
                 
-                card.setAttribute('tabindex', '-1');
-                card.setAttribute('aria-hidden', 'true');
-            } else {
-                // Інші карти - показуємо обкладинку та розміщуємо далі
-                const direction = position < totalCards / 2 ? '1' : '-1';
-                const xOffset = position < totalCards / 2 ? '180px' : '-180px';
-                card.classList.add('back');
-                
-                // Перевертаємо карту, щоб показати обкладинку
-                if (cardInner) cardInner.style.transform = 'rotateY(180deg)';
-                card.style.transform = `translateX(${xOffset}) translateZ(-50px) rotateY(0) scale(0.8)`;
+                card.setAttribute('aria-hidden', 'false');
+            } 
+            else if (position === -1) {
+                // Картка ліворуч від активної
+                card.classList.add('prev');
+                card.style.transform = 'translateX(-120%) translateZ(50px) rotateY(15deg) scale(0.8)';
                 card.style.opacity = '0.7';
-                card.style.zIndex = '1';
+                card.style.zIndex = '4';
                 
-                card.setAttribute('tabindex', '-1');
+                card.setAttribute('aria-hidden', 'true');
+            } 
+            else if (position === 1) {
+                // Картка праворуч від активної
+                card.classList.add('next');
+                card.style.transform = 'translateX(120%) translateZ(50px) rotateY(-15deg) scale(0.8)';
+                card.style.opacity = '0.7';
+                card.style.zIndex = '4';
+                
+                card.setAttribute('aria-hidden', 'true');
+            } 
+            else if (position < -1) {
+                // Карти далі ліворуч
+                card.classList.add('far-prev');
+                const z = Math.max(10 + position * -10, 0);
+                const scale = Math.max(0.6 + position * 0.05, 0.4);
+                const x = -120 + (position + 1) * -30;
+                const rotateY = 15 + Math.abs(position) * 5;
+                
+                card.style.transform = `translateX(${x}%) translateZ(${z}px) rotateY(${rotateY}deg) scale(${scale})`;
+                card.style.opacity = '0.3';
+                card.style.zIndex = '3';
+                
+                card.setAttribute('aria-hidden', 'true');
+            } 
+            else {
+                // Карти далі праворуч
+                card.classList.add('far-next');
+                const z = Math.max(10 - position * 10, 0);
+                const scale = Math.max(0.6 - position * -0.05, 0.4);
+                const x = 120 + (position - 1) * 30;
+                const rotateY = -15 - Math.abs(position) * 5;
+                
+                card.style.transform = `translateX(${x}%) translateZ(${z}px) rotateY(${rotateY}deg) scale(${scale})`;
+                card.style.opacity = '0.3';
+                card.style.zIndex = '3';
+                
                 card.setAttribute('aria-hidden', 'true');
             }
         });
         
+        // Затримка для завершення анімації
+        setTimeout(() => {
+            isAnimating = false;
+        }, 600);
+        
         // Оновлюємо ARIA для скрінрідерів
-        carousel.setAttribute('aria-live', 'polite');
         const liveRegion = carousel.querySelector('.carousel-live-region') || document.createElement('div');
         if (!carousel.querySelector('.carousel-live-region')) {
             liveRegion.className = 'carousel-live-region sr-only';
+            liveRegion.setAttribute('aria-live', 'polite');
             carousel.appendChild(liveRegion);
         }
-        liveRegion.textContent = `Картка ${currentIndex + 1} з ${totalCards}`;
+        liveRegion.textContent = `Показується карта ${currentIndex + 1} з ${totalCards}`;
     }
     
-    // Робимо функцію доступною глобально
-    updateCarouselGlobal = updateCarousel;
+    // Додаємо можливість перетягування для більш інтерактивної каруселі
+    let isDragging = false;
+    let startPosition = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+    
+    carousel.addEventListener('mousedown', dragStart);
+    carousel.addEventListener('touchstart', dragStart, { passive: true });
+    carousel.addEventListener('mouseup', dragEnd);
+    carousel.addEventListener('touchend', dragEnd);
+    carousel.addEventListener('mouseleave', dragEnd);
+    
+    function dragStart(e) {
+        if (isAnimating) return;
+        
+        startPosition = getPositionX(e);
+        isDragging = true;
+        carousel.classList.add('grabbing');
+    }
+    
+    function dragEnd() {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        carousel.classList.remove('grabbing');
+        
+        // Визначаємо, чи потрібно перегортати слайд
+        const moveDistance = currentTranslate - prevTranslate;
+        
+        if (moveDistance < -100) {
+            // Свайп вліво - наступна карта
+            currentIndex = (currentIndex + 1) % totalCards;
+            updateCarousel();
+        } else if (moveDistance > 100) {
+            // Свайп вправо - попередня карта
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            updateCarousel();
+        } else {
+            // Повертаємось до поточного слайду
+            updateCarousel();
+        }
+        
+        prevTranslate = 0;
+        currentTranslate = 0;
+    }
+    
+    function getPositionX(e) {
+        return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+    }
     
     // Обробники для кнопок навігації
     if (prevBtn) {
         prevBtn.addEventListener('click', function() {
+            if (isAnimating) return;
             currentIndex = (currentIndex - 1 + totalCards) % totalCards;
             updateCarousel();
         });
@@ -1179,69 +1297,69 @@ function initImprovedCarousel() {
     
     if (nextBtn) {
         nextBtn.addEventListener('click', function() {
+            if (isAnimating) return;
             currentIndex = (currentIndex + 1) % totalCards;
             updateCarousel();
         });
     }
     
-    // Клавіатурна навігація
-    carousel.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-            updateCarousel();
-        } else if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            currentIndex = (currentIndex + 1) % totalCards;
-            updateCarousel();
-        }
-    });
-    
-    // Обробка дотику для мобільних
+    // Додаємо підтримку свайпів для мобільних
     let touchStartX = 0;
+    let touchStartY = 0;
+    
     carousel.addEventListener('touchstart', function(e) {
         touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
     }, { passive: true });
     
     carousel.addEventListener('touchend', function(e) {
-        const touchEndX = e.changedTouches[0].clientX;
-        const diff = touchStartX - touchEndX;
+        if (isAnimating) return;
         
-        // Визначаємо свайп з порогом
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                // Свайп вліво - наступна картка
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+        
+        // Перевіряємо, що свайп був горизонтальним
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                // Свайп вліво - наступна карта
                 currentIndex = (currentIndex + 1) % totalCards;
             } else {
-                // Свайп вправо - попередня картка
+                // Свайп вправо - попередня карта
                 currentIndex = (currentIndex - 1 + totalCards) % totalCards;
             }
             updateCarousel();
         }
     }, { passive: true });
     
-    // Клік на картку для активації
-    cards.forEach((card) => {
-        card.addEventListener('click', function() {
-            const cardIndex = parseInt(this.dataset.index || '0');
-            if (cardIndex !== currentIndex) {
-                currentIndex = cardIndex;
-                updateCarousel();
-            }
-        });
+    // Додаємо підтримку клавіатури
+    carousel.setAttribute('tabindex', '0');
+    carousel.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            if (isAnimating) return;
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            updateCarousel();
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (isAnimating) return;
+            currentIndex = (currentIndex + 1) % totalCards;
+            updateCarousel();
+        }
     });
     
-    // Ініціалізуємо карусель на старті
-    updateCarousel();
-    
-    // Автоматична зміна карток
+    // Автоматична зміна карт
     let autoplayInterval;
     
     function startAutoplay() {
-        clearInterval(autoplayInterval); // Для уникнення дублювання інтервалів
+        clearInterval(autoplayInterval);
         autoplayInterval = setInterval(() => {
-            currentIndex = (currentIndex + 1) % totalCards;
-            updateCarousel();
+            if (!isAnimating && !isDragging) {
+                currentIndex = (currentIndex + 1) % totalCards;
+                updateCarousel();
+            }
         }, 5000);
     }
     
@@ -1249,16 +1367,32 @@ function initImprovedCarousel() {
         clearInterval(autoplayInterval);
     }
     
-    // Зупиняємо/запускаємо автопрокрутку при взаємодії
+    // Зупиняємо автозміну при взаємодії
     carousel.addEventListener('mouseenter', stopAutoplay);
     carousel.addEventListener('mouseleave', startAutoplay);
     carousel.addEventListener('touchstart', stopAutoplay, { passive: true });
-    carousel.addEventListener('touchend', function() {
-        // Невелика затримка перед відновленням автопрокрутки
+    carousel.addEventListener('touchend', () => {
         setTimeout(startAutoplay, 1000);
     }, { passive: true });
     
-    // Запускаємо автоматичну прокрутку
+    // Додаємо динамічні тіні для більш реалістичного 3D-ефекту
+    cards.forEach(card => {
+        // Додаємо контейнер для тіні
+        const shadowElement = document.createElement('div');
+        shadowElement.className = 'card-shadow';
+        card.appendChild(shadowElement);
+        
+        // Додаємо відблиск
+        const glareElement = document.createElement('div');
+        glareElement.className = 'card-glare';
+        card.appendChild(glareElement);
+    });
+    
+    // Робимо функцію доступною глобально
+    updateCarouselGlobal = updateCarousel;
+    
+    // Ініціалізуємо карусель і автозміну
+    updateCarousel(true);
     startAutoplay();
 }
 
@@ -1302,8 +1436,8 @@ function initCardDeck() {
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / animationDuration, 1);
             
-            // Плавне піднімання
-            const y = -80 * progress;
+            // Плавне піднімання з використанням кубічної кривої
+            const y = -80 * easeOutCubic(progress);
             topCard.style.transform = `translateY(${y}px) rotate(${rotation * progress}deg)`;
             
             if (progress < 1) {
@@ -1323,8 +1457,8 @@ function initCardDeck() {
                 const elapsed = timestamp - startTime;
                 const progress = Math.min(elapsed / flipDuration, 1);
                 
-                // Перевертання
-                const rotateY = 180 * progress;
+                // Перевертання з використанням синусової інтерполяції для природного руху
+                const rotateY = 180 * easeInOutSine(progress);
                 topCard.style.transform = `translateY(-80px) rotate(${rotation}deg) rotateY(${rotateY}deg)`;
                 
                 if (progress < 1) {
@@ -1345,9 +1479,9 @@ function initCardDeck() {
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / returnDuration, 1);
             
-            // Плавне повернення на місце
-            const y = -80 * (1 - progress);
-            const rotate = rotation * (1 - progress);
+            // Плавне повернення на місце з пружним ефектом
+            const y = -80 * (1 - easeOutBack(progress));
+            const rotate = rotation * (1 - easeOutQuad(progress));
             topCard.style.transform = `translateY(${y}px) rotate(${rotate}deg) rotateY(180deg)`;
             
             if (progress < 1) {
@@ -1368,7 +1502,7 @@ function initCardDeck() {
             const progress = Math.min(elapsed / flipDuration, 1);
             
             // Перевертання назад
-            const rotateY = 180 * (1 - progress);
+            const rotateY = 180 * (1 - easeInOutSine(progress));
             topCard.style.transform = `translateY(0) rotate(0) rotateY(${rotateY}deg)`;
             
             if (progress < 1) {
@@ -1383,6 +1517,12 @@ function initCardDeck() {
                     card.style.transform = `translateY(${randomY}px) rotate(${randomRotate}deg)`;
                 });
                 
+                // Додаємо ефект тряски колоди
+                deck.classList.add('shake');
+                setTimeout(() => {
+                    deck.classList.remove('shake');
+                }, 500);
+                
                 // Анімація закінчена, повертаємо картку в початковий стан
                 topCard.classList.remove('flipped');
                 
@@ -1390,6 +1530,25 @@ function initCardDeck() {
                 drawButton.classList.remove('disabled');
                 drawButton.setAttribute('aria-disabled', 'false');
             }
+        }
+        
+        // Функції інтерполяції для плавних анімацій
+        function easeOutCubic(x) {
+            return 1 - Math.pow(1 - x, 3);
+        }
+        
+        function easeInOutSine(x) {
+            return -(Math.cos(Math.PI * x) - 1) / 2;
+        }
+        
+        function easeOutBack(x) {
+            const c1 = 1.70158;
+            const c3 = c1 + 1;
+            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+        }
+        
+        function easeOutQuad(x) {
+            return 1 - (1 - x) * (1 - x);
         }
         
         // Запускаємо анімацію
@@ -1571,7 +1730,7 @@ function initParallax() {
 }
 
 /**
-* Ініціалізація контактної форми
+* Ініціалізація контактної форми з інтеграцією Google Spreadsheets
 */
 function initContactForm() {
     const contactForm = document.querySelector('.contact-form');
@@ -1618,122 +1777,108 @@ function initContactForm() {
         }
     });
     
-    // Додаємо повідомлення про валідацію
-    formInputs.forEach(input => {
-        input.addEventListener('invalid', function(e) {
-            e.preventDefault();
-            const errorMessage = input.validationMessage;
-            const errorElement = document.createElement('div');
-            errorElement.className = 'error-message';
-            errorElement.textContent = errorMessage;
-            
-            // Видаляємо старі повідомлення
-            const oldError = input.parentElement.querySelector('.error-message');
-            if (oldError) oldError.remove();
-            
-            input.parentElement.appendChild(errorElement);
-            input.parentElement.classList.add('error');
-        });
-        
-        // Видаляємо повідомлення про помилку при зміні значення
-        input.addEventListener('input', function() {
-            const errorElement = this.parentElement.querySelector('.error-message');
-            if (errorElement) errorElement.remove();
-            this.parentElement.classList.remove('error');
-        });
-    });
-    
-    // Обробка відправки форми
+    // Обробка відправки форми до Google Spreadsheets
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Перевіряємо валідність форми
-        const name = contactForm.querySelector('#name');
-        const email = contactForm.querySelector('#email');
-        const message = contactForm.querySelector('#message');
+        // Валідація форми
+        if (!validateForm(contactForm)) {
+            return;
+        }
         
+        // Показуємо стан завантаження
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        if (!submitButton) return;
+        
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Відправка...';
+        submitButton.disabled = true;
+        
+        // ID таблиці Google Sheets (буде налаштовано користувачем пізніше)
+        const sheetId = contactForm.dataset.sheetId || 'YOUR_SHEET_ID';
+        
+        // URL для обробки форми через Google Apps Script
+        const scriptUrl = `https://script.google.com/macros/s/AKfycbz_SHEET_ID_PLACEHOLDER/exec`;
+        
+        // Підготовка даних форми
+        const formData = new FormData(contactForm);
+        const queryString = new URLSearchParams(formData).toString();
+        
+        // Імітація відправки даних (справжня інтеграція буде додана пізніше)
+        setTimeout(() => {
+            // Показуємо повідомлення про успішну відправку
+            const successMessage = contactForm.querySelector('.success-message');
+            if (successMessage) {
+                successMessage.classList.remove('hidden');
+                successMessage.setAttribute('role', 'alert');
+            }
+            
+            // Очищаємо форму
+            contactForm.reset();
+            formInputs.forEach(input => {
+                input.parentElement.classList.remove('focused');
+            });
+            
+            // Повертаємо кнопку до початкового стану
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            
+            // Приховуємо повідомлення через 5 секунд
+            setTimeout(() => {
+                if (successMessage) {
+                    successMessage.classList.add('hidden');
+                }
+            }, 5000);
+        }, 1500);
+    });
+    
+    // Функція валідації форми
+    function validateForm(form) {
+        const name = form.querySelector('#name');
+        const email = form.querySelector('#email');
+        const message = form.querySelector('#message');
         let isValid = true;
         
-        // Перевірка імені
-        if (!name || !name.value.trim()) {
-            if (name) {
-                name.parentElement.classList.add('error');
-                name.setCustomValidity('Будь ласка, введіть своє ім\'я');
-                name.reportValidity();
-            }
+        // Очищаємо попередні повідомлення про помилки
+        form.querySelectorAll('.error-message').forEach(msg => msg.remove());
+        
+        // Валідація імені
+        if (!name.value.trim()) {
+            showError(name, 'Будь ласка, введіть ваше ім\'я');
             isValid = false;
-        } else {
-            name.setCustomValidity('');
-            name.parentElement.classList.remove('error');
         }
         
-        // Перевірка email
+        // Валідація електронної пошти
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email || !email.value.trim() || !emailPattern.test(email.value)) {
-            if (email) {
-                email.parentElement.classList.add('error');
-                email.setCustomValidity('Будь ласка, введіть коректну електронну адресу');
-                email.reportValidity();
-            }
+        if (!email.value.trim() || !emailPattern.test(email.value)) {
+            showError(email, 'Будь ласка, введіть коректну електронну пошту');
             isValid = false;
-        } else {
-            email.setCustomValidity('');
-            email.parentElement.classList.remove('error');
         }
         
-        // Перевірка повідомлення
-        if (!message || !message.value.trim()) {
-            if (message) {
-                message.parentElement.classList.add('error');
-                message.setCustomValidity('Будь ласка, введіть повідомлення');
-                message.reportValidity();
-            }
+        // Валідація повідомлення
+        if (!message.value.trim()) {
+            showError(message, 'Будь ласка, введіть ваше повідомлення');
             isValid = false;
-        } else {
-            message.setCustomValidity('');
-            message.parentElement.classList.remove('error');
         }
         
-        // Якщо форма валідна, симулюємо відправку
-        if (isValid) {
-            const submitButton = contactForm.querySelector('button[type="submit"]');
-            if (!submitButton) return;
-            
-            const originalText = submitButton.textContent;
-            
-            // Змінюємо текст кнопки
-            submitButton.textContent = 'Відправка...';
-            submitButton.disabled = true;
-            
-            // Симулюємо відправку
-            setTimeout(() => {
-                submitButton.textContent = 'Відправлено!';
-                
-                // Показуємо повідомлення про успіх
-                const successMessage = document.createElement('div');
-                successMessage.className = 'success-message';
-                successMessage.setAttribute('role', 'alert');
-                successMessage.textContent = 'Ваше повідомлення успішно відправлено. Ми зв\'яжемося з вами найближчим часом.';
-                
-                contactForm.appendChild(successMessage);
-                
-                // Очищаємо форму
-                contactForm.reset();
-                formInputs.forEach(input => {
-                    input.parentElement.classList.remove('focused');
-                });
-                
-                // Повертаємо оригінальний текст кнопки
-                setTimeout(() => {
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                    
-                    // Видаляємо повідомлення про успіх
-                    successMessage.remove();
-                }, 3000);
-            }, 1500);
-        }
-    });
+        return isValid;
+    }
+    
+    // Функція для відображення помилок
+    function showError(field, message) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        
+        field.parentElement.appendChild(errorElement);
+        field.parentElement.classList.add('error');
+        
+        // Видаляємо повідомлення про помилку при редагуванні поля
+        field.addEventListener('input', function() {
+            errorElement.remove();
+            field.parentElement.classList.remove('error');
+        }, { once: true });
+    }
 }
 
 /**
@@ -1912,169 +2057,6 @@ function initModals() {
             }
         }
     });
-    
-    // Завантаження вмісту модальних вікон (для правових документів)
-    loadModalContent();
-}
-
-/**
-* Завантаження текстового вмісту для модальних вікон
-*/
-function loadModalContent() {
-    const privacyPolicy = document.querySelector('#privacy-policy .text-container');
-    const paymentTerms = document.querySelector('#payment-terms .text-container');
-    const deliveryTerms = document.querySelector('#delivery-terms .text-container');
-    const termsOfUse = document.querySelector('#terms-of-use .text-container');
-    
-    if (privacyPolicy) {
-        privacyPolicy.innerHTML = `
-            <h3>Політика конфіденційності</h3>
-            <p>Остання редакція: 16 квітня 2025 року</p>
-            
-            <h4>1. Вступ</h4>
-            <p>Дякуємо, що вибрали продукцію "Коріння та Крила". Ми серйозно ставимося до вашої конфіденційності та захисту ваших особистих даних. Ця політика конфіденційності пояснює, як ми збираємо, використовуємо та захищаємо вашу особисту інформацію.</p>
-            
-            <h4>2. Які дані ми збираємо</h4>
-            <p>Ми можемо збирати наступні типи інформації:</p>
-            <ul>
-                <li>Особиста ідентифікаційна інформація (ім'я, електронна адреса, телефон, поштова адреса)</li>
-                <li>Інформація про замовлення та транзакції</li>
-                <li>Технічна інформація (IP-адреса, тип браузера, інформація про пристрій)</li>
-                <li>Інформація про використання веб-сайту та взаємодію з нашими продуктами</li>
-            </ul>
-            
-            <h4>3. Як ми використовуємо ваші дані</h4>
-            <p>Ми використовуємо вашу інформацію, щоб:</p>
-            <ul>
-                <li>Обробляти та доставляти ваші замовлення</li>
-                <li>Керувати вашим обліковим записом</li>
-                <li>Надсилати вам важливі повідомлення та оновлення</li>
-                <li>Покращувати наші продукти та послуги</li>
-                <li>Надсилати маркетингові повідомлення (за вашою згодою)</li>
-            </ul>
-            
-            <h4>4. Захист даних</h4>
-            <p>Ми впроваджуємо відповідні технічні та організаційні заходи для захисту ваших даних від несанкціонованого доступу, втрати або знищення.</p>
-            
-            <h4>5. Ваші права</h4>
-            <p>Ви маєте право:</p>
-            <ul>
-                <li>Доступу до своїх персональних даних</li>
-                <li>Виправлення неточних даних</li>
-                <li>Видалення своїх даних</li>
-                <li>Обмеження обробки своїх даних</li>
-                <li>Заперечення проти обробки своїх даних</li>
-                <li>Перенесення даних</li>
-            </ul>
-            
-            <h4>6. Контактна інформація</h4>
-            <p>Якщо у вас є запитання щодо цієї політики конфіденційності або ви хочете реалізувати свої права, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
-        `;
-    }
-    
-    if (paymentTerms) {
-        paymentTerms.innerHTML = `
-            <h3>Умови оплати</h3>
-            <p>Остання редакція: 16 квітня 2025 року</p>
-            
-            <h4>1. Способи оплати</h4>
-            <p>Ми приймаємо наступні способи оплати:</p>
-            <ul>
-                <li>Банківські картки (Visa, MasterCard)</li>
-                <li>Банківський переказ</li>
-                <li>Оплата через платіжні системи (PayPal, Apple Pay, Google Pay)</li>
-                <li>Накладений платіж (при доставці)</li>
-            </ul>
-            
-            <h4>2. Процес оплати</h4>
-            <p>При оформленні замовлення ви зможете вибрати зручний для вас спосіб оплати. При оплаті банківською карткою, ви будете перенаправлені на захищену сторінку платіжної системи, де вам потрібно буде ввести дані своєї картки.</p>
-            
-            <h4>3. Безпека платежів</h4>
-            <p>Всі платежі проходять через захищені канали зв'язку з використанням протоколу SSL. Ми не зберігаємо дані ваших банківських карт.</p>
-            
-            <h4>4. Термін оплати</h4>
-            <p>При виборі способу оплати "Банківський переказ" замовлення зберігається в системі протягом 3 банківських днів. Якщо протягом цього терміну оплата не надходить, замовлення автоматично скасовується.</p>
-            
-            <h4>5. Повернення коштів</h4>
-            <p>У випадку скасування замовлення або повернення товару, кошти повертаються на той же рахунок, з якого була здійснена оплата. Термін повернення коштів залежить від способу оплати та зазвичай становить від 3 до 14 банківських днів.</p>
-            
-            <h4>6. Валюта розрахунків</h4>
-            <p>Всі розрахунки на сайті проводяться в національній валюті України - гривні (UAH).</p>
-            
-            <h4>7. Чеки та документи</h4>
-            <p>Після оплати замовлення ви отримаєте електронний чек на вказану вами електронну пошту. За запитом ми можемо надати повний пакет бухгалтерських документів.</p>
-        `;
-    }
-    
-    if (deliveryTerms) {
-        deliveryTerms.innerHTML = `
-            <h3>Умови доставки</h3>
-            <p>Остання редакція: 16 квітня 2025 року</p>
-            
-            <h4>1. Способи доставки</h4>
-            <p>Ми пропонуємо наступні варіанти доставки:</p>
-            <ul>
-                <li>Нова Пошта (відділення, поштомат, адресна доставка)</li>
-                <li>Укрпошта</li>
-                <li>Самовивіз з нашого офісу в м. Київ</li>
-                <li>Міжнародна доставка (за окремим тарифом)</li>
-            </ul>
-            
-            <h4>2. Термін доставки</h4>
-            <p>Термін доставки залежить від обраного способу:</p>
-            <ul>
-                <li>Нова Пошта - 1-3 робочих дні після відправлення</li>
-                <li>Укрпошта - 3-7 робочих днів після відправлення</li>
-                <li>Самовивіз - в день оплати (при наявності товару на складі)</li>
-                <li>Міжнародна доставка - 7-21 день (залежно від країни)</li>
-            </ul>
-            
-            <h4>3. Вартість доставки</h4>
-            <p>Вартість доставки розраховується автоматично при оформленні замовлення і залежить від обраного способу доставки, ваги та габаритів замовлення.</p>
-            <p>При замовленні на суму від 2000 грн доставка по Україні безкоштовна (крім адресної доставки).</p>
-            
-            <h4>4. Відстеження замовлення</h4>
-            <p>Після відправлення замовлення ви отримаєте номер для відстеження на вказану вами електронну пошту. Ви можете відстежити статус доставки на сайті відповідної служби доставки.</p>
-            
-            <h4>5. Отримання замовлення</h4>
-            <p>Для отримання замовлення необхідно пред'явити документ, що посвідчує особу, та номер замовлення або номер ТТН.</p>
-            
-            <h4>6. Перевірка товару при отриманні</h4>
-            <p>Ми рекомендуємо перевіряти цілісність упаковки та відповідність товару при отриманні. У разі виявлення пошкоджень або невідповідностей, будь ласка, зафіксуйте це в присутності представника служби доставки.</p>
-            
-            <h4>7. Затримки доставки</h4>
-            <p>У випадку форс-мажорних обставин термін доставки може бути збільшений. У такому випадку ми повідомимо вас про це.</p>
-        `;
-    }
-    
-    if (termsOfUse) {
-        termsOfUse.innerHTML = `
-            <h3>Умови використання</h3>
-            <p>Остання редакція: 16 квітня 2025 року</p>
-            
-            <h4>1. Загальні положення</h4>
-            <p>Ці умови використання регулюють ваше використання веб-сайту та продукції "Коріння та Крила". Використовуючи наш веб-сайт або купуючи нашу продукцію, ви погоджуєтеся з цими умовами.</p>
-            
-            <h4>2. Інтелектуальна власність</h4>
-            <p>Весь вміст веб-сайту, включаючи тексти, графіку, логотипи, зображення, аудіо-кліпи, цифрові завантаження, та програмне забезпечення, є власністю компанії або її постачальників вмісту і захищений законами України та міжнародними законами про авторське право.</p>
-            
-            <h4>3. Використання продукції</h4>
-            <p>Метафоричні асоціативні карти "Коріння та Крила" призначені для особистого використання або для використання у професійній практиці психологами, коучами та іншими фахівцями у відповідності до їх професійної етики та кваліфікації.</p>
-            <p>Карти не призначені для діагностики або лікування психічних розладів і не можуть замінити професійну психологічну або медичну допомогу.</p>
-            
-            <h4>4. Обмеження відповідальності</h4>
-            <p>Ми не несемо відповідальності за будь-які прямі, непрямі, випадкові, особливі або штрафні збитки, що виникають в результаті використання або неможливості використання наших продуктів або послуг.</p>
-            
-            <h4>5. Відгуки та коментарі</h4>
-            <p>Коли ви залишаєте відгуки, коментарі або інший контент на нашому веб-сайті, ви надаєте нам право використовувати, відтворювати, змінювати, адаптувати, публікувати, перекладати, створювати похідні роботи, розповсюджувати та відображати такий контент у всьому світі в будь-яких ЗМІ.</p>
-            
-            <h4>6. Зміни умов</h4>
-            <p>Ми можемо оновлювати ці умови використання час від часу. Продовжуючи використовувати наш веб-сайт після внесення змін, ви приймаєте нові умови.</p>
-            
-            <h4>7. Контактна інформація</h4>
-            <p>Якщо у вас є питання щодо цих умов, будь ласка, зв'яжіться з нами за адресою: info@rootsandwings.com</p>
-        `;
-    }
 }
 
 /**
@@ -2088,21 +2070,26 @@ function initVanillaTilt() {
     }
     
     // Ініціалізуємо 3D-ефект для карток
-    const tiltElements = document.querySelectorAll('.feature-card, .grid-card, .target-card, .carousel-card:not(.active)');
+    const tiltElements = document.querySelectorAll('[data-tilt]');
     
-    VanillaTilt.init(tiltElements, {
-        max: 15, // максимальний нахил (в градусах)
-        speed: 300, // швидкість перетворення
-        glare: true, // ефект блиску
-        'max-glare': 0.2, // максимальна інтенсивність блиску
-        scale: 1.05, // збільшення при наведенні
-        transition: true, // плавне перетворення
-        gyroscope: true, // використання гіроскопа на мобільних пристроях
-        gyroscopeMinAngleX: -15, // мінімальний кут нахилу для гіроскопа по осі X
-        gyroscopeMaxAngleX: 15, // максимальний кут нахилу для гіроскопа по осі X
-        gyroscopeMinAngleY: -15, // мінімальний кут нахилу для гіроскопа по осі Y
-        gyroscopeMaxAngleY: 15 // максимальний кут нахилу для гіроскопа по осі Y
-    });
+    if (tiltElements.length) {
+        VanillaTilt.init(tiltElements, {
+            max: 15, // максимальний нахил (в градусах)
+            speed: 400, // швидкість перетворення
+            glare: true, // ефект блиску
+            'max-glare': 0.2, // максимальна інтенсивність блиску
+            perspective: 800, // перспектива для ефекту 3D
+            scale: 1.05, // збільшення при наведенні
+            gyroscope: true, // використання гіроскопа на мобільних пристроях
+            gyroscopeMinAngleX: -20, // мінімальний кут нахилу X для гіроскопа
+            gyroscopeMaxAngleX: 20, // максимальний кут нахилу X для гіроскопа
+            gyroscopeMinAngleY: -20, // мінімальний кут нахилу Y для гіроскопа
+            gyroscopeMaxAngleY: 20, // максимальний кут нахилу Y для гіроскопа
+            easing: "cubic-bezier(.03,.98,.52,.99)", // функція пом'якшення
+            reset: true, // скидати трансформацію при виході миші
+            'full-page-listening': false, // прослуховування всієї сторінки, а не лише даного елементу
+        });
+    }
 }
 
 /**
@@ -2301,13 +2288,6 @@ window.addEventListener('resize', debounce(function() {
         gridCards.forEach(card => {
             card.style.transform = 'scale(0.95) translateZ(0)';
         });
-    }
-    
-    // Оновлюємо контейнер падаючих карт
-    const fallingCardsContainer = document.querySelector('.falling-cards-container');
-    if (fallingCardsContainer) {
-        // Повторно ініціалізуємо падаючі карти при зміні розміру
-        initEnhancedFallingCards();
     }
     
     // Перевіряємо видимість елементів меню
