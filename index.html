@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     
     <!-- GSAP для анімацій -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js"></script>
 </head>
 <body>
     <!-- Прелоадер -->
@@ -52,7 +52,7 @@
                 
                 <!-- Desktop navigation -->
                 <nav class="nav desktop-nav">
-                    <ul class="nav-list">
+                    <ul class="nav-list no-underline">
                         <li class="nav-item"><a href="#about" class="nav-link">Про карти</a></li>
                         <li class="nav-item"><a href="#features" class="nav-link">Особливості</a></li>
                         <li class="nav-item"><a href="#target" class="nav-link">Для кого</a></li>
@@ -75,7 +75,7 @@
             <div class="mobile-menu-container">
                 <button class="mobile-menu-close" aria-label="Close Menu">×</button>
                 <nav class="mobile-nav">
-                    <ul class="mobile-nav-list">
+                    <ul class="mobile-nav-list no-underline">
                         <li class="mobile-nav-item"><a href="#about" class="mobile-nav-link">Про карти</a></li>
                         <li class="mobile-nav-item"><a href="#features" class="mobile-nav-link">Особливості</a></li>
                         <li class="mobile-nav-item"><a href="#target" class="mobile-nav-link">Для кого</a></li>
@@ -104,8 +104,8 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <div class="image-container">
-                        <img src="images/hero-cards.jpg" alt="Метафоричні карти Roots and Wings">
+                    <div class="image-container rounded-image">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" alt="Метафоричні карти Roots and Wings">
                         <div class="floating-card card-1" data-hover-shift="true" data-shift-x="15" data-shift-y="-10"></div>
                         <div class="floating-card card-2" data-hover-shift="true" data-shift-x="-10" data-shift-y="15"></div>
                         <div class="floating-card card-3" data-hover-shift="true" data-shift-x="20" data-shift-y="5"></div>
@@ -192,7 +192,7 @@
             </div>
             <div class="about-content">
                 <div class="product-card">
-                    <div class="card-image">
+                    <div class="card-image rounded-corners">
                         <img src="images/about-cards.jpg" alt="Метафоричні карти Roots and Wings">
                         <div class="image-overlay"></div>
                     </div>
@@ -231,30 +231,30 @@
     <!-- Секція "3D карусель карт" -->
     <section class="cards-carousel section">
         <div class="carousel-container">
-            <div class="carousel-3d">
+            <div class="carousel-3d smooth-carousel">
                 <div class="carousel-card" data-index="0">
                     <div class="card-inner">
-                        <img src="images/carousel-card-1.jpg" alt="Метафорична карта">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="1">
                     <div class="card-inner">
-                        <img src="images/carousel-card-2.jpg" alt="Метафорична карта">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="2">
                     <div class="card-inner">
-                        <img src="images/carousel-card-3.jpg" alt="Метафорична карта">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg" alt="Метафорична карта">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="3">
                     <div class="card-inner">
-                        <img src="images/carousel-card-4.jpg" alt="Метафорична карта">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg" alt="Метафорична карта">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="4">
                     <div class="card-inner">
-                        <img src="images/carousel-card-5.jpg" alt="Метафорична карта">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg" alt="Метафорична карта">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="5">
@@ -349,35 +349,35 @@
     
     <!-- Секція "Карти, що випадають" -->
     <section class="falling-cards section">
-        <div class="falling-cards-container">
-            <div class="falling-card" data-falling-delay="0" data-rotate-start="-10" data-rotate-end="15">
-                <img src="images/falling-card-1.jpg" alt="Метафорична карта">
+        <div class="falling-cards-container individual-falling">
+            <div class="falling-card random-position" data-falling-delay="0" data-rotate-start="-10" data-rotate-end="15" data-x-position="15" data-y-position="10">
+                <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="0.8" data-rotate-start="5" data-rotate-end="-8">
-                <img src="images/falling-card-2.jpg" alt="Метафорична карта">
+            <div class="falling-card random-position" data-falling-delay="0.8" data-rotate-start="5" data-rotate-end="-8" data-x-position="35" data-y-position="25">
+                <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="1.5" data-rotate-start="-15" data-rotate-end="12">
-                <img src="images/falling-card-3.jpg" alt="Метафорична карта">
+            <div class="falling-card random-position" data-falling-delay="1.5" data-rotate-start="-15" data-rotate-end="12" data-x-position="65" data-y-position="5">
+                <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="2.3" data-rotate-start="8" data-rotate-end="-18">
-                <img src="images/falling-card-4.jpg" alt="Метафорична карта">
+            <div class="falling-card random-position" data-falling-delay="2.3" data-rotate-start="8" data-rotate-end="-18" data-x-position="80" data-y-position="30">
+                <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="3" data-rotate-start="-5" data-rotate-end="10">
-                <img src="images/falling-card-5.jpg" alt="Метафорична карта">
+            <div class="falling-card random-position" data-falling-delay="3" data-rotate-start="-5" data-rotate-end="10" data-x-position="20" data-y-position="45">
+                <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="3.8" data-rotate-start="12" data-rotate-end="-5">
+            <div class="falling-card random-position" data-falling-delay="3.8" data-rotate-start="12" data-rotate-end="-5" data-x-position="50" data-y-position="15">
                 <img src="images/falling-card-6.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="4.5" data-rotate-start="-18" data-rotate-end="20">
+            <div class="falling-card random-position" data-falling-delay="4.5" data-rotate-start="-18" data-rotate-end="20" data-x-position="40" data-y-position="60">
                 <img src="images/falling-card-7.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="5.3" data-rotate-start="15" data-rotate-end="-15">
+            <div class="falling-card random-position" data-falling-delay="5.3" data-rotate-start="15" data-rotate-end="-15" data-x-position="70" data-y-position="50">
                 <img src="images/falling-card-8.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="6" data-rotate-start="-10" data-rotate-end="5">
+            <div class="falling-card random-position" data-falling-delay="6" data-rotate-start="-10" data-rotate-end="5" data-x-position="25" data-y-position="75">
                 <img src="images/falling-card-9.jpg" alt="Метафорична карта">
             </div>
-            <div class="falling-card" data-falling-delay="6.8" data-rotate-start="5" data-rotate-end="-10">
+            <div class="falling-card random-position" data-falling-delay="6.8" data-rotate-start="5" data-rotate-end="-10" data-x-position="60" data-y-position="35">
                 <img src="images/falling-card-10.jpg" alt="Метафорична карта">
             </div>
         </div>
@@ -391,7 +391,7 @@
                 <div class="section-line"></div>
             </div>
             <div class="contents-grid">
-                <div class="content-image">
+                <div class="content-image rounded-corners">
                     <img src="images/package.jpg" alt="Комплект метафоричних карт">
                     <div class="image-reveal-overlay"></div>
                 </div>
@@ -450,16 +450,16 @@
         <div class="container">
             <div class="cards-grid-container">
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="images/grid-card-1.jpg" alt="Метафорична карта">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="images/grid-card-2.jpg" alt="Метафорична карта">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта">
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="images/grid-card-3.jpg" alt="Метафорична карта">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg" alt="Метафорична карта">
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="images/grid-card-4.jpg" alt="Метафорична карта">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg" alt="Метафорична карта">
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
                     <img src="images/grid-card-5.jpg" alt="Метафорична карта">
@@ -588,8 +588,8 @@
             </div>
             <div class="authors-grid">
                 <div class="author-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="author-photo">
-                        <img src="images/oksana.jpg" alt="Оксана Бирка">
+                    <div class="author-photo circular">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832168/author-1_ujuty1.png" alt="Оксана Бирка">
                         <div class="author-photo-overlay"></div>
                     </div>
                     <h3 class="author-name">Оксана Бирка</h3>
@@ -604,8 +604,8 @@
                     </div>
                 </div>
                 <div class="author-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="author-photo">
-                        <img src="images/marina.jpg" alt="Марина Камінська">
+                    <div class="author-photo circular">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832166/author-2_x78lh0.png" alt="Марина Камінська">
                         <div class="author-photo-overlay"></div>
                     </div>
                     <h3 class="author-name">Марина Камінська</h3>
@@ -924,10 +924,10 @@
     </div>
     
     <!-- Vanilla-tilt.js для 3D ефектів -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
     
     <!-- Particles.js для часточок на фоні -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <!-- JS -->
     <script src="js/main.js"></script>
