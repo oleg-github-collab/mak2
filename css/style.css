@@ -288,6 +288,7 @@ button {
 .preloader.hidden {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .preloader-content {
@@ -381,18 +382,27 @@ button {
   opacity: 1;
 }
 
-body.cursor-enabled {
-  cursor: none;
+/* Відключення користувацького курсора на мобільних пристроях */
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-enabled {
+    cursor: none;
+  }
+
+  body.cursor-enabled a,
+  body.cursor-enabled button,
+  body.cursor-enabled .card,
+  body.cursor-enabled .interactive,
+  body.cursor-enabled input,
+  body.cursor-enabled textarea,
+  body.cursor-enabled .cursor-hover-trigger {
+    cursor: none;
+  }
 }
 
-body.cursor-enabled a,
-body.cursor-enabled button,
-body.cursor-enabled .card,
-body.cursor-enabled .interactive,
-body.cursor-enabled input,
-body.cursor-enabled textarea,
-body.cursor-enabled .cursor-hover-trigger {
-  cursor: none;
+@media (hover: none) or (pointer: coarse) {
+  .cursor-container {
+    display: none;
+  }
 }
 
 /* ===== Header ===== */
@@ -708,54 +718,61 @@ body.cursor-enabled .cursor-hover-trigger {
   box-shadow: var(--shadow-xl);
 }
 
-.floating-card {
-  position: absolute;
-  width: 120px;
-  height: 180px;
-  background-color: var(--color-white);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  transition: transform var(--transition-medium);
-  will-change: transform;
+/* Плаваючі картки для десктопу */
+@media (min-width: 769px) {
+  .floating-card {
+    position: absolute;
+    width: 120px;
+    height: 180px;
+    background-color: var(--color-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    transition: transform var(--transition-medium);
+    will-change: transform;
+  }
+
+  .card-1 {
+    top: -30px;
+    right: -40px;
+    background-size: cover;
+    background-position: center;
+    transform: rotate(15deg);
+  }
+
+  .card-2 {
+    bottom: -20px;
+    left: -30px;
+    background-size: cover;
+    background-position: center;
+    transform: rotate(-10deg);
+  }
+
+  .card-3 {
+    bottom: 40%;
+    right: -50px;
+    background-size: cover;
+    background-position: center;
+    transform: rotate(5deg);
+  }
+
+  /* Hover Shift for Floating Cards */
+  [data-hover-shift="true"] {
+    transition: transform var(--transition-medium);
+  }
+
+  .image-container:hover [data-hover-shift="true"] {
+    transform: translate(
+      calc(var(--data-shift-x, 0) * 1px),
+      calc(var(--data-shift-y, 0) * 1px)
+    ) rotate(var(--rotate, 0deg));
+  }
 }
 
-.card-1 {
-  top: -30px;
-  right: -40px;
-  background-image: url('../images/card-1.jpg');
-  background-size: cover;
-  background-position: center;
-  transform: rotate(15deg);
-}
-
-.card-2 {
-  bottom: -20px;
-  left: -30px;
-  background-image: url('../images/card-2.jpg');
-  background-size: cover;
-  background-position: center;
-  transform: rotate(-10deg);
-}
-
-.card-3 {
-  bottom: 40%;
-  right: -50px;
-  background-image: url('../images/card-3.jpg');
-  background-size: cover;
-  background-position: center;
-  transform: rotate(5deg);
-}
-
-/* Hover Shift for Floating Cards */
-[data-hover-shift="true"] {
-  transition: transform var(--transition-medium);
-}
-
-.image-container:hover [data-hover-shift="true"] {
-  transform: translate(
-    calc(var(--data-shift-x, 0) * 1px),
-    calc(var(--data-shift-y, 0) * 1px)
-  ) rotate(var(--rotate, 0deg));
+/* Приховування плаваючих карток для мобільних */
+@media (max-width: 768px) {
+  .floating-card {
+    display: none;
+  }
 }
 
 .scroll-indicator {
@@ -798,6 +815,7 @@ body.cursor-enabled .cursor-hover-trigger {
   animation: scrollAnimation 2s infinite;
 }
 
+/* Оптимізовані фонові елементи секції Hero */
 .hero-particles {
   position: absolute;
   top: 0;
@@ -808,26 +826,35 @@ body.cursor-enabled .cursor-hover-trigger {
   z-index: -1;
 }
 
-.hero-shape-1 {
-  position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 400px;
-  height: 400px;
-  background-color: rgba(230, 126, 34, 0.05);
-  border-radius: 50%;
-  z-index: -1;
+@media (min-width: 769px) {
+  .hero-shape-1 {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background-color: rgba(230, 126, 34, 0.05);
+    border-radius: 50%;
+    z-index: -1;
+  }
+
+  .hero-shape-2 {
+    position: absolute;
+    bottom: -150px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background-color: rgba(230, 126, 34, 0.03);
+    border-radius: 50%;
+    z-index: -1;
+  }
 }
 
-.hero-shape-2 {
-  position: absolute;
-  bottom: -150px;
-  left: -100px;
-  width: 500px;
-  height: 500px;
-  background-color: rgba(230, 126, 34, 0.03);
-  border-radius: 50%;
-  z-index: -1;
+/* Приховування рухомих елементів секції Hero на мобільних */
+@media (max-width: 768px) {
+  .hero-shape-1, .hero-shape-2 {
+    display: none;
+  }
 }
 
 /* ===== Card Spread Section ===== */
@@ -1085,7 +1112,7 @@ body.cursor-enabled .cursor-hover-trigger {
   transform-style: preserve-3d;
 }
 
-/* Оптимізована плавна карусель */
+/* Оптимізована горизонтальна карусель */
 .smooth-carousel .carousel-card {
   position: absolute;
   width: 250px;
@@ -1108,8 +1135,9 @@ body.cursor-enabled .cursor-hover-trigger {
   filter: brightness(0.7);
 }
 
+/* Зупинка каруселі при наведенні */
 .smooth-carousel:hover .carousel-card {
-  transition-play-state: paused; /* Зупиняє карусель при наведенні */
+  transition-play-state: paused;
 }
 
 .carousel-card.active {
@@ -1121,6 +1149,7 @@ body.cursor-enabled .cursor-hover-trigger {
               z-index 0.1s linear 0.4s;
 }
 
+/* Оновлені позиції карток для горизонтальної каруселі (зліва-направо) */
 .carousel-card:nth-child(1) { transform: translate(calc(-50% - 500px), -50%) rotateY(45deg); }
 .carousel-card:nth-child(2) { transform: translate(calc(-50% - 250px), -50%) rotateY(30deg); }
 .carousel-card:nth-child(3) { transform: translate(-50%, -50%); }
@@ -1128,7 +1157,11 @@ body.cursor-enabled .cursor-hover-trigger {
 .carousel-card:nth-child(5) { transform: translate(calc(-50% + 500px), -50%) rotateY(-45deg); }
 .carousel-card:nth-child(6) { transform: translate(calc(-50% + 750px), -50%) rotateY(-60deg); opacity: 0.3; }
 .carousel-card:nth-child(7) { transform: translate(calc(-50% - 750px), -50%) rotateY(60deg); opacity: 0.3; }
-.carousel-card:nth-child(8) { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+.carousel-card:nth-child(8) { transform: translate(calc(-50% - 1000px), -50%) rotateY(75deg); opacity: 0.1; }
+.carousel-card:nth-child(9) { transform: translate(calc(-50% + 1000px), -50%) rotateY(-75deg); opacity: 0.1; }
+.carousel-card:nth-child(10) { transform: translate(calc(-50% - 1250px), -50%) rotateY(90deg); opacity: 0; }
+.carousel-card:nth-child(11) { transform: translate(calc(-50% + 1250px), -50%) rotateY(-90deg); opacity: 0; }
+.carousel-card:nth-child(12) { transform: translate(calc(-50% - 1500px), -50%) rotateY(90deg); opacity: 0; }
 
 .carousel-card .card-inner {
   width: 100%;
@@ -1298,7 +1331,7 @@ body.cursor-enabled .cursor-hover-trigger {
   overflow: hidden;
 }
 
-/* Покращена анімація падаючих карт */
+/* Оновлена анімація падаючих карт */
 .falling-card {
   position: absolute;
   width: 150px;
@@ -1311,6 +1344,8 @@ body.cursor-enabled .cursor-hover-trigger {
   will-change: transform, opacity;
   background-size: cover;
   background-position: center;
+  /* Спочатку приховані, стають видимими при додаванні класу animated */
+  visibility: hidden;
 }
 
 .random-position {
@@ -1320,6 +1355,7 @@ body.cursor-enabled .cursor-hover-trigger {
 .falling-card.animated {
   animation: individualFallAnimation 15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
+  visibility: visible;
 }
 
 .falling-card img {
@@ -1612,7 +1648,6 @@ body.cursor-enabled .cursor-hover-trigger {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../images/mission-bg.jpg');
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -2058,7 +2093,7 @@ body.cursor-enabled .cursor-hover-trigger {
   transform: translateX(3px);
 }
 
-/* Покращені стилі для правової секції футера */
+/* Оптимізовані стилі для правової секції футера */
 .legal-buttons {
   display: flex;
   flex-direction: column;
@@ -2439,6 +2474,11 @@ body.cursor-enabled .cursor-hover-trigger {
     display: flex;
   }
 
+  /* Фіксимо відображення тексту під хедером на мобільних */
+  .hero-section {
+    padding-top: calc(var(--header-height) + var(--space-xl));
+  }
+
   .cards-grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2451,6 +2491,11 @@ body.cursor-enabled .cursor-hover-trigger {
     font-size: var(--text-2xl);
   }
 
+  /* Адаптуємо карусель для мобільних */
+  .carousel-3d {
+    height: 350px;
+  }
+
   .carousel-card {
     width: 200px;
     height: 300px;
@@ -2460,7 +2505,11 @@ body.cursor-enabled .cursor-hover-trigger {
   .carousel-card:nth-child(5),
   .carousel-card:nth-child(6),
   .carousel-card:nth-child(7),
-  .carousel-card:nth-child(8) {
+  .carousel-card:nth-child(8),
+  .carousel-card:nth-child(9),
+  .carousel-card:nth-child(10),
+  .carousel-card:nth-child(11),
+  .carousel-card:nth-child(12) {
     display: none;
   }
 
@@ -2505,6 +2554,11 @@ body.cursor-enabled .cursor-hover-trigger {
 
   .cards-grid-container {
     grid-template-columns: 1fr;
+  }
+
+  /* Оптимізована карусель для малих екранів */
+  .carousel-3d {
+    height: 300px;
   }
 
   .carousel-card {

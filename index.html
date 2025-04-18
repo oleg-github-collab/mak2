@@ -19,7 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js"></script>
 </head>
-<body>
+<body data-page="home">
     <!-- Прелоадер -->
     <div class="preloader">
         <div class="preloader-content">
@@ -28,8 +28,8 @@
         </div>
     </div>
 
-    <!-- Кастомний курсор -->
-    <div class="cursor-container">
+    <!-- Кастомний курсор (прихований на мобільних) -->
+    <div class="cursor-container desktop-only">
         <div class="cursor-dot"></div>
         <div class="cursor-outline"></div>
         <div class="cursor-text"></div>
@@ -101,20 +101,22 @@
                 <div class="hero-image">
                     <div class="image-container rounded-image">
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" alt="Метафоричні карти Roots and Wings">
-                        <div class="floating-card card-1" data-hover-shift="true" data-shift-x="15" data-shift-y="-10"></div>
-                        <div class="floating-card card-2" data-hover-shift="true" data-shift-x="-10" data-shift-y="15"></div>
-                        <div class="floating-card card-3" data-hover-shift="true" data-shift-x="20" data-shift-y="5"></div>
+                        <!-- Рухомі елементи приховані на мобільній версії -->
+                        <div class="floating-card card-1 desktop-only" data-hover-shift="true" data-shift-x="15" data-shift-y="-10"></div>
+                        <div class="floating-card card-2 desktop-only" data-hover-shift="true" data-shift-x="-10" data-shift-y="15"></div>
+                        <div class="floating-card card-3 desktop-only" data-hover-shift="true" data-shift-x="20" data-shift-y="5"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator" data-cursor-text="Гортати">
+        <div class="scroll-indicator desktop-only" data-cursor-text="Гортати">
             <div class="scroll-icon">
                 <div class="scroll-dot"></div>
             </div>
             <span>Гортайте вниз</span>
         </div>
-        <div class="hero-particles" id="particles-js"></div>
+        <!-- Частинки тільки для десктопа -->
+        <div class="hero-particles desktop-only" id="particles-js"></div>
         <div class="hero-shape-1"></div>
         <div class="hero-shape-2"></div>
     </section>
@@ -226,7 +228,9 @@
     <!-- Секція "3D карусель карт" -->
     <section class="cards-carousel section">
         <div class="carousel-container">
-            <div class="carousel-3d smooth-carousel">
+            <!-- Додав клас smooth-carousel для руху зліва направо та автоматична зупинка при ховері -->
+            <div class="carousel-3d smooth-carousel" data-auto-play="true" data-pause-on-hover="true" data-direction="left-to-right">
+                <!-- Змінений на 12 карт -->
                 <div class="carousel-card" data-index="0">
                     <div class="card-inner">
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
@@ -265,6 +269,26 @@
                 <div class="carousel-card" data-index="7">
                     <div class="card-inner">
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg" alt="Метафорична карта">
+                    </div>
+                </div>
+                <div class="carousel-card" data-index="8">
+                    <div class="card-inner">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg" alt="Метафорична карта">
+                    </div>
+                </div>
+                <div class="carousel-card" data-index="9">
+                    <div class="card-inner">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg" alt="Метафорична карта">
+                    </div>
+                </div>
+                <div class="carousel-card" data-index="10">
+                    <div class="card-inner">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
+                    </div>
+                </div>
+                <div class="carousel-card" data-index="11">
+                    <div class="card-inner">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта">
                     </div>
                 </div>
             </div>
@@ -343,8 +367,9 @@
     </section>
 
     <!-- Секція "Карти, що випадають" -->
-    <section class="falling-cards section">
-        <div class="falling-cards-container individual-falling">
+    <!-- Оновлена секція з картами, що випадають - спочатку невидима, з'являється при прокрутці -->
+    <section class="falling-cards section" data-animation-trigger="scroll">
+        <div class="falling-cards-container individual-falling" data-initially-hidden="true" data-scroll-trigger="true">
             <div class="falling-card random-position" data-falling-delay="0" data-rotate-start="-10" data-rotate-end="15" data-x-position="15" data-y-position="10">
                 <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта">
             </div>
@@ -684,7 +709,7 @@
     </section>
 
     <!-- Футер -->
-    <footer class="footer">
+    <footer class="footer dark-bg">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
