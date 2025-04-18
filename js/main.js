@@ -153,14 +153,24 @@ function initBasicFunctionality() {
 */
 function initPreloader() {
     const preloader = document.querySelector('.preloader');
-    const progressBar = document.querySelector('.preloader-progress');
-    const counter = document.querySelector('.preloader-counter');
+    if (!preloader) return;
     
-    if (!preloader || !progressBar || !counter) return;
-
-    let progress = 0;
-    const totalAssets = document.querySelectorAll('img').length + 5; // Зображення + CSS + JS + Шрифти
-    let loadedAssets = 0;
+    // Додаємо резервний таймер на випадок, якщо стандартний івент не спрацює
+    const forceHideTimeout = setTimeout(() => {
+      preloader.classList.add('preloader--hide');
+    }, 5000); // Максимум 5 секунд на завантаження
+    
+    window.addEventListener('load', function() {
+      clearTimeout(forceHideTimeout);
+      preloader.classList.add('preloader--hide');
+    });
+    
+    // Додатковий слухач на випадок, якщо 'load' вже відбувся
+    if (document.readyState === 'complete') {
+      clearTimeout(forceHideTimeout);
+      preloader.classList.add('preloader--hide');
+    }
+  }
     
     // Функція для оновлення прогресу
     function updateProgress() {
