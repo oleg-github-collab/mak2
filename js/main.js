@@ -1409,7 +1409,7 @@ function initImprovedCarousel() {
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     }
     
-    // Видаляємо будь-які існуючі кнопки навігації
+    // ВАЖЛИВО: видаляємо будь-які існуючі кнопки навігації
     const prevButton = carousel.querySelector('.carousel-prev');
     const nextButton = carousel.querySelector('.carousel-next');
     const controlsContainer = carousel.querySelector('.carousel-controls');
@@ -1417,6 +1417,13 @@ function initImprovedCarousel() {
     if (prevButton) prevButton.remove();
     if (nextButton) nextButton.remove();
     if (controlsContainer) controlsContainer.remove();
+    
+    // Додатково перевіряємо чи є кнопки навігації десь інде
+    document.querySelectorAll('.carousel-prev, .carousel-next').forEach(button => {
+        if (button.closest('.carousel-3d, .smooth-carousel')) {
+            button.remove();
+        }
+    });
     
     // Додаємо стилі для плавного руху каруселі
     const style = document.createElement('style');
@@ -1434,6 +1441,7 @@ function initImprovedCarousel() {
             animation: carousel-move 30s linear infinite;
             animation-play-state: running;
             width: fit-content;
+            gap: 30px; /* Збільшений відступ між картками */
         }
         
         .carousel-cards-container:hover {
@@ -1443,7 +1451,7 @@ function initImprovedCarousel() {
         .carousel-card {
             flex: 0 0 auto;
             width: 250px;
-            margin: 0 15px;
+            margin: 0; /* Видалено горизонтальні відступи */
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -1470,15 +1478,29 @@ function initImprovedCarousel() {
         @media (max-width: 768px) {
             .carousel-card {
                 width: 200px;
-                margin: 0 10px;
+            }
+            
+            .carousel-cards-container {
+                gap: 20px;
             }
         }
         
         @media (max-width: 480px) {
             .carousel-card {
                 width: 180px;
-                margin: 0 8px;
             }
+            
+            .carousel-cards-container {
+                gap: 15px;
+            }
+        }
+        
+        /* Приховуємо будь-які кнопки навігації */
+        .carousel-prev, .carousel-next, .carousel-controls {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
     `;
     document.head.appendChild(style);
@@ -1516,8 +1538,8 @@ function initCardDeck() {
     style.textContent = `
         .deck {
             position: relative;
-            width: 260px; /* Збільшуємо розмір в 1.5 рази */
-            height: 390px; /* Збільшуємо розмір в 1.5 рази */
+            width: 260px;
+            height: 390px;
             margin: 0 auto;
             perspective: 1000px;
         }
@@ -1577,9 +1599,22 @@ function initCardDeck() {
                         box-shadow 0.6s ease;
         }
         
+        /* Новий ефект при наведенні - плавне виступання зі стосу */
         .deck-top:hover {
-            transform: translateY(-10px) translateX(5px) rotate(2deg);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-30px) translateX(5px) rotate(2deg);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Анімація при кліку - картка виринає з колоди */
+        .deck-top.active {
+            animation: card-emerge 3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        
+        @keyframes card-emerge {
+            0% { transform: translateY(0) rotate(0); }
+            15% { transform: translateY(-100px) translateX(20px) rotate(10deg); }
+            85% { transform: translateY(-100px) translateX(20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0); }
         }
         
         .deck-top.flipped {
@@ -1633,8 +1668,8 @@ function initCardDeck() {
             }
             
             .deck-top:hover {
-                transform: none;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transform: translateY(-15px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             }
         }
     `;
@@ -1644,6 +1679,38 @@ function initCardDeck() {
     deck.setAttribute('role', 'region');
     deck.setAttribute('aria-label', 'Колода метафоричних карт');
     drawButton.setAttribute('aria-controls', 'deck-top');
+    
+    // Додаємо обробник для наведення, щоб карта плавно виступала зі стосу
+    topCard.addEventListener('mouseenter', function() {
+        // Ефект застосовується тільки якщо картка не в активному стані
+        if (!this.classList.contains('active')) {
+            this.style.transition = 'transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.5s ease';
+            this.style.transform = 'translateY(-30px) translateX(5px) rotate(2deg)';
+            this.style.boxShadow = '0 20px 30px rgba(0, 0, 0, 0.15)';
+        }
+    });
+    
+    topCard.addEventListener('mouseleave', function() {
+        // Повертаємо картку в початкове положення, якщо вона не в активному стані
+        if (!this.classList.contains('active')) {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+        }
+    });
+    
+    // Обробник для кліку на верхню картку - покращений
+    topCard.addEventListener('click', function() {
+        // Якщо картка вже активна, нічого не робимо
+        if (this.classList.contains('active')) return;
+        
+        // Додаємо клас active для анімації
+        this.classList.add('active');
+        
+        // Після завершення анімації (3 секунди) повертаємо в початковий стан
+        setTimeout(() => {
+            this.classList.remove('active');
+        }, 3000);
+    });
     
     drawButton.addEventListener('click', function() {
         // Змінюємо стан кнопки, щоб уникнути повторних натискань
@@ -3120,8 +3187,8 @@ function initEnhancedFallingCards() {
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg'
     ];
     
-    // Забезпечуємо рівномірний розподіл карток по ширині
-    const numCards = 15; // Збільшуємо кількість карток для кращого заповнення
+    // Зменшуємо кількість карток в 3 рази (з 15 до 5)
+    const numCards = 5; 
     const segmentWidth = 100 / numCards;
     
     // Змінна для відстеження активного стану анімації
@@ -3148,13 +3215,13 @@ function initEnhancedFallingCards() {
             const leftPosition = segmentStart + (Math.random() * (segmentWidth * 0.7));
             
             // Випадкові параметри для падіння з обмеженим діапазоном
-            const rotateStart = -20 + Math.random() * 40; // від -20 до 20 градусів
-            const rotateEnd = -20 + Math.random() * 40; // від -20 до 20 градусів
+            const rotateStart = -10 + Math.random() * 20; // від -10 до 10 градусів
+            const rotateEnd = -10 + Math.random() * 20; // від -10 до 10 градусів
             const fallingDelay = Math.random() * 3; // від 0 до 3 секунд
             const fallingDuration = 6 + Math.random() * 4; // від 6 до 10 секунд
             
-            // Випадковий розмір карток
-            const cardSize = 120 + Math.random() * 40; // від 120px до 160px
+            // Збільшуємо розмір карток в 1.5 рази (з ~140px до ~210px)
+            const cardSize = 180 + Math.random() * 60; // від 180px до 240px
             
             // Встановлюємо CSS змінні для анімації
             card.style.setProperty('--data-x-position', leftPosition + '%');
@@ -3198,14 +3265,14 @@ function initEnhancedFallingCards() {
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 400px;
+            min-height: 600px; /* Збільшуємо висоту контейнера для більших карток */
             overflow: hidden;
         }
         
         .falling-card {
             position: absolute;
             z-index: 2;
-            width: var(--data-card-size, 140px);
+            width: var(--data-card-size, 210px); /* Збільшений розмір за замовчуванням */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             overflow: hidden;
@@ -3227,7 +3294,7 @@ function initEnhancedFallingCards() {
         
         @keyframes falling {
             0% {
-                top: -150px;
+                top: -250px; /* Збільшуємо початкову точку для більших карток */
                 transform: rotate(var(--data-rotate-start, 0deg));
                 opacity: 0;
             }
@@ -3261,8 +3328,8 @@ function initEnhancedFallingCards() {
                     if (!animationActive) {
                         animationActive = true;
                         createAndAnimateCards();
-                        // Створюємо нові картки регулярно
-                        animationInterval = setInterval(createAndAnimateCards, 3000);
+                        // Створюємо нові картки регулярно, але рідше через їх більший розмір
+                        animationInterval = setInterval(createAndAnimateCards, 4000);
                     }
                 } else {
                     // Зупиняємо анімацію, коли секція виходить з в'юпорта
@@ -3280,7 +3347,7 @@ function initEnhancedFallingCards() {
         // Запасний варіант для старих браузерів
         animationActive = true;
         createAndAnimateCards();
-        animationInterval = setInterval(createAndAnimateCards, 3000);
+        animationInterval = setInterval(createAndAnimateCards, 4000);
     }
     
     // Зупиняємо анімацію, коли сторінка не активна
@@ -3289,7 +3356,7 @@ function initEnhancedFallingCards() {
             clearInterval(animationInterval);
         } else if (animationActive) {
             clearInterval(animationInterval);
-            animationInterval = setInterval(createAndAnimateCards, 3000);
+            animationInterval = setInterval(createAndAnimateCards, 4000);
         }
     });
 }
