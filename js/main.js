@@ -3349,10 +3349,10 @@ function initEnhancedFallingCards(forceStart = false) {
             
             // Випадкові параметри для падіння з постійною швидкістю та кутом
             const rotateAngle = -5 + Math.random() * 10; // від -5 до 5 градусів
-            const fallingDelay = 5 + Math.random() * 3; // від 5 до 8 секунд
+            const fallingDelay = 9 + Math.random() * 3; // від 9 до 12 секунд
             
             // Сповільнюємо анімацію в 1.5 рази (з 9.1 до 13.5 секунд)
-            const fallingDuration = 13.5;
+            const fallingDuration = 15.5;
             
             // Вдвічі більші картки
             const cardSize = isMobile 
