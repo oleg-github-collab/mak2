@@ -51,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Нова анімована колода карт під герой-секцією
         initAnimatedCardDeck();
         
+        // Ініціалізація кнопки для витягування карти
+        initDeckDrawButton();
+        
         // Ініціалізуємо оптимізовану сітку карт
         initCardGrid();
         
@@ -92,6 +95,82 @@ document.addEventListener('DOMContentLoaded', function() {
         initBasicFunctionality();
     });
 });
+
+/**
+ * Ініціалізація кнопки для витягування карти
+ */
+function initDeckDrawButton() {
+    const drawButton = document.querySelector('.draw-button');
+    const deckContainer = document.querySelector('.card-deck-container');
+    
+    if (!drawButton || !deckContainer) return;
+    
+    drawButton.addEventListener('click', function() {
+        // Отримуємо всі картки в колоді
+        const cards = deckContainer.querySelectorAll('.deck-card');
+        if (!cards.length) return;
+        
+        // Спочатку скидаємо всі активні картки
+        document.querySelectorAll('.deck-card.active').forEach(activeCard => {
+            const idx = parseInt(activeCard.dataset.index);
+            const rX = -15 + Math.random() * 30;
+            const rY = -15 + Math.random() * 30;
+            const rR = -15 + Math.random() * 30;
+            
+            activeCard.classList.remove('active');
+            activeCard.style.transform = `translate(${rX}px, ${rY}px) rotate(${rR}deg)`;
+            activeCard.style.zIndex = idx;
+            activeCard.style.boxShadow = '';
+        });
+        
+        // Випадково вибираємо картку
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        const selectedCard = cards[randomIndex];
+        
+        // Активуємо вибрану картку
+        selectedCard.classList.add('active');
+        selectedCard.style.transform = 'translate(0, -50px) rotate(0deg) scale(1.1)';
+        selectedCard.style.zIndex = 20;
+        selectedCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+        
+        // Додаємо анімацію кнопки для зворотного зв'язку
+        this.classList.add('clicked');
+        setTimeout(() => {
+            this.classList.remove('clicked');
+        }, 300);
+    });
+    
+    // Додаємо стилі для анімації кнопки
+    const style = document.createElement('style');
+    style.textContent = `
+        .draw-button {
+            padding: 12px 24px;
+            background-color: var(--color-accent, #3498db);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .draw-button:hover {
+            background-color: var(--color-accent-dark, #2980b9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .draw-button:active, .draw-button.clicked {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 /**
  * Виправляємо проблему з відступами під хедером для мобільних пристроїв
@@ -424,6 +503,7 @@ function initBasicFunctionality() {
     fixMobileHeaderSpace();
     simplifyHeroSection();
     optimizeTextBlocks();
+    initDeckDrawButton();
 }
 
 /**
@@ -1270,7 +1350,7 @@ function initScrollAnimations() {
 }
 
 /**
-* Ініціалізація покращеної каруселі з рухом зліва направо (без кнопок)
+* Ініціалізація покращеної каруселі з рухом зліва направо (без зупинки при наведенні)
 */
 function initImprovedCarousel() {
     const carousel = document.querySelector('.carousel-3d, .smooth-carousel');
@@ -1345,9 +1425,7 @@ function initImprovedCarousel() {
             animation: carousel-rotate 32s linear infinite;
         }
         
-        .carousel-cards-container:hover {
-            animation-play-state: paused;
-        }
+        /* ВАЖЛИВО: Прибрано зупинку анімації при наведенні */
         
         .carousel-card {
             position: absolute;
@@ -1398,21 +1476,6 @@ function initImprovedCarousel() {
         
         // Встановлюємо затримку для плавної анімації
         card.style.transitionDelay = `${index * 0.05}s`;
-        
-        // Додаємо слухача подій для ефекту при наведенні
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = `${this.style.transform.split(') ')[0]}) scale(1.1)`;
-            this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
-            this.style.opacity = '1';
-            this.style.zIndex = '10';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = this.style.transform.replace(' scale(1.1)', '');
-            this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
-            this.style.opacity = '0.9';
-            this.style.zIndex = '';
-        });
     });
     
     // Функція для динамічного оновлення стилю карток в залежності від їх положення
@@ -1633,6 +1696,14 @@ function initAnimatedCardDeck() {
             this.style.zIndex = 20;
             this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
         });
+    }
+    
+    // Додаємо кнопку для витягування картки
+    if (!deckSection.querySelector('.draw-button')) {
+        const drawButton = document.createElement('button');
+        drawButton.className = 'draw-button';
+        drawButton.textContent = 'Витягнути карту';
+        deckSection.appendChild(drawButton);
     }
 }
 
@@ -2941,6 +3012,7 @@ function initParticles() {
 
 /**
  * Покращена анімація падаючих карт з повною видимістю та збільшеним розміром
+ * (Сповільнено на 30%)
  */
 function initEnhancedFallingCards() {
     const fallingCardsSection = document.querySelector('.falling-cards');
@@ -2995,7 +3067,9 @@ function initEnhancedFallingCards() {
             // Випадкові параметри для падіння з постійною швидкістю та кутом
             const rotateAngle = -5 + Math.random() * 10; // від -5 до 5 градусів
             const fallingDelay = Math.random() * 3; // від 0 до 3 секунд
-            const fallingDuration = 7; // постійна швидкість 7 секунд
+            
+            // Сповільнюємо анімацію на 30% (з 7 секунд до 9.1 секунди)
+            const fallingDuration = 9.1; // сповільнено на 30%
             
             // Збільшуємо розмір карток в 1.5 рази (з ~140px до ~210px)
             const cardSize = 210 + Math.random() * 30; // від 210px до 240px
@@ -3065,7 +3139,7 @@ function initEnhancedFallingCards() {
         }
         
         .falling-card.animated {
-            animation: falling var(--data-falling-duration, 7s) forwards var(--data-falling-delay, 0s) linear;
+            animation: falling var(--data-falling-duration, 9.1s) forwards var(--data-falling-delay, 0s) linear;
         }
         
         @keyframes falling {
