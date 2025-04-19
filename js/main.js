@@ -252,11 +252,19 @@ function optimizeTextBlocks() {
             transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             padding: 1.5rem;
             border-radius: 8px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            will-change: transform;
         }
         
         @media (min-width: 768px) {
-            .text-block:hover, .content-text:hover, .feature-text:hover, .info-text:hover {
-                transform: translateY(-5px);
+            .text-tilt {
+                transition: transform 0.3s ease;
+            }
+            
+            /* Специфічний стиль для секції "Кому підійдуть карти" */
+            .target-section .text-block:hover, 
+            .target-section .feature-text:hover {
                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
                 background-color: rgba(255, 255, 255, 0.8);
             }
@@ -274,6 +282,16 @@ function optimizeTextBlocks() {
             margin-bottom: 1rem;
         }
         
+        /* Покращений контраст для секції "Наша місія" */
+        .mission-section p, 
+        .mission-section .text-content, 
+        .mission-section h2, 
+        .mission-section h3, 
+        .mission-section h4 {
+            color: #f8f8f8;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
         @media (max-width: 767px) {
             h1 { font-size: 2rem !important; }
             h2 { font-size: 1.75rem !important; }
@@ -281,6 +299,13 @@ function optimizeTextBlocks() {
             
             .text-block, .content-text, .feature-text, .info-text {
                 padding: 1rem;
+            }
+            
+            /* Збільшуємо розмір карток на смартфоні */
+            .cards-grid-container .grid-card {
+                width: 90% !important;
+                height: auto !important;
+                margin: 0 auto 20px;
             }
         }
     `;
@@ -296,6 +321,38 @@ function optimizeTextBlocks() {
             parent.classList.add('text-block');
         }
     });
+    
+    // Додаємо 3D нахил для текстових блоків у секції "Кому підійдуть карти"
+    const targetSection = document.querySelector('.target-section');
+    if (targetSection) {
+        const textBlocks = targetSection.querySelectorAll('.text-block, .feature-text, .info-text');
+        
+        textBlocks.forEach(block => {
+            // Додаємо клас для відстеження
+            block.classList.add('text-tilt');
+            
+            // Додаємо обробники для нахилу при наведенні
+            block.addEventListener('mousemove', function(e) {
+                if (window.innerWidth < 768) return; // Тільки для десктопів
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left; // положення по X відносно блоку
+                const y = e.clientY - rect.top; // положення по Y відносно блоку
+                
+                // Розрахунок кутів нахилу (максимум 15 градусів)
+                const tiltX = ((y / rect.height) - 0.5) * 15;
+                const tiltY = ((x / rect.width) - 0.5) * -15;
+                
+                // Застосовуємо трансформацію
+                this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            });
+            
+            // Повертаємо в початкове положення, коли курсор виходить
+            block.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    }
 }
 
 /**
@@ -1312,7 +1369,7 @@ function initCardSpread() {
 }
 
 /**
-* Ініціалізація покращеної каруселі з рухом зліва направо
+* Ініціалізація покращеної каруселі з рухом зліва направо (без кнопок)
 */
 function initImprovedCarousel() {
     const carousel = document.querySelector('.carousel-3d, .smooth-carousel');
@@ -1352,109 +1409,89 @@ function initImprovedCarousel() {
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     }
     
-    // Забезпечуємо, що кожна картка має унікальний індекс
-    cards.forEach((card, index) => {
-        card.dataset.index = index;
-        
-        // Додаємо активний клас для центральної картки
-        if (index === 2) {
-            card.classList.add('active');
-        } else {
-            card.classList.remove('active');
-        }
-    });
-    
-    // Додаємо кнопки навігації, якщо їх немає
-    if (!carousel.querySelector('.carousel-prev') && !carousel.querySelector('.carousel-next')) {
-        const controlsContainer = document.createElement('div');
-        controlsContainer.className = 'carousel-controls';
-        
-        const prevButton = document.createElement('button');
-        prevButton.className = 'carousel-prev';
-        prevButton.setAttribute('aria-label', 'Попередня карта');
-        prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        
-        const nextButton = document.createElement('button');
-        nextButton.className = 'carousel-next';
-        nextButton.setAttribute('aria-label', 'Наступна карта');
-        nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        
-        controlsContainer.appendChild(prevButton);
-        controlsContainer.appendChild(nextButton);
-        
-        carousel.appendChild(controlsContainer);
-    }
-    
-    // Функція для оновлення активного стану карток
-    function updateActiveCard() {
-        cards.forEach((card, index) => {
-            if (index === 2) {
-                card.classList.add('active');
-            } else {
-                card.classList.remove('active');
-            }
-        });
-    }
-    
-    // Функція для обробки навігації
-    function moveCarousel(direction) {
-        // Зупиняємо автоматичну анімацію
-        carousel.setAttribute('data-auto-play', 'false');
-        
-        if (direction === 'prev') {
-            // Беремо останню картку і переміщуємо її на початок
-            const lastCard = cards[cards.length - 1];
-            cardsContainer.insertBefore(lastCard, cardsContainer.firstChild);
-        } else {
-            // Беремо першу картку і переміщуємо її в кінець
-            const firstCard = cards[0];
-            cardsContainer.appendChild(firstCard);
-        }
-        
-        // Оновлюємо список карток
-        cards = Array.from(carousel.querySelectorAll('.carousel-card'));
-        
-        // Оновлюємо активну картку
-        updateActiveCard();
-        
-        // Відновлюємо автоматичну анімацію через певний час
-        setTimeout(() => {
-            carousel.setAttribute('data-auto-play', 'true');
-        }, 2000);
-    }
-    
-    // Додаємо обробники для кнопок
+    // Видаляємо будь-які існуючі кнопки навігації
     const prevButton = carousel.querySelector('.carousel-prev');
     const nextButton = carousel.querySelector('.carousel-next');
+    const controlsContainer = carousel.querySelector('.carousel-controls');
     
-    if (prevButton) {
-        prevButton.addEventListener('click', () => moveCarousel('prev'));
-    }
+    if (prevButton) prevButton.remove();
+    if (nextButton) nextButton.remove();
+    if (controlsContainer) controlsContainer.remove();
     
-    if (nextButton) {
-        nextButton.addEventListener('click', () => moveCarousel('next'));
-    }
-    
-    // Функція для автоматичного обертання каруселі
-    function autoRotateCarousel() {
-        if (carousel.getAttribute('data-auto-play') !== 'false') {
-            moveCarousel('next');
+    // Додаємо стилі для плавного руху каруселі
+    const style = document.createElement('style');
+    style.textContent = `
+        .smooth-carousel {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding: 20px 0;
         }
         
-        // Продовжуємо автоматичне обертання
-        setTimeout(autoRotateCarousel, 3000);
-    }
+        .carousel-cards-container {
+            display: flex;
+            transition: transform 1s linear;
+            animation: carousel-move 30s linear infinite;
+            animation-play-state: running;
+            width: fit-content;
+        }
+        
+        .carousel-cards-container:hover {
+            animation-play-state: paused;
+        }
+        
+        .carousel-card {
+            flex: 0 0 auto;
+            width: 250px;
+            margin: 0 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        .carousel-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .carousel-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        @keyframes carousel-move {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(-50% - 15px)); }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .carousel-card {
+                width: 200px;
+                margin: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .carousel-card {
+                width: 180px;
+                margin: 0 8px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
     
-    // Запускаємо автоматичне обертання
-    setTimeout(autoRotateCarousel, 3000);
+    // Дублюємо картки для нескінченної прокрутки
+    cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        cardsContainer.appendChild(clone);
+    });
     
-    // Зупиняємо обертання при наведенні (CSS вже має відповідний стиль)
-    carousel.setAttribute('data-pause-on-hover', 'true');
-    
-    // Функція для оновлення каруселі, доступна глобально
+    // Функція для оновлення каруселі
     function updateCarousel() {
-        // Оновлюємо активну картку
-        updateActiveCard();
+        // Нічого не треба робити, все керується через CSS
     }
     
     // Експортуємо функцію оновлення
@@ -1473,6 +1510,135 @@ function initCardDeck() {
     const topCard = document.querySelector('.deck-top');
     
     if (!deck || !drawButton || !topCard) return;
+    
+    // Додаємо стилі для покращення зовнішнього вигляду колоди
+    const style = document.createElement('style');
+    style.textContent = `
+        .deck {
+            position: relative;
+            width: 260px; /* Збільшуємо розмір в 1.5 рази */
+            height: 390px; /* Збільшуємо розмір в 1.5 рази */
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+        
+        .deck-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        box-shadow 0.6s ease, 
+                        top 0.6s ease;
+        }
+        
+        .deck-card:not(.deck-top) {
+            top: 2px;
+            left: 2px;
+        }
+        
+        /* Розташовуємо картки з більшим зміщенням для ефекту об'єму */
+        .deck-card:nth-child(2) { 
+            transform: rotate(1deg) translateX(4px);
+        }
+        .deck-card:nth-child(3) { 
+            transform: rotate(-1.5deg) translateX(-5px) translateY(1px);
+        }
+        .deck-card:nth-child(4) { 
+            transform: rotate(0.8deg) translateX(7px) translateY(2px);
+        }
+        .deck-card:nth-child(5) { 
+            transform: rotate(-0.6deg) translateX(-8px) translateY(3px);
+        }
+        
+        .deck-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            backface-visibility: hidden;
+        }
+        
+        .deck-card .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            transform: rotateY(180deg);
+        }
+        
+        .deck-top {
+            z-index: 5;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        box-shadow 0.6s ease;
+        }
+        
+        .deck-top:hover {
+            transform: translateY(-10px) translateX(5px) rotate(2deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .deck-top.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .draw-button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .draw-button:hover {
+            transform: translateY(-3px);
+            background-color: #3a80d2;
+        }
+        
+        .draw-button:active {
+            transform: translateY(1px);
+        }
+        
+        .draw-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        /* Анімація тряски колоди */
+        @keyframes deck-shake {
+            0% { transform: rotate(0); }
+            25% { transform: rotate(-1deg) translateX(-2px); }
+            50% { transform: rotate(0) translateY(1px); }
+            75% { transform: rotate(1deg) translateX(2px); }
+            100% { transform: rotate(0); }
+        }
+        
+        .deck.shake {
+            animation: deck-shake 0.5s ease;
+        }
+        
+        /* Адаптивність для мобільних */
+        @media (max-width: 767px) {
+            .deck {
+                width: 200px;
+                height: 300px;
+            }
+            
+            .deck-top:hover {
+                transform: none;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+        }
+    `;
+    document.head.appendChild(style);
     
     // Додаємо ARIA-атрибути для доступності
     deck.setAttribute('role', 'region');
@@ -1581,8 +1747,9 @@ function initCardDeck() {
                 deckCards.forEach(card => {
                     const randomRotate = -2 + Math.random() * 4; // Випадкове обертання
                     const randomY = Math.random() * -3; // Випадкове зміщення по Y
+                    const randomX = -5 + Math.random() * 10; // Випадкове зміщення по X
                     
-                    card.style.transform = `translateY(${randomY}px) rotate(${randomRotate}deg)`;
+                    card.style.transform = `translateY(${randomY}px) translateX(${randomX}px) rotate(${randomRotate}deg)`;
                 });
                 
                 // Додаємо ефект тряски колоди
@@ -1633,6 +1800,83 @@ function initCardGrid() {
     
     const gridCards = document.querySelectorAll('.grid-card');
     if (!gridCards.length) return;
+    
+    // Додаємо стилі для збільшення карток
+    const style = document.createElement('style');
+    style.textContent = `
+        .cards-grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .grid-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+            width: 100%; /* Більший розмір картки */
+            aspect-ratio: 2/3; /* Пропорції картки */
+        }
+        
+        .grid-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .grid-card:hover {
+            transform: scale(1.05) translateZ(30px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+        
+        .grid-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Адаптивні стилі для мобільних */
+        @media (max-width: 1024px) {
+            .cards-grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cards-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .grid-card {
+                width: 100%;
+                aspect-ratio: 3/4; /* Більш вертикальні на мобільних */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cards-grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-card {
+                width: 90%; /* Ще більші на маленьких екранах */
+                aspect-ratio: 3/4;
+                margin: 0 auto 15px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
     
     // Додаємо ARIA-атрибути для доступності
     gridContainer.setAttribute('role', 'region');
@@ -2851,7 +3095,7 @@ function initParticles() {
 
 /**
  * Покращена анімація падаючих карт з випадковим розташуванням та природною фізикою
- * Карти спочатку невидимі, з'являються при прокрутці, падають і зникають під секцією
+ * Карти розподілені по всій ширині екрану та падають постійно
  */
 function initEnhancedFallingCards() {
     const fallingCardsSection = document.querySelector('.falling-cards');
@@ -2876,60 +3120,178 @@ function initEnhancedFallingCards() {
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg'
     ];
     
-    // Створюємо карти з випадковими параметрами
-    for (let i = 0; i < 10; i++) {
-        const cardIndex = Math.floor(Math.random() * cardImages.length);
-        const imageUrl = cardImages[cardIndex];
+    // Забезпечуємо рівномірний розподіл карток по ширині
+    const numCards = 15; // Збільшуємо кількість карток для кращого заповнення
+    const segmentWidth = 100 / numCards;
+    
+    // Змінна для відстеження активного стану анімації
+    let animationActive = false;
+    let animationInterval;
+    
+    // Створюємо функцію для генерації нових карток
+    function createAndAnimateCards() {
+        // Очищаємо старі картки, які вийшли за межі видимості
+        fallingCardsContainer.querySelectorAll('.falling-card.completed').forEach(card => {
+            card.remove();
+        });
         
-        const card = document.createElement('div');
-        card.className = 'falling-card';
-        
-        // Випадкові параметри для падіння
-        const leftPosition = 5 + Math.random() * 90; // від 5% до 95% ширини
-        const rotateStart = -20 + Math.random() * 40; // від -20 до 20 градусів
-        const rotateEnd = -20 + Math.random() * 40; // від -20 до 20 градусів
-        const fallingDelay = Math.random() * 5; // від 0 до 5 секунд
-        
-        // Встановлюємо CSS змінні для анімації
-        card.style.setProperty('--data-x-position', leftPosition);
-        card.style.setProperty('--data-rotate-start', rotateStart);
-        card.style.setProperty('--data-rotate-end', rotateEnd);
-        card.style.setProperty('--data-falling-delay', fallingDelay);
-        
-        // Додаємо зображення
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = 'Метафорична карта';
-        img.loading = 'lazy';
-        card.appendChild(img);
-        
-        // Додаємо картку в контейнер
-        fallingCardsContainer.appendChild(card);
+        // Створюємо нові картки
+        for (let i = 0; i < numCards; i++) {
+            const cardIndex = Math.floor(Math.random() * cardImages.length);
+            const imageUrl = cardImages[cardIndex];
+            
+            const card = document.createElement('div');
+            card.className = 'falling-card';
+            
+            // Рівномірний розподіл по ширині з невеликим випадковим зміщенням
+            const segmentStart = i * segmentWidth;
+            const leftPosition = segmentStart + (Math.random() * (segmentWidth * 0.7));
+            
+            // Випадкові параметри для падіння з обмеженим діапазоном
+            const rotateStart = -20 + Math.random() * 40; // від -20 до 20 градусів
+            const rotateEnd = -20 + Math.random() * 40; // від -20 до 20 градусів
+            const fallingDelay = Math.random() * 3; // від 0 до 3 секунд
+            const fallingDuration = 6 + Math.random() * 4; // від 6 до 10 секунд
+            
+            // Випадковий розмір карток
+            const cardSize = 120 + Math.random() * 40; // від 120px до 160px
+            
+            // Встановлюємо CSS змінні для анімації
+            card.style.setProperty('--data-x-position', leftPosition + '%');
+            card.style.setProperty('--data-rotate-start', rotateStart + 'deg');
+            card.style.setProperty('--data-rotate-end', rotateEnd + 'deg');
+            card.style.setProperty('--data-falling-delay', fallingDelay + 's');
+            card.style.setProperty('--data-falling-duration', fallingDuration + 's');
+            card.style.setProperty('--data-card-size', cardSize + 'px');
+            
+            // Встановлюємо початкове положення
+            card.style.left = leftPosition + '%';
+            card.style.width = cardSize + 'px';
+            card.style.top = '-' + cardSize + 'px';
+            
+            // Додаємо зображення
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.alt = 'Метафорична карта';
+            img.loading = 'lazy';
+            card.appendChild(img);
+            
+            // Додаємо картку в контейнер
+            fallingCardsContainer.appendChild(card);
+            
+            // Активуємо анімацію
+            setTimeout(() => {
+                card.classList.add('animated');
+                
+                // Відмічаємо картку як завершену після закінчення анімації
+                setTimeout(() => {
+                    card.classList.add('completed');
+                }, fallingDuration * 1000);
+            }, 100);
+        }
     }
     
-    // Додаємо спостерігач для анімації при прокрутці
+    // Додаємо CSS для анімації падіння
+    const style = document.createElement('style');
+    style.textContent = `
+        .falling-cards-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            overflow: hidden;
+        }
+        
+        .falling-card {
+            position: absolute;
+            z-index: 2;
+            width: var(--data-card-size, 140px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            transform: rotate(var(--data-rotate-start, 0deg));
+            transition: transform 0.3s ease;
+            opacity: 0;
+        }
+        
+        .falling-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .falling-card.animated {
+            animation: falling var(--data-falling-duration, 8s) forwards var(--data-falling-delay, 0s) linear;
+        }
+        
+        @keyframes falling {
+            0% {
+                top: -150px;
+                transform: rotate(var(--data-rotate-start, 0deg));
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                transform: rotate(var(--data-rotate-end, 0deg));
+                opacity: 0.8;
+            }
+        }
+        
+        /* Переконуємося, що картки не перекриваються */
+        .falling-card:nth-child(odd) {
+            z-index: 1;
+        }
+        
+        .falling-card:nth-child(even) {
+            z-index: 2;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Використовуємо IntersectionObserver для запуску анімації, коли секція входить у в'юпорт
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Додаємо клас для запуску анімації до всіх карток
-                    fallingCardsContainer.querySelectorAll('.falling-card').forEach(card => {
-                        card.classList.add('animated');
-                    });
+                    // Запускаємо анімацію, якщо вона ще не запущена
+                    if (!animationActive) {
+                        animationActive = true;
+                        createAndAnimateCards();
+                        // Створюємо нові картки регулярно
+                        animationInterval = setInterval(createAndAnimateCards, 3000);
+                    }
+                } else {
+                    // Зупиняємо анімацію, коли секція виходить з в'юпорта
+                    animationActive = false;
+                    clearInterval(animationInterval);
                 }
             });
         }, {
-            threshold: 0.2, // Запуск, коли 20% секції у в'юпорті
+            threshold: 0.1, // Запуск, коли 10% секції у в'юпорті
             rootMargin: '0px' // Додаткова область навколо в'юпорта
         });
         
         observer.observe(sectionWrapper);
     } else {
         // Запасний варіант для старих браузерів
-        fallingCardsContainer.querySelectorAll('.falling-card').forEach(card => {
-            card.classList.add('animated');
-        });
+        animationActive = true;
+        createAndAnimateCards();
+        animationInterval = setInterval(createAndAnimateCards, 3000);
     }
+    
+    // Зупиняємо анімацію, коли сторінка не активна
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(animationInterval);
+        } else if (animationActive) {
+            clearInterval(animationInterval);
+            animationInterval = setInterval(createAndAnimateCards, 3000);
+        }
+    });
 }
 
 /**
