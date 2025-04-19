@@ -2490,3 +2490,16 @@ html[lang="uk"] h6 {
     text-decoration: none;
   }
 }
+@media (max-width: 768px) {
+  .carousel-container {
+    width: 100%;
+    overflow: visible;
+    height: auto;
+    min-height: 300px;
+  }
+  .carousel {
+    transform: scale(0.7);
+    position: relative;
+    left: 0;
+  }
+}
