@@ -1091,7 +1091,8 @@ button {
   padding: var(--space-xxl) 0;
   position: relative;
   min-height: 60vh;
-  overflow: hidden;
+  overflow: visible; /* Змінено з overflow: hidden для уникнення обрізання карток */
+  padding-bottom: 150px; /* Додатковий простір внизу */
 }
 
 .falling-cards-container {
@@ -1099,10 +1100,10 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 150px); /* Збільшено висоту контейнера */
   pointer-events: none;
   z-index: 1;
-  overflow: hidden;
+  overflow: visible; /* Дозволяємо карткам виходити за межі контейнера */
 }
 
 /* Оновлена анімація падаючих карт */
@@ -1118,8 +1119,8 @@ button {
   will-change: transform, opacity;
   background-size: cover;
   background-position: center;
-  /* Спочатку приховані, стають видимими при додаванні класу animated */
   visibility: hidden;
+  z-index: 5; /* Збільшено z-index для виведення карток над іншими елементами */
 }
 
 .random-position {
@@ -1127,7 +1128,7 @@ button {
 }
 
 .falling-card.animated {
-  animation: individualFallAnimation 15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  animation: individualFallAnimation 19.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Сповільнено анімацію на 30% */
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
   visibility: visible;
 }
@@ -1149,14 +1150,14 @@ button {
   10% {
     opacity: 1;
   }
-  90% {
+  85% {
     opacity: 1;
   }
   95% {
     opacity: 0;
   }
   100% {
-    transform: translateY(calc(100vh + 250px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+    transform: translateY(calc(100vh + 350px)) rotate(calc(var(--data-rotate-end, 0) * 1deg)); /* Більший діапазон переміщення */
     opacity: 0;
   }
 }
@@ -1280,10 +1281,43 @@ button {
   transform-style: preserve-3d;
 }
 
+/* Оновлені стилі для карток у гріді, щоб забезпечити однакові розміри */
+.cards-grid .card {
+  width: 100%;
+  height: 0;
+  padding-bottom: 150%; /* Встановлює пропорції 2:3 */
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.cards-grid .card img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  transition: transform var(--transition-medium);
+}
+
+.cards-grid .card:hover img {
+  transform: scale(1.05);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
 .grid-card {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 0;
+  padding-bottom: 150%; /* Встановлює пропорції 2:3 для карток */
   cursor: pointer;
   overflow: hidden;
   border-radius: var(--radius-md);
@@ -1295,6 +1329,9 @@ button {
 }
 
 .grid-card img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1479,7 +1516,7 @@ button {
   padding: var(--space-xxl) 0;
   position: relative;
   min-height: 60vh;
-  display: none;
+  display: none; /* Прибрано відображення секції cards-deck */
   align-items: center;
   justify-content: center;
 }
@@ -2237,6 +2274,11 @@ button {
   .footer-content {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
+  
+  /* Адаптуємо падаючі карти для планшетів */
+  .falling-cards {
+    padding-bottom: 180px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2285,6 +2327,16 @@ button {
     width: 60px;
     height: 60px;
     font-size: var(--text-xl);
+  }
+  
+  /* Додатково оптимізуємо падаючі карти для мобільних */
+  .falling-cards {
+    padding-bottom: 200px;
+  }
+  
+  .falling-card {
+    width: 120px;
+    height: 180px;
   }
 }
 
@@ -2365,6 +2417,12 @@ button {
     right: var(--space-md);
     width: 40px;
     height: 40px;
+  }
+  
+  /* Додатково оптимізуємо падаючі карти для маленьких екранів */
+  .falling-card {
+    width: 100px;
+    height: 150px;
   }
 }
 
