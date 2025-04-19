@@ -718,55 +718,7 @@ button {
   box-shadow: var(--shadow-xl);
 }
 
-/* Плаваючі картки для десктопу */
-@media (min-width: 769px) {
-  .floating-card {
-    position: absolute;
-    width: 120px;
-    height: 180px;
-    background-color: var(--color-white);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    transition: transform var(--transition-medium);
-    will-change: transform;
-  }
-
-  .card-1 {
-    top: -30px;
-    right: -40px;
-    background-size: cover;
-    background-position: center;
-    transform: rotate(15deg);
-  }
-
-  .card-2 {
-    bottom: -20px;
-    left: -30px;
-    background-size: cover;
-    background-position: center;
-    transform: rotate(-10deg);
-  }
-
-  .card-3 {
-    bottom: 40%;
-    right: -50px;
-    background-size: cover;
-    background-position: center;
-    transform: rotate(5deg);
-  }
-
-  /* Hover Shift for Floating Cards */
-  [data-hover-shift="true"] {
-    transition: transform var(--transition-medium);
-  }
-
-  .image-container:hover [data-hover-shift="true"] {
-    transform: translate(
-      calc(var(--data-shift-x, 0) * 1px),
-      calc(var(--data-shift-y, 0) * 1px)
-    ) rotate(var(--rotate, 0deg));
-  }
-}
+/* Плаваючі картки для десктопу - видалені згідно вимог */
 
 /* Приховування плаваючих карток для мобільних */
 @media (max-width: 768px) {
@@ -815,7 +767,7 @@ button {
   animation: scrollAnimation 2s infinite;
 }
 
-/* Оптимізовані фонові елементи секції Hero */
+/* Видалений рух елементів у секції Hero для мобільних */
 .hero-particles {
   position: absolute;
   top: 0;
@@ -827,163 +779,14 @@ button {
 }
 
 @media (min-width: 769px) {
-  .hero-shape-1 {
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 400px;
-    height: 400px;
-    background-color: rgba(230, 126, 34, 0.05);
-    border-radius: 50%;
-    z-index: -1;
-  }
-
-  .hero-shape-2 {
-    position: absolute;
-    bottom: -150px;
-    left: -100px;
-    width: 500px;
-    height: 500px;
-    background-color: rgba(230, 126, 34, 0.03);
-    border-radius: 50%;
-    z-index: -1;
-  }
-}
-
-/* Приховування рухомих елементів секції Hero на мобільних */
-@media (max-width: 768px) {
   .hero-shape-1, .hero-shape-2 {
     display: none;
   }
 }
 
-/* ===== Card Spread Section ===== */
+/* ===== Cards Spread Section - ВИДАЛЕНА ===== */
 .cards-spread {
-  padding: var(--space-xxl) 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  min-height: 60vh;
-}
-
-.cards-spread-container {
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-  height: 400px;
-  margin-bottom: var(--space-xl);
-  perspective: 1500px;
-}
-
-.spread-card {
-  position: absolute;
-  width: 180px;
-  height: 270px;
-  perspective: 1000px;
-  cursor: pointer;
-  top: 50%;
-  left: 50%;
-  transform-origin: center;
-  transition: transform var(--transition-medium);
-  will-change: transform;
-}
-
-.card-spread-1 { transform: translate(-50%, -50%) translateX(-250px) rotate(-15deg); }
-.card-spread-2 { transform: translate(-50%, -50%) translateX(-125px) rotate(-5deg); }
-.card-spread-3 { transform: translate(-50%, -50%) translateX(0) rotate(5deg); }
-.card-spread-4 { transform: translate(-50%, -50%) translateX(125px) rotate(10deg); }
-.card-spread-5 { transform: translate(-50%, -50%) translateX(250px) rotate(20deg); }
-
-.card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform var(--transition-slow);
-  transform-style: preserve-3d;
-  box-shadow: var(--shadow-lg);
-  border-radius: var(--radius-md);
-}
-
-.spread-card.flipped .card-inner {
-  transform: rotateY(180deg);
-}
-
-.spread-card:hover .card-inner {
-  transform: translateZ(30px);
-}
-
-/* Enhanced card movements based on data attributes */
-.spread-card[data-depth] {
-  transform-style: preserve-3d;
-  transition: transform var(--transition-slow) ease-out;
-}
-
-.spread-card[data-depth]:hover {
-  transform: translate(
-    calc(-50% + (var(--data-move-x, 0) * 1px)), 
-    calc(-50% + (var(--data-move-y, 0) * 1px))
-  ) 
-  rotate(calc(var(--data-rotate-angle, 0) * 1deg + var(--data-rotate-add, 0) * 1deg))
-  translateZ(calc(var(--data-depth, 0.1) * 40px));
-}
-
-.card-front, .card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-
-.card-back {
-  transform: rotateY(180deg);
-}
-
-.spread-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.section-heading {
-  text-align: center;
-  margin-top: var(--space-xxl);
-}
-
-.visual-title {
-  font-size: var(--text-3xl);
-  display: inline-block;
-  position: relative;
-  margin-bottom: 0;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
-}
-
-.visual-title.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.visual-title::after {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--color-accent);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform var(--transition-slow);
-}
-
-.visual-title.revealed::after {
-  transform: scaleX(1);
-  transition-delay: 0.5s;
+  display: none;
 }
 
 /* ===== About Section ===== */
@@ -1089,7 +892,7 @@ button {
   z-index: -1;
 }
 
-/* ===== Cards Carousel Section ===== */
+/* ===== Cards Carousel Section - Оновлена для циркулярної каруселі ===== */
 .cards-carousel {
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
@@ -1112,99 +915,70 @@ button {
   transform-style: preserve-3d;
 }
 
-/* Оптимізована горизонтальна карусель */
-.smooth-carousel .carousel-card {
+/* Оновлена циркулярна карусель із 8 картками */
+.circular-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: 450px;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+
+.circular-carousel .carousel-card {
   position: absolute;
   width: 250px;
   height: 375px;
   top: 50%;
   left: 50%;
   transform-origin: center;
-  transform: translateX(0) translateZ(0) rotateY(0deg);
-  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
-              opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
-              z-index 0.1s linear;
-  opacity: 0.7;
-  z-index: 3;
+  transform: translate(-50%, -50%) rotate(0deg) translateZ(300px) rotateY(0deg);
+  transition: transform 2s ease-out, opacity 2s ease-out, filter 2s ease-out;
+  opacity: 0;
+  backface-visibility: hidden;
+  z-index: 1;
   transform-style: preserve-3d;
-  will-change: transform, opacity;
-  perspective: 1000px;
+  will-change: transform, opacity, filter;
 }
 
-.smooth-carousel .carousel-card:not(.active) {
-  filter: brightness(0.7);
+.circular-carousel .carousel-card.active {
+  opacity: 1;
+  z-index: 2;
+  filter: brightness(1);
 }
 
-/* Зупинка каруселі при наведенні */
-.smooth-carousel:hover .carousel-card {
+.circular-carousel .carousel-card.back {
+  filter: brightness(0.7) blur(2px);
+  opacity: 0.7;
+}
+
+.circular-carousel:hover .carousel-card {
   transition-play-state: paused;
 }
 
-.carousel-card.active {
-  opacity: 1;
-  z-index: 5;
-  transform: translate(-50%, -50%) translateZ(100px) scale(1.1);
-  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
-              z-index 0.1s linear 0.4s;
-}
-
-/* Оновлені позиції карток для горизонтальної каруселі (зліва-направо) */
-.carousel-card:nth-child(1) { transform: translate(calc(-50% - 500px), -50%) rotateY(45deg); }
-.carousel-card:nth-child(2) { transform: translate(calc(-50% - 250px), -50%) rotateY(30deg); }
-.carousel-card:nth-child(3) { transform: translate(-50%, -50%); }
-.carousel-card:nth-child(4) { transform: translate(calc(-50% + 250px), -50%) rotateY(-30deg); }
-.carousel-card:nth-child(5) { transform: translate(calc(-50% + 500px), -50%) rotateY(-45deg); }
-.carousel-card:nth-child(6) { transform: translate(calc(-50% + 750px), -50%) rotateY(-60deg); opacity: 0.3; }
-.carousel-card:nth-child(7) { transform: translate(calc(-50% - 750px), -50%) rotateY(60deg); opacity: 0.3; }
-.carousel-card:nth-child(8) { transform: translate(calc(-50% - 1000px), -50%) rotateY(75deg); opacity: 0.1; }
-.carousel-card:nth-child(9) { transform: translate(calc(-50% + 1000px), -50%) rotateY(-75deg); opacity: 0.1; }
-.carousel-card:nth-child(10) { transform: translate(calc(-50% - 1250px), -50%) rotateY(90deg); opacity: 0; }
-.carousel-card:nth-child(11) { transform: translate(calc(-50% + 1250px), -50%) rotateY(-90deg); opacity: 0; }
-.carousel-card:nth-child(12) { transform: translate(calc(-50% - 1500px), -50%) rotateY(90deg); opacity: 0; }
-
-.carousel-card .card-inner {
+.circular-carousel .card-inner {
   width: 100%;
   height: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   transform-style: preserve-3d;
-  transition: transform var(--transition-slow);
+  transition: transform var(--transition-medium);
 }
 
-.carousel-card:hover .card-inner {
+.circular-carousel .carousel-card:hover .card-inner {
   transform: translateZ(20px);
 }
 
-.carousel-card img {
+.circular-carousel .carousel-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Видалені стрілки навігації для каруселі */
 .carousel-controls {
-  display: flex;
-  margin-top: var(--space-xl);
-}
-
-.carousel-prev, .carousel-next {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-accent);
-  color: var(--color-white);
-  border-radius: var(--radius-full);
-  margin: 0 var(--space-md);
-  cursor: pointer;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.carousel-prev:hover, .carousel-next:hover {
-  background-color: var(--color-accent-light);
-  transform: scale(1.1);
+  display: none;
 }
 
 /* ===== Features Section ===== */
@@ -1312,7 +1086,7 @@ button {
   z-index: 0;
 }
 
-/* ===== Falling Cards Section ===== */
+/* ===== Falling Cards Section - Оновлена ===== */
 .falling-cards {
   padding: var(--space-xxl) 0;
   position: relative;
@@ -1486,7 +1260,7 @@ button {
   color: var(--color-text-light);
 }
 
-/* ===== Cards Grid 3D Section ===== */
+/* ===== Cards Grid 3D Section - Оновлена для правильного розміру карток ===== */
 .cards-grid-3d {
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
@@ -2093,7 +1867,7 @@ button {
   transform: translateX(3px);
 }
 
-/* Оптимізовані стилі для правової секції футера */
+/* Оновлено кольорову схему футера */
 .legal-buttons {
   display: flex;
   flex-direction: column;
@@ -2477,6 +2251,7 @@ button {
   /* Фіксимо відображення тексту під хедером на мобільних */
   .hero-section {
     padding-top: calc(var(--header-height) + var(--space-xl));
+    text-align: center;
   }
 
   .cards-grid-container {
@@ -2492,31 +2267,15 @@ button {
   }
 
   /* Адаптуємо карусель для мобільних */
-  .carousel-3d {
+  .circular-carousel {
     height: 350px;
   }
 
-  .carousel-card {
+  .circular-carousel .carousel-card {
     width: 200px;
     height: 300px;
   }
-
-  .carousel-card:nth-child(1),
-  .carousel-card:nth-child(5),
-  .carousel-card:nth-child(6),
-  .carousel-card:nth-child(7),
-  .carousel-card:nth-child(8),
-  .carousel-card:nth-child(9),
-  .carousel-card:nth-child(10),
-  .carousel-card:nth-child(11),
-  .carousel-card:nth-child(12) {
-    display: none;
-  }
-
-  .carousel-card:nth-child(2) { transform: translate(calc(-50% - 220px), -50%) rotateY(30deg); }
-  .carousel-card:nth-child(3) { transform: translate(-50%, -50%); }
-  .carousel-card:nth-child(4) { transform: translate(calc(-50% + 220px), -50%) rotateY(-30deg); }
-
+  
   .modal-content {
     width: 95%;
     padding: var(--space-lg);
@@ -2557,21 +2316,14 @@ button {
   }
 
   /* Оптимізована карусель для малих екранів */
-  .carousel-3d {
+  .circular-carousel {
     height: 300px;
   }
 
-  .carousel-card {
+  .circular-carousel .carousel-card {
     width: 180px;
     height: 270px;
   }
-
-  .carousel-card:nth-child(2),
-  .carousel-card:nth-child(4) {
-    display: none;
-  }
-
-  .carousel-card:nth-child(3) { transform: translate(-50%, -50%); }
 
   .hero-buttons {
     flex-direction: column;
