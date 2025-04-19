@@ -1084,7 +1084,7 @@ button {
   position: relative;
   min-height: 60vh;
   overflow: visible; /* Змінено щоб карти не обрізались внизу */
-  padding-bottom: 200px; /* Додатковий простір внизу */
+  padding-bottom: 300px; /* Збільшений простір внизу для падаючих карток */
 }
 
 .falling-cards-container {
@@ -1092,21 +1092,21 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% + 200px); /* Збільшена висота контейнера */
+  height: calc(100% + 300px); /* Збільшена висота контейнера для падаючих карток */
   pointer-events: none;
   z-index: 1;
   overflow: visible; /* Дозволяє карткам виходити за межі контейнера */
-  padding: 7% 0; /* Збільшений відступ для більш рівномірного розподілу */
+  padding: 10% 0; /* Збільшений відступ для більш рівномірного розподілу */
 }
 
-/* Оновлені стилі для великих падаючих карток */
+/* Оновлені стилі для великих падаючих карток (збільшено у 2 рази) */
 .falling-card {
   position: absolute;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   opacity: 0;
-  top: -250px;
+  top: -350px; /* Початкова позиція вище для більш плавного входу */
   will-change: transform, opacity;
   background-size: cover;
   background-position: center;
@@ -1115,9 +1115,9 @@ button {
 }
 
 .falling-card.larger-card {
-  width: 220px; /* Розмір як у card-deck */
-  height: 330px; /* Пропорції 2:3 */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); /* Посилена тінь для об'ємного вигляду */
+  width: 280px; /* Збільшений розмір у 2 рази (було 140px) */
+  height: 420px; /* Збільшений розмір у 2 рази (було 210px), зберігаючи пропорції 2:3 */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); /* Посилена тінь для об'ємного вигляду */
   z-index: 20;
   transition: transform 0.8s ease, opacity 0.8s ease;
 }
@@ -1129,12 +1129,14 @@ button {
   object-fit: cover;
 }
 
+/* Рівномірний розподіл карток по ширині екрану */
 .random-position {
   left: calc(var(--data-x-position, 50) * 1%);
 }
 
+/* Сповільнена анімація падіння в 1.5 рази */
 .falling-card.animated {
-  animation: individualFallAnimation 25s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Сповільнено на 30% */
+  animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Було 24s, збільшено в 1.5 рази */
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
   visibility: visible;
 }
@@ -1157,7 +1159,7 @@ button {
     opacity: 0;
   }
   100% {
-    transform: translateY(calc(100vh + 400px)) rotate(calc(var(--data-rotate-end, 0) * 1deg)); /* Збільшений діапазон руху */
+    transform: translateY(calc(100vh + 500px)) rotate(calc(var(--data-rotate-end, 0) * 1deg)); /* Збільшений діапазон руху */
     opacity: 0;
   }
 }
@@ -1165,30 +1167,49 @@ button {
 /* Медіа-запити для адаптивності падаючих карток */
 @media (max-width: 992px) {
   .falling-card.larger-card {
-    width: 180px;
-    height: 270px;
+    width: 240px; /* Збільшено у 2 рази від попереднього розміру (було 120px) */
+    height: 360px; /* Збільшено у 2 рази від попереднього розміру (було 180px) */
   }
   
   .falling-cards {
-    padding-bottom: 250px;
+    padding-bottom: 350px;
   }
 }
 
 @media (max-width: 768px) {
   .falling-card.larger-card {
-    width: 140px;
-    height: 210px;
+    width: 200px; /* Збільшено у 2 рази від попереднього розміру (було 100px) */
+    height: 300px; /* Збільшено у 2 рази від попереднього розміру (було 150px) */
   }
   
   .falling-cards-container {
-    height: calc(100% + 300px);
+    height: calc(100% + 400px);
+    padding: 5% 0; /* Менший відступ для мобільних для рівномірного розподілу */
+  }
+  
+  /* Рівномірний розподіл по ширині для мобільних */
+  .falling-cards-container .falling-card:nth-child(odd) {
+    left: 20%; /* Лівий стовпець */
+  }
+  
+  .falling-cards-container .falling-card:nth-child(even) {
+    left: 70%; /* Правий стовпець */
   }
 }
 
 @media (max-width: 576px) {
   .falling-card.larger-card {
-    width: 120px;
-    height: 180px;
+    width: 160px; /* Збільшено у 2 рази від попереднього розміру (було 80px) */
+    height: 240px; /* Збільшено у 2 рази від попереднього розміру (було 120px) */
+  }
+  
+  /* Ще більш рівномірний розподіл на маленьких екранах */
+  .falling-cards-container .falling-card:nth-child(odd) {
+    left: 25%; /* Лівий стовпець, ближче до центру */
+  }
+  
+  .falling-cards-container .falling-card:nth-child(even) {
+    left: 65%; /* Правий стовпець, ближче до центру */
   }
 }
 
@@ -2302,14 +2323,15 @@ button {
     font-size: var(--text-2xl);
   }
 
-  /* Адаптуємо карусель для мобільних */
+  /* Адаптуємо карусель для мобільних - оновлена для рівномірних карток */
   .circular-carousel {
     height: 350px;
   }
 
   .circular-carousel .carousel-card {
-    width: 200px;
-    height: 300px;
+    width: 180px; /* Менший розмір для мобільних */
+    height: 270px; /* Збережена пропорція 2:3 */
+    margin: 0 15px; /* Додаткова відстань для запобігання накладанню */
   }
   
   .modal-content {
@@ -2351,14 +2373,15 @@ button {
     grid-template-columns: 1fr;
   }
 
-  /* Оптимізована карусель для малих екранів */
+  /* Оптимізована карусель для малих екранів - оновлена для рівних розмірів */
   .circular-carousel {
     height: 300px;
   }
 
   .circular-carousel .carousel-card {
-    width: 180px;
-    height: 270px;
+    width: 140px; /* Ще менший розмір для маленьких екранів */
+    height: 210px; /* Збережена пропорція 2:3 */
+    margin: 0 10px; /* Менша відстань для малих екранів */
   }
 
   .hero-buttons {

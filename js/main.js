@@ -1655,15 +1655,19 @@ function setupMobileCarousel(carousel, cards) {
     // Встановлюємо стиль контейнера
     cardsContainer.style.animation = 'carousel-rotate-mobile 24s linear infinite';
     
-    // Розподіляємо картки рівномірно на мобільному
+    // Рівномірно розподіляємо картки по ширині
     const containerWidth = carousel.offsetWidth;
     const totalCards = cards.length;
     const fullWidth = containerWidth * 2; // Подвійна ширина для повного циклу
-    const cardSpacing = fullWidth / (totalCards - 1);
+    const cardWidth = 220; // Фіксований розмір картки
+    const cardSpacing = 30; // Відстань між картками
+    
+    // Розрахунок загальної ширини всіх карток з відступами
+    const totalCardWidth = (cardWidth + cardSpacing) * totalCards;
     
     cards.forEach((card, index) => {
-        // Позиція картки в ряду
-        const tx = -containerWidth + cardSpacing * index;
+        // Позиція картки в ряду з рівними відступами
+        const tx = -containerWidth + (cardWidth + cardSpacing) * index;
         
         // Встановлюємо позицію без обертання
         card.style.setProperty('--tx', `${tx}px`);
@@ -1671,9 +1675,9 @@ function setupMobileCarousel(carousel, cards) {
         card.style.opacity = '1';
         card.style.filter = 'none';
         
-        // Забезпечуємо співвідношення сторін 2:3
-        card.style.width = '220px';
-        card.style.height = '330px';
+        // Однаковий розмір для всіх карток
+        card.style.width = `${cardWidth}px`;
+        card.style.height = 'auto';
         card.style.aspectRatio = '2/3';
         
         // Оновлюємо стилі зображень
@@ -1684,6 +1688,31 @@ function setupMobileCarousel(carousel, cards) {
             img.style.objectFit = 'cover';
         }
     });
+    
+    // Оновлюємо стилі анімації для плавного циклічного руху
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        @keyframes carousel-rotate-mobile {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(${totalCardWidth}px); }
+        }
+        
+        .carousel-cards-container {
+            display: flex;
+            gap: ${cardSpacing}px;
+            padding: 0 ${containerWidth/2 - cardWidth/2}px;
+        }
+        
+        .carousel-card {
+            flex: 0 0 ${cardWidth}px;
+            margin: 0;
+            position: relative;
+            transform: none !important;
+            left: auto;
+            top: auto;
+        }
+    `;
+    document.head.appendChild(styleSheet);
 }
 
 /**
@@ -2273,19 +2302,19 @@ function initContactForm() {
         }
     });
     
-    // Додаємо або оновлюємо прихований input для ID таблиці Google Sheets
-    let spreadsheetInput = contactForm.querySelector('input[name="spreadsheet_id"]');
-    if (!spreadsheetInput) {
-        spreadsheetInput = document.createElement('input');
-        spreadsheetInput.type = 'hidden';
-        spreadsheetInput.name = 'spreadsheet_id';
-        contactForm.appendChild(spreadsheetInput);
+    // Додаємо або оновлюємо прихований input для URL Google Apps Script
+    let scriptUrlInput = contactForm.querySelector('input[name="script_url"]');
+    if (!scriptUrlInput) {
+        scriptUrlInput = document.createElement('input');
+        scriptUrlInput.type = 'hidden';
+        scriptUrlInput.name = 'script_url';
+        contactForm.appendChild(scriptUrlInput);
     }
     
-    // Отримуємо ID таблиці з data-атрибуту або використовуємо демо-значення
-    spreadsheetInput.value = contactForm.dataset.sheetId || '1FAIpQLSfMDyPTTVvKgQ5rHN0r7BawIZXZ2ZY_AXC-9ijHULQvC7vNVQ';
+    // Отримуємо URL скрипта з data-атрибуту або використовуємо значення за замовчуванням
+    scriptUrlInput.value = contactForm.dataset.scriptUrl || '';
     
-    // Обробка відправки форми до Google Spreadsheets
+    // Обробка відправки форми до Google Sheets
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -2302,87 +2331,87 @@ function initContactForm() {
         submitButton.textContent = 'Відправка...';
         submitButton.disabled = true;
         
-        // Отримуємо ID таблиці Google Sheets
-        const sheetId = spreadsheetInput.value;
+        // Отримуємо URL скрипта Google Apps Script
+        const scriptUrl = scriptUrlInput.value;
+        if (!scriptUrl) {
+            showError(submitButton, 'URL скрипта не налаштовано');
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            return;
+        }
         
         // Підготовка даних форми
-        const formData = new FormData(contactForm);
+        const name = contactForm.querySelector('#name')?.value || '';
+        const email = contactForm.querySelector('#email')?.value || '';
+        const message = contactForm.querySelector('#message')?.value || '';
+        const phone = contactForm.querySelector('#phone')?.value || '';
+        const subject = contactForm.querySelector('#subject')?.value || 'Повідомлення з форми';
         
-        // URL для відправки даних в Google Sheets (використовуємо Google Forms)
-        const scriptUrl = `https://docs.google.com/forms/d/e/${sheetId}/formResponse`;
+        // Формування даних у JSON
+        const formData = {
+            name: name,
+            email: email,
+            message: message,
+            phone: phone,
+            subject: subject,
+            timestamp: new Date().toISOString()
+        };
         
-        // Створюємо приховану форму для відправки в iframe (обхід CORS)
-        const iframe = document.createElement('iframe');
-        iframe.name = 'hidden_iframe';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-        
-        // Створюємо приховану форму
-        const hiddenForm = document.createElement('form');
-        hiddenForm.action = scriptUrl;
-        hiddenForm.method = 'POST';
-        hiddenForm.target = 'hidden_iframe';
-        
-        // Додаємо поля з даними
-        formData.forEach((value, key) => {
-            // Перетворюємо назви полів для Google Forms
-            let entryKey = key;
-            if (key === 'name') entryKey = 'entry.1234567890'; // Замініть на справжні entry ID
-            if (key === 'email') entryKey = 'entry.1234567891';
-            if (key === 'message') entryKey = 'entry.1234567892';
-            
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = entryKey;
-            input.value = value;
-            hiddenForm.appendChild(input);
-        });
-        
-        // Додаємо форму до документа
-        document.body.appendChild(hiddenForm);
-        
-        // Встановлюємо обробник для iframe
-        iframe.onload = function() {
-            // Показуємо повідомлення про успішну відправку
-            const successMessage = contactForm.querySelector('.success-message');
-            if (!successMessage) {
-                const newSuccessMessage = document.createElement('div');
-                newSuccessMessage.className = 'success-message';
-                newSuccessMessage.textContent = 'Ваше повідомлення успішно відправлено!';
-                newSuccessMessage.setAttribute('role', 'alert');
-                contactForm.appendChild(newSuccessMessage);
-            } else {
-                successMessage.classList.remove('hidden');
-                successMessage.setAttribute('role', 'alert');
+        // Відправляємо дані до Google Apps Script
+        fetch(scriptUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Помилка мережі або сервера');
             }
-            
-            // Очищаємо форму
-            contactForm.reset();
-            formInputs.forEach(input => {
-                input.parentElement.classList.remove('focused');
-            });
-            
-            // Приховуємо повідомлення через 5 секунд
-            setTimeout(() => {
-                const currentSuccessMessage = contactForm.querySelector('.success-message');
-                if (currentSuccessMessage) {
-                    currentSuccessMessage.classList.add('hidden');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Показуємо повідомлення про успішну відправку
+                const successMessage = contactForm.querySelector('.success-message');
+                if (!successMessage) {
+                    const newSuccessMessage = document.createElement('div');
+                    newSuccessMessage.className = 'success-message';
+                    newSuccessMessage.textContent = 'Ваше повідомлення успішно відправлено!';
+                    newSuccessMessage.setAttribute('role', 'alert');
+                    contactForm.appendChild(newSuccessMessage);
+                } else {
+                    successMessage.classList.remove('hidden');
+                    successMessage.setAttribute('role', 'alert');
                 }
-            }, 5000);
-            
+                
+                // Очищаємо форму
+                contactForm.reset();
+                formInputs.forEach(input => {
+                    input.parentElement.classList.remove('focused');
+                });
+                
+                // Приховуємо повідомлення через 5 секунд
+                setTimeout(() => {
+                    const currentSuccessMessage = contactForm.querySelector('.success-message');
+                    if (currentSuccessMessage) {
+                        currentSuccessMessage.classList.add('hidden');
+                    }
+                }, 5000);
+            } else {
+                throw new Error(data.error || 'Не вдалося відправити повідомлення');
+            }
+        })
+        .catch(error => {
+            console.error('Помилка відправки форми:', error);
+            showError(submitButton, 'Помилка відправки: ' + error.message);
+        })
+        .finally(() => {
             // Повертаємо кнопку до початкового стану
             submitButton.textContent = originalText;
             submitButton.disabled = false;
-            
-            // Видаляємо тимчасові елементи
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-                document.body.removeChild(hiddenForm);
-            }, 1000);
-        };
-        
-        // Відправляємо форму
-        hiddenForm.submit();
+        });
     });
     
     // Функція валідації форми
@@ -2396,20 +2425,22 @@ function initContactForm() {
         form.querySelectorAll('.error-message').forEach(msg => msg.remove());
         
         // Валідація імені
-        if (!name.value.trim()) {
+        if (name && !name.value.trim()) {
             showError(name, 'Будь ласка, введіть ваше ім\'я');
             isValid = false;
         }
         
         // Валідація електронної пошти
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.value.trim() || !emailPattern.test(email.value)) {
-            showError(email, 'Будь ласка, введіть коректну електронну пошту');
-            isValid = false;
+        if (email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email.value.trim() || !emailPattern.test(email.value)) {
+                showError(email, 'Будь ласка, введіть коректну електронну пошту');
+                isValid = false;
+            }
         }
         
         // Валідація повідомлення
-        if (!message.value.trim()) {
+        if (message && !message.value.trim()) {
             showError(message, 'Будь ласка, введіть ваше повідомлення');
             isValid = false;
         }
@@ -2428,118 +2459,11 @@ function initContactForm() {
         
         // Видаляємо повідомлення про помилку при редагуванні поля
         field.addEventListener('input', function() {
-            errorElement.remove();
+            const errorMsg = field.parentElement.querySelector('.error-message');
+            if (errorMsg) errorMsg.remove();
             field.parentElement.classList.remove('error');
         }, { once: true });
     }
-    
-    // Покращення стилів форми
-    const style = document.createElement('style');
-    style.textContent = `
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-wrapper label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 0.75rem 1rem;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            color: #666;
-        }
-        
-        .input-wrapper.focused label, 
-        .input-wrapper input:focus + label,
-        .input-wrapper textarea:focus + label {
-            transform: translateY(-100%) scale(0.85);
-            color: #333;
-            padding: 0;
-            margin-bottom: 5px;
-        }
-        
-        .input-wrapper input, 
-        .input-wrapper textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .input-wrapper input:focus, 
-        .input-wrapper textarea:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-            outline: none;
-        }
-        
-        .input-wrapper.error input, 
-        .input-wrapper.error textarea {
-            border-color: #e74c3c;
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-        
-        .contact-form button[type="submit"] {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-        
-        .contact-form button[type="submit"]:hover {
-            background-color: #3a80d2;
-            transform: translateY(-2px);
-        }
-        
-        .contact-form button[type="submit"]:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .success-message {
-            background-color: #2ecc71;
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            text-align: center;
-        }
-        
-        .success-message.hidden {
-            display: none;
-        }
-        
-        @media (max-width: 767px) {
-            .contact-form {
-                padding: 0 15px;
-            }
-            
-            .input-wrapper input, 
-            .input-wrapper textarea {
-                font-size: 16px; /* Запобігає збільшенню форми на iOS */
-            }
-        }
-    `;
-    document.head.appendChild(style);
 }
 
 /**
@@ -3322,7 +3246,7 @@ function initEnhancedFallingCards(forceStart = false) {
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 800px; /* Збільшуємо висоту контейнера для більших карток */
+            min-height: 1000px; /* Збільшуємо висоту контейнера для більших карток */
             overflow: hidden;
         }
         
@@ -3348,7 +3272,7 @@ function initEnhancedFallingCards(forceStart = false) {
         }
         
         .falling-card.animated {
-            animation: falling var(--data-falling-duration, 9.1s) forwards var(--data-falling-delay, 0s) linear;
+            animation: falling var(--data-falling-duration, 13.5s) forwards var(--data-falling-delay, 0s) linear;
         }
         
         @keyframes falling {
@@ -3361,22 +3285,26 @@ function initEnhancedFallingCards(forceStart = false) {
                 opacity: 1;
             }
             100% {
-                top: calc(100% - 50px); /* Гарантуємо, що картки плавно зникають під наступною секцією */
+                top: calc(100% - 100px); /* Гарантуємо, що картки плавно зникають під наступною секцією */
                 transform: rotate(var(--data-rotate-angle, 0deg)); /* Постійний кут */
                 opacity: 0.8;
             }
         }
         
-        /* Різні розміри карток для мобільних та десктопів */
+        /* Вдвічі більші картки для десктопів та мобільних */
         @media (min-width: 768px) {
             .falling-card {
-                width: var(--data-card-size, 210px); /* Збільшений розмір на десктопах */
+                width: var(--data-card-size, 420px); /* Вдвічі більший розмір на десктопах */
             }
         }
         
         @media (max-width: 767px) {
             .falling-card {
-                width: var(--data-mobile-card-size, 150px); /* Збільшений розмір на мобільних порівняно з оригіналом */
+                width: var(--data-mobile-card-size, 300px); /* Вдвічі більший розмір на мобільних */
+            }
+            
+            .falling-cards-container {
+                min-height: 800px; /* Менше висоти на мобільних */
             }
         }
         
@@ -3391,8 +3319,8 @@ function initEnhancedFallingCards(forceStart = false) {
     `;
     document.head.appendChild(style);
     
-    // Зменшуємо кількість карток для мобільних пристроїв
-    const numCards = isMobile ? 3 : 5;
+    // ВДВІЧІ зменшуємо кількість карток
+    const numCards = isMobile ? 2 : 3; // Було 3 і 5
     const segmentWidth = 100 / numCards;
     
     // Змінна для відстеження активного стану анімації
@@ -3415,20 +3343,21 @@ function initEnhancedFallingCards(forceStart = false) {
             card.className = 'falling-card';
             
             // Рівномірний розподіл по ширині з невеликим випадковим зміщенням
+            // Збільшуємо відстань між картками
             const segmentStart = i * segmentWidth;
-            const leftPosition = segmentStart + (Math.random() * (segmentWidth * 0.7));
+            const leftPosition = segmentStart + (Math.random() * (segmentWidth * 0.5));
             
             // Випадкові параметри для падіння з постійною швидкістю та кутом
             const rotateAngle = -5 + Math.random() * 10; // від -5 до 5 градусів
-            const fallingDelay = Math.random() * 3; // від 0 до 3 секунд
+            const fallingDelay = Math.random() * 4; // від 0 до 4 секунд
             
-            // Сповільнюємо анімацію на 30% (з 7 секунд до 9.1 секунди)
-            const fallingDuration = 9.1; // сповільнено на 30%
+            // Сповільнюємо анімацію в 1.5 рази (з 9.1 до 13.5 секунд)
+            const fallingDuration = 13.5;
             
-            // Різні розміри карток для мобільних та десктопів
+            // Вдвічі більші картки
             const cardSize = isMobile 
-                ? 150 + Math.random() * 20  // від 150px до 170px на мобільних
-                : 210 + Math.random() * 30; // від 210px до 240px на десктопах
+                ? 300 + Math.random() * 30  // від 300px до 330px на мобільних (було 150-170)
+                : 420 + Math.random() * 40; // від 420px до 460px на десктопах (було 210-240)
             
             // Встановлюємо CSS змінні для анімації
             card.style.setProperty('--data-x-position', leftPosition + '%');
@@ -3480,7 +3409,8 @@ function initEnhancedFallingCards(forceStart = false) {
     if (forceStart) {
         createAndAnimateCards();
         // Створюємо нові картки регулярно для безперервності анімації
-        animationInterval = setInterval(createAndAnimateCards, 6000);
+        // Збільшуємо інтервал для меншої кількості карток
+        animationInterval = setInterval(createAndAnimateCards, 8000);
         animationActive = true;
     } else {
         // Використовуємо IntersectionObserver для запуску анімації, коли секція входить у в'юпорт
@@ -3493,7 +3423,7 @@ function initEnhancedFallingCards(forceStart = false) {
                             animationActive = true;
                             createAndAnimateCards();
                             // Створюємо нові картки регулярно
-                            animationInterval = setInterval(createAndAnimateCards, 6000);
+                            animationInterval = setInterval(createAndAnimateCards, 8000);
                         }
                     } else {
                         // Не зупиняємо анімацію, коли секція виходить з в'юпорта
@@ -3512,7 +3442,7 @@ function initEnhancedFallingCards(forceStart = false) {
             // Запасний варіант для старих браузерів - просто запускаємо анімацію
             animationActive = true;
             createAndAnimateCards();
-            animationInterval = setInterval(createAndAnimateCards, 6000);
+            animationInterval = setInterval(createAndAnimateCards, 8000);
         }
     }
     
@@ -3522,7 +3452,7 @@ function initEnhancedFallingCards(forceStart = false) {
             clearInterval(animationInterval);
         } else if (animationActive) {
             clearInterval(animationInterval);
-            animationInterval = setInterval(createAndAnimateCards, 6000);
+            animationInterval = setInterval(createAndAnimateCards, 8000);
         }
     });
 }
