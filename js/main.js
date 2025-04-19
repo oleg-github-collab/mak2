@@ -3320,7 +3320,7 @@ function initEnhancedFallingCards(forceStart = false) {
     document.head.appendChild(style);
     
     // ВДВІЧІ зменшуємо кількість карток
-    const numCards = isMobile ? 2 : 3; // Було 3 і 5
+    const numCards = isMobile ? 1 : 2; // Було 3 і 5
     const segmentWidth = 100 / numCards;
     
     // Змінна для відстеження активного стану анімації
@@ -3345,14 +3345,14 @@ function initEnhancedFallingCards(forceStart = false) {
             // Рівномірний розподіл по ширині з невеликим випадковим зміщенням
             // Збільшуємо відстань між картками
             const segmentStart = i * segmentWidth;
-            const leftPosition = segmentStart + (Math.random() * (segmentWidth * 0.5));
+            const leftPosition = segmentStart + (Math.random() * (segmentWidth * 2.5));
             
             // Випадкові параметри для падіння з постійною швидкістю та кутом
             const rotateAngle = -5 + Math.random() * 10; // від -5 до 5 градусів
-            const fallingDelay = 9 + Math.random() * 3; // від 9 до 12 секунд
+            const fallingDelay = 5 + Math.random() * 3; // від 5 до 8 секунд
             
             // Сповільнюємо анімацію в 1.5 рази (з 9.1 до 13.5 секунд)
-            const fallingDuration = 15.5;
+            const fallingDuration = 11.5;
             
             // Вдвічі більші картки
             const cardSize = isMobile 
