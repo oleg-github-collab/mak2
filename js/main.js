@@ -1526,7 +1526,7 @@ function initCursor() {
             .cursor-dot {
                 width: 8px;
                 height: 8px;
-                background-color: #fff;
+                background-color: #3498db;
                 border-radius: 50%;
                 transform: translate(-50%, -50%);
                 transition: width 0.2s, height 0.2s, opacity 0.2s;
@@ -1535,15 +1535,15 @@ function initCursor() {
             .cursor-outline {
                 width: 40px;
                 height: 40px;
-                border: 2px solid rgba(255, 255, 255, 0.5);
+                border: 2px solid rgba(52, 152, 219, 0.5);
                 border-radius: 50%;
                 transform: translate(-50%, -50%);
                 transition: width 0.3s, height 0.3s, border-color 0.3s;
             }
             
             .cursor-text {
-                background-color: #fff;
-                color: #000;
+                background-color: #3498db;
+                color: #fff;
                 padding: 5px 10px;
                 border-radius: 5px;
                 font-size: 14px;
@@ -1563,12 +1563,12 @@ function initCursor() {
             }
             
             .cursor-dot.cursor-hover {
-                background-color: rgba(255, 255, 255, 0.9);
-                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                background-color: #2980b9;
+                box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
             }
             
             .cursor-outline.cursor-hover {
-                border-color: rgba(255, 255, 255, 0.9);
+                border-color: rgba(41, 128, 185, 0.9);
                 width: 50px;
                 height: 50px;
             }
