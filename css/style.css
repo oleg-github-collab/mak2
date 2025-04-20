@@ -270,7 +270,7 @@ button {
   display: none !important;
 }
 
-/* ===== Preloader ===== */
+/* ===== Preloader з індикатором прогресу ===== */
 .preloader {
   position: fixed;
   top: 0;
@@ -304,6 +304,30 @@ button {
   border-top-color: var(--color-accent);
   animation: loader-spin 1s linear infinite;
   margin: 0 auto var(--space-md);
+}
+
+/* Новий індикатор прогресу для прелоадера */
+.progress-container {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-md);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background-color: var(--color-accent);
+  transition: width 0.3s ease;
+  border-radius: var(--radius-full);
+}
+
+.progress-text {
+  margin-top: var(--space-sm);
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
 }
 
 @keyframes loader-spin {
@@ -892,7 +916,7 @@ button {
   z-index: -1;
 }
 
-/* ===== Cards Carousel Section - Оптимізована циркулярна карусель ===== */
+/* ===== Cards Carousel Section - Циркулярна карусель ===== */
 .cards-carousel {
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
@@ -900,68 +924,64 @@ button {
 }
 
 .carousel-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 550px;
+  margin: 0 auto;
+  perspective: 1200px;
+  overflow: visible;
 }
 
-/* Оптимізована циркулярна карусель із 8 картками */
+/* Оновлена циркулярна карусель з 8 картками */
 .circular-carousel {
   position: relative;
   width: 100%;
-  max-width: 1000px;
-  height: 450px;
-  perspective: 1500px;
+  max-width: 1200px;
+  height: 550px;
+  margin: 0 auto;
   transform-style: preserve-3d;
+  perspective: 1200px;
 }
 
-.circular-carousel .carousel-card {
+.carousel-center {
   position: absolute;
-  width: 250px;
-  height: 375px;
   top: 50%;
   left: 50%;
-  transform-origin: center;
-  transform: translate(-50%, -50%) rotate(0deg) translateZ(300px) rotateY(0deg);
-  transition: transform 2s ease-out, opacity 2s ease-out, filter 2s ease-out;
-  opacity: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.carousel-card {
+  position: absolute;
+  width: 280px;
+  height: 420px;
+  left: calc(50% - 140px);
+  top: calc(50% - 210px);
+  transition: transform 2s ease-out, opacity 1s ease, filter 1s ease;
   backface-visibility: hidden;
-  z-index: 1;
-  transform-style: preserve-3d;
   will-change: transform, opacity, filter;
-}
-
-.circular-carousel .carousel-card.active {
-  opacity: 1;
-  z-index: 2;
-  filter: brightness(1);
-}
-
-.circular-carousel .carousel-card.back {
-  filter: brightness(0.7) blur(2px);
-  opacity: 0.7;
-}
-
-.circular-carousel .card-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  transform-origin: center center;
   transform-style: preserve-3d;
-  transition: transform var(--transition-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  opacity: 0;
 }
 
-.circular-carousel .carousel-card img {
+.carousel-card.active {
+  opacity: 1;
+}
+
+.carousel-card.back-facing {
+  filter: brightness(0.7) blur(2px);
+}
+
+.carousel-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* Видалені стрілки навігації для каруселі */
-.carousel-controls {
-  display: none;
+  border-radius: var(--radius-md);
 }
 
 /* ===== Features Section ===== */
@@ -1069,13 +1089,13 @@ button {
   z-index: 0;
 }
 
-/* ===== Falling Cards Section - ОПТИМІЗОВАНА ===== */
+/* ===== Falling Cards Section - Вдосконалена ===== */
 .falling-cards {
   padding: var(--space-xxl) 0;
   position: relative;
-  min-height: 60vh;
+  min-height: 80vh;
   overflow: visible; /* Забезпечує, щоб картки не обрізались внизу */
-  padding-bottom: 300px; /* Збільшений простір внизу для картки, що падає */
+  padding-bottom: 350px; /* Збільшений простір внизу для падіння карток */
 }
 
 .falling-cards-container {
@@ -1083,41 +1103,33 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% + 300px); /* Збільшена висота контейнера */
+  height: calc(100% + 400px); /* Збільшена висота контейнера */
   pointer-events: none;
   z-index: 1;
   overflow: visible; /* Дозволяє карткам виходити за межі контейнера */
-  padding: 10% 0; /* Забезпечує рівномірне поширення */
 }
 
-/* Оптимізовані стилі для падаючих карток (збільшені розміри для кращої видимості) */
+/* Оптимізовані стилі для падаючих карток */
 .falling-card {
   position: absolute;
+  width: 280px;
+  height: 420px;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   opacity: 0;
   top: -350px; /* Початкова позиція вище для плавного входу */
+  transform-origin: center center;
   will-change: transform, opacity;
-  background-size: cover;
-  background-position: center;
   visibility: hidden;
   z-index: 5;
 }
 
-.falling-card.larger-card {
-  width: 280px; /* Збільшений розмір для кращої видимості */
-  height: 420px; /* Збережено пропорцію 2:3 */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); /* Посилена тінь */
-  z-index: 20;
-  transition: transform 0.8s ease, opacity 0.8s ease;
-}
-
-.falling-card.larger-card img {
+.falling-card img {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-md);
   object-fit: cover;
+  border-radius: var(--radius-md);
 }
 
 /* Оптимізований розподіл карток по ширині екрану */
@@ -1125,7 +1137,7 @@ button {
   left: calc(var(--data-x-position, 50) * 1%);
 }
 
-/* Сповільнена анімація падіння на 30% (з 24s до 36s) */
+/* Сповільнена анімація падіння на 30% */
 .falling-card.animated {
   animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
@@ -1157,50 +1169,64 @@ button {
 
 /* Оптимізовані медіа-запити для адаптивності падаючих карток */
 @media (max-width: 992px) {
-  .falling-card.larger-card {
+  .falling-card {
     width: 240px;
     height: 360px;
   }
   
   .falling-cards {
-    padding-bottom: 350px;
+    padding-bottom: 400px;
   }
 }
 
 @media (max-width: 768px) {
-  .falling-card.larger-card {
+  .falling-card {
     width: 200px;
     height: 300px;
   }
   
   .falling-cards-container {
-    height: calc(100% + 400px);
-    padding: 5% 0;
+    height: calc(100% + 450px);
   }
   
-  /* Рівномірний розподіл по ширині для мобільних */
-  .falling-cards-container .falling-card:nth-child(odd) {
-    left: 20% !important; /* Лівий стовпець */
+  /* Відображення тільки однієї карти на мобільних */
+  .falling-card:not(:first-child) {
+    display: none;
   }
   
-  .falling-cards-container .falling-card:nth-child(even) {
-    left: 70% !important; /* Правий стовпець */
-  }
-}
-
-@media (max-width: 576px) {
-  .falling-card.larger-card {
-    width: 160px;
-    height: 240px;
+  /* Центрування єдиної картки на мобільних */
+  .falling-card:first-child {
+    left: 50% !important;
+    transform: translateX(-50%) rotate(calc(var(--data-rotate-start, 0) * 1deg));
   }
   
-  /* Ще більш рівномірний розподіл на маленьких екранах */
-  .falling-cards-container .falling-card:nth-child(odd) {
-    left: 25% !important;
+  /* Оновлена анімація для мобільних */
+  .falling-card.animated:first-child {
+    animation: mobileFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: 1s;
   }
   
-  .falling-cards-container .falling-card:nth-child(even) {
-    left: 65% !important;
+  @keyframes mobileFallAnimation {
+    0% {
+      transform: translateX(-50%) translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+      opacity: 0;
+    }
+    5% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    95% {
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(-50%) translateY(calc(100vh + 500px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+      opacity: 0;
+    }
   }
 }
 
@@ -1303,7 +1329,7 @@ button {
   color: var(--color-text-light);
 }
 
-/* ===== Cards Grid 3D Section - ОПТИМІЗОВАНА для однакових розмірів карток ===== */
+/* ===== Cards Grid 3D Section ===== */
 .cards-grid-3d {
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
@@ -1323,7 +1349,7 @@ button {
   transform-style: preserve-3d;
 }
 
-/* Оптимізовані стилі для однакових карток у гріді */
+/* Оновлені стилі для однакових розмірів карток у гріді */
 .grid-card {
   position: relative;
   width: 100%;
@@ -1337,6 +1363,16 @@ button {
   transform-style: preserve-3d;
   transform: scale(0.95) translateZ(0);
   will-change: transform;
+}
+
+.grid-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
 }
 
 .grid-card img {
@@ -1790,7 +1826,7 @@ button {
   font-weight: var(--weight-medium);
 }
 
-/* ===== Footer - ОПТИМІЗОВАНИЙ ===== */
+/* ===== Footer ===== */
 .footer {
   background-color: var(--bg-darker);
   color: var(--color-text-lighter);
@@ -1851,7 +1887,6 @@ button {
   transform: translateX(3px);
 }
 
-/* Оновлена кольорова схема футера */
 .legal-buttons {
   display: flex;
   flex-direction: column;
@@ -2151,7 +2186,7 @@ button {
   }
 }
 
-/* ===== Responsive Styles - ОПТИМІЗОВАНІ ===== */
+/* ===== Responsive Styles ===== */
 @media (max-width: 1200px) {
   .hero-title {
     font-size: var(--text-4xl);
@@ -2172,6 +2207,16 @@ button {
 
   .content-image {
     margin-bottom: var(--space-xl);
+  }
+  
+  /* Адаптивні налаштування карусельного контейнера */
+  .circular-carousel {
+    height: 500px;
+  }
+  
+  .carousel-card {
+    width: 260px;
+    height: 390px;
   }
 }
 
@@ -2221,6 +2266,17 @@ button {
   .footer-content {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
+  
+  /* Адаптивні налаштування карусельного контейнера */
+  .circular-carousel {
+    height: 450px;
+    transform: scale(0.9);
+  }
+  
+  .carousel-card {
+    width: 220px;
+    height: 330px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2237,7 +2293,7 @@ button {
     display: flex;
   }
 
-  /* Поліпшене відображення тексту під хедером на мобільних */
+  /* Поліпшене відображення контенту під хедером на мобільних */
   .hero-section {
     padding-top: calc(var(--header-height) + var(--space-xl));
     text-align: center;
@@ -2259,13 +2315,14 @@ button {
   /* Оптимізована карусель для мобільних */
   .circular-carousel {
     height: 350px;
-    transform: scale(0.9);
+    transform: scale(0.8);
   }
-
-  .circular-carousel .carousel-card {
+  
+  .carousel-card {
     width: 180px;
     height: 270px;
-    margin: 0 15px;
+    left: calc(50% - 90px);
+    top: calc(50% - 135px);
   }
   
   .modal-content {
@@ -2277,38 +2334,6 @@ button {
     width: 60px;
     height: 60px;
     font-size: var(--text-xl);
-  }
-  
-  /* Оптимізація для мобільних карусельних секцій */
-  .carousel-section {
-    overflow: visible !important;
-    height: auto !important;
-    min-height: 400px !important;
-    margin: 40px 0 !important;
-  }
-  
-  .carousel-container {
-    width: 100% !important;
-    overflow: visible !important;
-    transform: scale(1) !important;
-    position: relative !important;
-    height: 400px !important;
-    perspective: 800px !important;
-  }
-  
-  .carousel {
-    transform: scale(0.6) !important;
-    transform-style: preserve-3d !important;
-    width: 100% !important;
-    position: absolute !important;
-    left: 0 !important;
-    right: 0 !important;
-    margin: auto !important;
-  }
-  
-  .carousel-item {
-    opacity: 1 !important;
-    visibility: visible !important;
   }
 }
 
@@ -2338,13 +2363,14 @@ button {
   /* Оптимізована карусель для малих екранів */
   .circular-carousel {
     height: 300px;
-    transform: scale(0.8);
+    transform: scale(0.7);
   }
-
-  .circular-carousel .carousel-card {
-    width: 140px;
-    height: 210px;
-    margin: 0 10px;
+  
+  .carousel-card {
+    width: 160px;
+    height: 240px;
+    left: calc(50% - 80px);
+    top: calc(50% - 120px);
   }
 
   .hero-buttons {
@@ -2388,20 +2414,6 @@ button {
     width: 40px;
     height: 40px;
   }
-  
-  /* Оптимізація карусельних контейнерів для дуже малих екранів */
-  .carousel-container {
-    width: 100%;
-    overflow: visible;
-    height: auto;
-    min-height: 300px;
-  }
-  
-  .carousel {
-    transform: scale(0.7);
-    position: relative;
-    left: 0;
-  }
 }
 
 /* ===== Special Typography Optimizations for Ukrainian ===== */
@@ -2418,6 +2430,27 @@ html[lang="uk"] h4,
 html[lang="uk"] h5, 
 html[lang="uk"] h6 {
   letter-spacing: 0.02em;
+}
+
+/* ===== Performance Optimizations ===== */
+img, video {
+  content-visibility: auto;
+}
+
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 500px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ===== Print Styles ===== */
