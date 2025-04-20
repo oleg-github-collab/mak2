@@ -562,8 +562,9 @@ function initOptimizedFallingCards(forceStart = false) {
             transform: rotate(var(--data-rotate-angle, 0deg));
             transition: transform 0.3s ease;
             opacity: 0;
-            aspect-ratio: 2/3;
-            width: var(--data-card-size, 420px);
+            width: var(--data-card-size, 420px) !important;
+            height: auto !important; /* скасовуємо фіксовану висоту */
+            aspect-ratio: 2/3; /* нехай браузер сам порахує висоту */
         }
         
         .falling-card img {
@@ -684,6 +685,7 @@ function initOptimizedFallingCards(forceStart = false) {
         card.style.width = cardSize + 'px';
         card.style.top = '-' + cardSize + 'px';
         card.style.aspectRatio = '2/3';
+        card.style.height = 'auto'; // Let aspect-ratio control height
         
         // Add image
         const img = document.createElement('img');
