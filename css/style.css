@@ -2518,3 +2518,48 @@ img, video {
     text-decoration: none;
   }
 }
+/* Виправлення для падаючих карток */
+@keyframes individualFallAnimation {
+  0% {
+    transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+    opacity: 0;
+  }
+  5% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(calc(80vh)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+    opacity: 0;
+  }
+}
+
+.falling-cards {
+  padding: var(--space-xxl) 0;
+  position: relative;
+  min-height: 100vh;
+  overflow: visible;
+  padding-bottom: 600px; /* Збільшено для повного відображення карток */
+}
+
+.falling-cards-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 800px); /* Збільшено висоту контейнера */
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+.progress-text {
+  display: none;
+}

@@ -1526,7 +1526,7 @@ function initCursor() {
             .cursor-dot {
                 width: 8px;
                 height: 8px;
-                background-color: #3498db;
+                background-color: #e67e22;
                 border-radius: 50%;
                 transform: translate(-50%, -50%);
                 transition: width 0.2s, height 0.2s, opacity 0.2s;
@@ -1535,7 +1535,7 @@ function initCursor() {
             .cursor-outline {
                 width: 40px;
                 height: 40px;
-                border: 2px solid rgba(52, 152, 219, 0.5);
+                border: 2px solid #e67e22;
                 border-radius: 50%;
                 transform: translate(-50%, -50%);
                 transition: width 0.3s, height 0.3s, border-color 0.3s;
