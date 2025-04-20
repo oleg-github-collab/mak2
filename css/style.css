@@ -338,6 +338,7 @@ button {
   font-size: var(--text-sm);
   color: var(--color-accent);
   font-weight: var(--weight-medium);
+  display: none;
 }
 
 @keyframes progress-gradient {
@@ -1113,155 +1114,6 @@ button {
   background-color: rgba(230, 126, 34, 0.05);
   border-radius: 50%;
   z-index: 0;
-}
-
-/* ===== Вдосконалена секція падаючих карток - Без обрізання та однакові розміри ===== */
-.falling-cards {
-  padding: var(--space-xxl) 0;
-  position: relative;
-  min-height: 100vh;
-  overflow: visible; /* Забезпечує, щоб картки не обрізались внизу */
-  padding-bottom: 500px; /* Збільшений простір внизу для повного відображення карток */
-}
-
-.falling-cards-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 600px); /* Значно збільшена висота контейнера */
-  pointer-events: none;
-  z-index: 1;
-  overflow: visible; /* Дозволяє карткам виходити за межі контейнера */
-}
-
-section.section.falling-cards {
-  overflow: visible !important;
-}
-
-/* Оптимізовані стилі для падаючих карток - однаковий розмір з картками колоди */
-.falling-card {
-  position: absolute;
-  width: var(--card-width); /* Використовуємо змінну для узгодженості */
-  height: var(--card-height); /* Використовуємо змінну для узгодженості */
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-xl); /* Посилена тінь для кращої видимості */
-  opacity: 0;
-  top: -450px; /* Початкова позиція вище для плавного входу */
-  transform-origin: center center;
-  will-change: transform, opacity;
-  visibility: hidden;
-  z-index: 5;
-}
-
-.falling-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-}
-
-/* Оптимізований розподіл карток по ширині екрану */
-.random-position {
-  left: calc(var(--data-x-position, 50) * 1%);
-}
-
-/* Сповільнена анімація падіння з плавними переходами */
-.falling-card.animated {
-  animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  animation-delay: calc(var(--data-falling-delay, 0) * 1s);
-  visibility: visible;
-}
-
-@keyframes individualFallAnimation {
-  0% {
-    transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
-    opacity: 0;
-  }
-  5% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  95% {
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(calc(100vh + 600px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
-    opacity: 0;
-  }
-}
-
-/* Оптимізовані медіа-запити для адаптивності падаючих карток */
-@media (max-width: 992px) {
-  :root {
-    --card-width: 240px;
-    --card-height: 360px;
-  }
-  
-  .falling-cards {
-    padding-bottom: 450px;
-  }
-  
-  .falling-cards-container {
-    height: calc(100% + 550px);
-  }
-}
-
-@media (max-width: 768px) {
-  :root {
-    --card-width: 200px;
-    --card-height: 300px;
-  }
-  
-  .falling-cards-container {
-    height: calc(100% + 500px);
-  }
-  
-  /* Відображення тільки однієї карти на мобільних */
-  .falling-card:not(:first-child) {
-    display: none;
-  }
-  
-  /* Центрування єдиної картки на мобільних */
-  .falling-card:first-child {
-    left: 50% !important;
-    transform: translateX(-50%) rotate(calc(var(--data-rotate-start, 0) * 1deg));
-  }
-  
-  /* Оновлена анімація для мобільних */
-  .falling-card.animated:first-child {
-    animation: mobileFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-    animation-delay: 1s;
-  }
-  
-  @keyframes mobileFallAnimation {
-    0% {
-      transform: translateX(-50%) translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
-      opacity: 0;
-    }
-    5% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    85% {
-      opacity: 1;
-    }
-    95% {
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(-50%) translateY(calc(100vh + 600px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
-      opacity: 0;
-    }
-  }
 }
 
 /* ===== Contents Section ===== */
@@ -2522,58 +2374,15 @@ img, video {
     text-decoration: none;
   }
 }
-/* Виправлення для падаючих карток */
-@keyframes individualFallAnimation {
-  0% {
-    transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
-    opacity: 0;
-  }
-  5% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  95% {
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(calc(80vh)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
-    opacity: 0;
-  }
-}
 
-.falling-cards {
+/* ===== Вдосконалені стилі для падаючих карток - ОПТИМІЗОВАНО ===== */
+/* Відокремлений і оптимізований блок для падаючих карток з пріоритетом */
+section.section.falling-cards {
   padding: var(--space-xxl) 0;
   position: relative;
   min-height: 100vh;
-  overflow: visible;
-  padding-bottom: 600px; /* Збільшено для повного відображення карток */
-}
-
-.falling-cards-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 800px); /* Збільшено висоту контейнера */
-  pointer-events: none;
-  z-index: 1;
-  overflow: visible;
-}
-.progress-text {
-  display: none;
-}
-/* Повне виправлення для падаючих карток - останній пріоритет */
-.falling-cards {
-  padding: var(--space-xxl) 0;
-  position: relative;
-  min-height: 100vh;
-  overflow: visible !important;
-  padding-bottom: 800px !important; /* Значно збільшений нижній відступ */
+  overflow: visible !important; /* Забезпечує видимість карток за межами секції */
+  padding-bottom: 800px !important; /* Додатковий простір внизу для повної анімації */
   z-index: 1;
 }
 
@@ -2582,17 +2391,40 @@ img, video {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% + 1000px) !important; /* Максимально збільшена висота */
+  height: calc(100% + 1000px) !important; /* Значно збільшена висота контейнера */
   pointer-events: none;
   z-index: 5;
-  overflow: visible !important;
+  overflow: visible !important; /* Критично для запобігання обрізання */
 }
 
 .falling-card {
-  z-index: 10 !important; /* Підвищений z-index щоб картки були над усіма елементами */
+  position: absolute;
+  width: var(--card-width); /* Використовуємо змінну для узгодженості з іншими картками */
+  height: var(--card-height); /* Використовуємо змінну для узгодженості з іншими картками */
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl); /* Посилена тінь для кращої видимості */
+  opacity: 0;
+  top: -450px; /* Початкова позиція вище viewport для плавного входу */
+  transform-origin: center center;
+  will-change: transform, opacity;
+  visibility: hidden;
+  z-index: 10 !important; /* Підвищений z-index для відображення над іншими елементами */
 }
 
-/* Переписана анімація з меншим діапазоном руху */
+.falling-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+/* Оптимізований розподіл карток по ширині екрану */
+.random-position {
+  left: calc(var(--data-x-position, 50) * 1%);
+}
+
+/* Оновлена анімація з меншим діапазоном руху вниз для уникнення обрізання */
 @keyframes individualFallAnimation {
   0% {
     transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
@@ -2616,7 +2448,23 @@ img, video {
   }
 }
 
+.falling-card.animated {
+  animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  animation-delay: calc(var(--data-falling-delay, 0) * 1s);
+  visibility: visible;
+}
+
+/* Специфічні налаштування для мобільних пристроїв - тільки одна картка */
 @media (max-width: 768px) {
+  .falling-card:not(:first-child) {
+    display: none;
+  }
+  
+  .falling-card:first-child {
+    left: 50% !important;
+    transform: translateX(-50%) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+  }
+  
   @keyframes mobileFallAnimation {
     0% {
       transform: translateX(-50%) translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
@@ -2638,6 +2486,11 @@ img, video {
       transform: translateX(-50%) translateY(60vh) rotate(calc(var(--data-rotate-end, 0) * 1deg));
       opacity: 0;
     }
+  }
+  
+  .falling-card.animated:first-child {
+    animation: mobileFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: 1s;
   }
 }
 
