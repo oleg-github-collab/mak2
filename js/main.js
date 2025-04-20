@@ -95,12 +95,155 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Виправлення для відображення каруселі на мобільних пристроях
         fixMobileCarouselVisibility();
+        
+        // Оптимізуємо завантаження зображень
+        optimizeImageLoading();
     }).catch(error => {
         console.error('Помилка при завантаженні зовнішніх бібліотек:', error);
         // Ініціалізуємо базову функціональність навіть при помилці завантаження бібліотек
         initBasicFunctionality();
     });
 });
+
+/**
+ * Оптимізація завантаження зображень
+ */
+function optimizeImageLoading() {
+    // Додаємо атрибут loading="lazy" до всіх зображень
+    document.querySelectorAll('img:not([loading])').forEach(img => {
+        img.loading = 'lazy';
+        
+        // Додаємо обробник помилок для відображення заглушки при неуспішному завантаженні
+        img.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450"%3E%3Crect width="300" height="450" fill="%23f0f0f0"/%3E%3Ctext x="150" y="225" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="14" fill="%23aaa"%3EЗображення недоступне%3C/text%3E%3C/svg%3E';
+            this.alt = 'Зображення недоступне';
+        });
+        
+        // Додаємо декодування асинхронно для уникнення блокування рендеру
+        img.decoding = 'async';
+    });
+    
+    // Додаємо CSS для поліпшення відображення зображень під час завантаження
+    const style = document.createElement('style');
+    style.textContent = `
+        img {
+            will-change: opacity;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        img.loaded, img[src*="data:image"] {
+            opacity: 1;
+        }
+        
+        /* Заглушка для зображень, які завантажуються */
+        .img-placeholder {
+            background-color: #f0f0f0;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .img-placeholder::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: placeholder-shimmer 1.5s infinite;
+        }
+        
+        @keyframes placeholder-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Запобігаємо зсувам контенту під час завантаження зображень */
+        .carousel-card, .grid-card, .falling-card, .deck-card {
+            min-height: 200px;
+            background-color: #f0f0f0;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Додаємо обробник для завантажених зображень
+    document.querySelectorAll('img').forEach(img => {
+        // Створюємо заглушку для зображення, що завантажується
+        const parent = img.parentElement;
+        
+        // Якщо зображення вже завантажене
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            // Додаємо клас для анімації завантаження
+            if (parent) {
+                parent.classList.add('img-placeholder');
+            }
+            
+            // Коли зображення завантажиться
+            img.onload = function() {
+                img.classList.add('loaded');
+                if (parent) {
+                    parent.classList.remove('img-placeholder');
+                }
+            };
+        }
+    });
+    
+    // Додаємо обробник для зображень, які додаються динамічно
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeName === 'IMG' && !node.hasAttribute('loading')) {
+                    node.loading = 'lazy';
+                    node.decoding = 'async';
+                    
+                    // Додаємо обробник для завантаження
+                    if (node.complete) {
+                        node.classList.add('loaded');
+                    } else {
+                        const parent = node.parentElement;
+                        if (parent) {
+                            parent.classList.add('img-placeholder');
+                        }
+                        
+                        node.onload = function() {
+                            node.classList.add('loaded');
+                            if (parent) {
+                                parent.classList.remove('img-placeholder');
+                            }
+                        };
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Додаємо мета-тег для попереднього підключення до доменів CDN для зображень
+    const cdnDomains = [
+        'https://res.cloudinary.com',
+        'https://cdn.jsdelivr.net',
+        'https://cdnjs.cloudflare.com'
+    ];
+    
+    cdnDomains.forEach(domain => {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = domain;
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+        
+        // Додаємо DNS-prefetch як резервний варіант
+        const dnsLink = document.createElement('link');
+        dnsLink.rel = 'dns-prefetch';
+        dnsLink.href = domain;
+        document.head.appendChild(dnsLink);
+    });
+}
 
 /**
  * Виправлення для каруселі на мобільних пристроях
@@ -112,41 +255,53 @@ function fixMobileCarouselVisibility() {
         carouselFixStyle.textContent = `
             @media (max-width: 768px) {
                 .smooth-carousel {
-                    height: 400px;
+                    height: 450px; /* Збільшена висота для кращої видимості */
                     overflow: hidden;
-                    padding: 20px 0;
+                    padding: 30px 0;
                     position: relative;
+                    margin: 40px auto;
+                    will-change: transform; /* Оптимізація для апаратного прискорення */
                 }
                 
                 .carousel-cards-container {
                     display: flex;
                     width: max-content;
-                    animation: carousel-mobile 30s linear infinite;
-                    padding: 10px;
+                    animation: carousel-mobile 40s linear infinite; /* Сповільнено до 40 секунд */
+                    padding: 20px;
+                    will-change: transform; /* Оптимізація для апаратного прискорення */
+                    transform: translateZ(0); /* Форсуємо GPU-рендеринг */
+                }
+                
+                /* Анімуємо із використанням transform замість left для оптимізації */
+                @keyframes carousel-mobile {
+                    0% { transform: translateX(0) translateZ(0); }
+                    100% { transform: translateX(-100%) translateZ(0); }
+                }
+                
+                /* Застосовуємо плавну зупинку анімації при наведенні */
+                .smooth-carousel:hover .carousel-cards-container {
+                    animation-play-state: paused;
                 }
                 
                 .carousel-card {
-                    width: 220px;
-                    height: 330px;
-                    margin-right: 20px;
+                    width: 240px; /* Збільшено розмір картки */
+                    height: 360px; /* Збережено співвідношення 2:3 */
+                    margin-right: 30px;
                     border-radius: 12px;
                     overflow: hidden;
                     flex-shrink: 0;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
                     position: relative;
                     transform: none !important;
                     opacity: 1 !important;
+                    will-change: transform; /* Оптимізація для апаратного прискорення */
                 }
                 
                 .carousel-card img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                }
-                
-                @keyframes carousel-mobile {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-100%); }
+                    will-change: transform; /* Оптимізація для апаратного прискорення */
                 }
             }
         `;
@@ -163,31 +318,54 @@ function fixMobileCarouselVisibility() {
                 cardsContainer.removeAttribute('style');
                 cardsContainer.style.display = 'flex';
                 cardsContainer.style.width = 'max-content';
+                cardsContainer.style.willChange = 'transform';
+                cardsContainer.style.transform = 'translateZ(0)';
                 
                 // Дублюємо картки для безперервної анімації
                 const originalCards = Array.from(cards);
+                
+                // Видаляємо попередні клони, якщо вони є
+                carousel.querySelectorAll('.carousel-card.cloned').forEach(clone => clone.remove());
+                
+                // Додаємо новий клон кожної картки
                 originalCards.forEach(card => {
                     const clone = card.cloneNode(true);
+                    clone.classList.add('cloned');
+                    
+                    // Додаємо атрибут loading="lazy" до клонованих зображень
+                    const img = clone.querySelector('img');
+                    if (img) {
+                        img.loading = 'lazy';
+                        img.decoding = 'async';
+                    }
+                    
                     cardsContainer.appendChild(clone);
                 });
                 
                 // Застосовуємо стилі до всіх карток
                 carousel.querySelectorAll('.carousel-card').forEach(card => {
                     card.removeAttribute('style');
-                    card.style.width = '220px';
-                    card.style.height = '330px';
-                    card.style.marginRight = '20px';
+                    card.style.width = '240px';
+                    card.style.height = '360px';
+                    card.style.marginRight = '30px';
                     card.style.opacity = '1';
                     card.style.transform = 'none';
                     card.style.position = 'relative';
                     card.style.borderRadius = '12px';
-                    card.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.15)';
+                    card.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.15)';
+                    card.style.willChange = 'transform';
                     
                     const img = card.querySelector('img');
                     if (img) {
                         img.style.width = '100%';
                         img.style.height = '100%';
                         img.style.objectFit = 'cover';
+                        
+                        // Додаємо lazy loading
+                        if (!img.hasAttribute('loading')) {
+                            img.loading = 'lazy';
+                            img.decoding = 'async';
+                        }
                     }
                 });
             }
@@ -333,6 +511,7 @@ function initDeckDrawButton() {
             position: relative;
             z-index: 2;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .draw-button:hover {
@@ -599,13 +778,17 @@ function optimizeTextBlocks() {
                 const tiltX = ((y / rect.height) - 0.5) * 15;
                 const tiltY = ((x / rect.width) - 0.5) * -15;
                 
-                // Застосовуємо трансформацію
-                this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+                // Запускаємо анімацію через requestAnimationFrame для оптимізації
+                requestAnimationFrame(() => {
+                    this.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+                });
             });
             
             // Повертаємо в початкове положення, коли курсор виходить
             block.addEventListener('mouseleave', function() {
-                this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                requestAnimationFrame(() => {
+                    this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                });
             });
         });
     }
@@ -682,6 +865,7 @@ function initBasicFunctionality() {
     optimizeTextBlocks();
     initDeckDrawButton();
     fixMobileCarouselVisibility();
+    optimizeImageLoading();
 }
 
 /**
@@ -1108,6 +1292,7 @@ function initHeaderScroll() {
     style.textContent = `
         .header {
             transition: background-color 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .header.scrolled {
@@ -1272,6 +1457,7 @@ function initBackToTop() {
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 90;
+            will-change: transform, opacity; /* Для апаратного прискорення */
         }
         
         .back-to-top.visible {
@@ -1358,6 +1544,7 @@ function enhanceCardAnimations() {
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                        box-shadow 0.4s ease, 
                        opacity 0.4s ease;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .feature-card:hover, .target-card:hover, .author-card:hover {
@@ -1408,6 +1595,7 @@ function enhanceCardAnimations() {
             const cards = prevSection.querySelectorAll('.card, .feature-card');
             cards.forEach(card => {
                 card.classList.add('enhanced-animation');
+                card.style.willChange = 'transform, opacity';
                 
                 // Додаємо стилі для покращених карток
                 card.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease, opacity 0.5s ease';
@@ -1552,6 +1740,7 @@ function initScrollAnimations() {
                 opacity: 0;
                 transform: translateY(30px);
                 transition: opacity 0.6s ease, transform 0.6s ease;
+                will-change: transform, opacity; /* Для апаратного прискорення */
             }
             
             .animate-on-scroll.revealed {
@@ -1620,6 +1809,13 @@ function initImprovedCarousel() {
             const sourceCard = cards[i % initialCount];
             const clonedCard = sourceCard.cloneNode(true);
             cardsContainer.appendChild(clonedCard);
+            
+            // Додаємо lazy loading до зображень клонованих карт
+            const img = clonedCard.querySelector('img');
+            if (img) {
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            }
         }
         
         // Оновлюємо список карток
@@ -1654,6 +1850,7 @@ function initImprovedCarousel() {
             margin: 50px auto;
             perspective: 1000px;
             overflow: hidden;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .carousel-cards-container {
@@ -1661,7 +1858,14 @@ function initImprovedCarousel() {
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            animation: carousel-rotate 32s linear infinite;
+            animation: carousel-rotate 40s linear infinite; /* Сповільнено до 40 секунд */
+            will-change: transform; /* Для апаратного прискорення */
+            transform: translateZ(0); /* Форсуємо GPU-рендеринг */
+        }
+        
+        /* Зупинка анімації при наведенні */
+        .smooth-carousel:hover .carousel-cards-container {
+            animation-play-state: paused;
         }
         
         .carousel-card {
@@ -1678,24 +1882,28 @@ function initImprovedCarousel() {
             backface-visibility: hidden;
             opacity: 0.9;
             aspect-ratio: 2/3;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .carousel-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         @keyframes carousel-rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            0% { transform: rotateY(0deg) translateZ(0); }
+            100% { transform: rotateY(360deg) translateZ(0); }
         }
         
         /* Мобільна версія каруселі */
         @media (max-width: 767px) {
             .smooth-carousel {
-                height: 400px;
+                height: 450px; /* Збільшена висота для кращої видимості */
                 overflow: hidden;
+                padding: 30px 0;
+                margin: 40px auto;
             }
             
             .carousel-cards-container {
@@ -1704,15 +1912,15 @@ function initImprovedCarousel() {
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
-                animation: carousel-mobile 30s linear infinite;
-                padding: 0;
+                animation: carousel-mobile 40s linear infinite; /* Сповільнено до 40 секунд */
+                padding: 20px;
             }
             
             .carousel-card {
                 position: relative;
-                width: 220px;
-                height: 330px;
-                margin-right: 20px;
+                width: 240px; /* Збільшено розмір картки */
+                height: 360px; /* Збережено співвідношення 2:3 */
+                margin-right: 30px;
                 top: 0;
                 left: 0;
                 transform: none !important;
@@ -1721,8 +1929,8 @@ function initImprovedCarousel() {
             }
             
             @keyframes carousel-mobile {
-                0% { transform: translateY(-50%) translateX(0); }
-                100% { transform: translateY(-50%) translateX(-100%); }
+                0% { transform: translateY(-50%) translateX(0) translateZ(0); }
+                100% { transform: translateY(-50%) translateX(-100%) translateZ(0); }
             }
         }
     `;
@@ -1762,8 +1970,10 @@ function setupMobileCarousel(carousel, cards) {
     cardsContainer.style.position = 'absolute';
     cardsContainer.style.display = 'flex';
     cardsContainer.style.width = 'max-content';
-    cardsContainer.style.animation = 'carousel-mobile 30s linear infinite';
+    cardsContainer.style.animation = 'carousel-mobile 40s linear infinite'; // Сповільнено до 40 секунд
     cardsContainer.style.top = '50%';
+    cardsContainer.style.willChange = 'transform';
+    cardsContainer.style.transform = 'translateY(-50%) translateZ(0)';
     
     // Дублюємо картки для безперервної анімації
     // Спочатку видаляємо всі клони
@@ -1776,6 +1986,14 @@ function setupMobileCarousel(carousel, cards) {
     originalCards.forEach(card => {
         const clone = card.cloneNode(true);
         clone.classList.add('cloned');
+        
+        // Додаємо lazy loading до зображень клонів
+        const img = clone.querySelector('img');
+        if (img) {
+            img.loading = 'lazy';
+            img.decoding = 'async';
+        }
+        
         cardsContainer.appendChild(clone);
     });
     
@@ -1784,12 +2002,13 @@ function setupMobileCarousel(carousel, cards) {
         card.style.position = 'relative';
         card.style.top = 'auto';
         card.style.left = 'auto';
-        card.style.width = '220px';
-        card.style.height = '330px';
-        card.style.marginRight = '20px';
+        card.style.width = '240px'; // Збільшено розмір картки
+        card.style.height = '360px'; // Збережено співвідношення 2:3
+        card.style.marginRight = '30px';
         card.style.transform = 'none';
         card.style.opacity = '1';
         card.style.flexShrink = '0';
+        card.style.willChange = 'transform';
         
         // Забезпечуємо співвідношення сторін 2:3
         card.style.aspectRatio = '2/3';
@@ -1800,6 +2019,12 @@ function setupMobileCarousel(carousel, cards) {
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
+            
+            // Додаємо lazy loading, якщо ще не додано
+            if (!img.hasAttribute('loading')) {
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            }
         }
     });
 }
@@ -1815,8 +2040,10 @@ function setupDesktopCarousel(carousel, cards) {
     cardsContainer.style.position = 'absolute';
     cardsContainer.style.width = '100%';
     cardsContainer.style.height = '100%';
-    cardsContainer.style.animation = 'carousel-rotate 32s linear infinite';
+    cardsContainer.style.animation = 'carousel-rotate 40s linear infinite'; // Сповільнено до 40 секунд
     cardsContainer.style.top = '';
+    cardsContainer.style.willChange = 'transform';
+    cardsContainer.style.transform = 'translateZ(0)';
     
     // Розміщуємо картки по колу
     const radius = 400; // Радіус кола каруселі
@@ -1834,6 +2061,7 @@ function setupDesktopCarousel(carousel, cards) {
         card.style.top = '50%';
         card.style.left = '50%';
         card.style.transform = `translate(-50%, -50%) translateX(${x}px) translateZ(${z}px) rotateY(${-angle * 180 / Math.PI}deg)`;
+        card.style.willChange = 'transform';
         
         // Забезпечуємо співвідношення сторін 2:3
         card.style.width = '280px';
@@ -1843,12 +2071,17 @@ function setupDesktopCarousel(carousel, cards) {
         // Встановлюємо затримку для плавної анімації
         card.style.transitionDelay = `${index * 0.05}s`;
         
-        // Оновлюємо стилі зображень
+        // Оновлюємо стилі зображень і додаємо ліниве завантаження
         const img = card.querySelector('img');
         if (img) {
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
+            
+            if (!img.hasAttribute('loading')) {
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            }
         }
     });
 }
@@ -1903,6 +2136,7 @@ function initAnimatedCardDeck() {
             height: 450px;
             margin: 40px auto;
             perspective: 1000px;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .deck-card {
@@ -1921,6 +2155,7 @@ function initAnimatedCardDeck() {
             transform-origin: center center;
             /* Забезпечуємо співвідношення сторін 2:3 */
             aspect-ratio: 2/3;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .deck-card img {
@@ -1974,12 +2209,14 @@ function initAnimatedCardDeck() {
         // Встановлюємо початкові стилі
         card.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
         card.style.zIndex = zIndex;
+        card.style.willChange = 'transform';
         
         // Створюємо зображення для карти
         const img = document.createElement('img');
         img.src = cardImages[i];
         img.alt = 'Метафорична карта ' + (i + 1);
         img.loading = 'lazy';
+        img.decoding = 'async';
         card.appendChild(img);
         
         // Додаємо карту в контейнер
@@ -1988,17 +2225,21 @@ function initAnimatedCardDeck() {
         // Додаємо ефект наведення - карта трохи висувається
         card.addEventListener('mouseenter', function() {
             if (!this.classList.contains('active')) {
-                this.style.transform = `translate(${randomX}px, ${randomY - 20}px) rotate(${randomRotate}deg) scale(1.05)`;
-                this.style.zIndex = 10; // Виносимо наперед при наведенні
-                this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+                requestAnimationFrame(() => {
+                    this.style.transform = `translate(${randomX}px, ${randomY - 20}px) rotate(${randomRotate}deg) scale(1.05)`;
+                    this.style.zIndex = 10; // Виносимо наперед при наведенні
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+                });
             }
         });
         
         card.addEventListener('mouseleave', function() {
             if (!this.classList.contains('active')) {
-                this.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
-                this.style.zIndex = zIndex;
-                this.style.boxShadow = '';
+                requestAnimationFrame(() => {
+                    this.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
+                    this.style.zIndex = zIndex;
+                    this.style.boxShadow = '';
+                });
             }
         });
         
@@ -2019,9 +2260,11 @@ function initAnimatedCardDeck() {
             
             // Активуємо цю карту
             this.classList.add('active');
-            this.style.transform = 'translate(0, -50px) rotate(0deg) scale(1.1)';
-            this.style.zIndex = 20;
-            this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+            requestAnimationFrame(() => {
+                this.style.transform = 'translate(0, -50px) rotate(0deg) scale(1.1)';
+                this.style.zIndex = 20;
+                this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+            });
         });
     }
     
@@ -2060,6 +2303,7 @@ function initCardGrid() {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 0;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .grid-card {
@@ -2073,6 +2317,7 @@ function initCardGrid() {
             width: 100%;
             height: auto;
             aspect-ratio: 2/3; /* Фіксоване співвідношення сторін 2:3 */
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .grid-card img {
@@ -2116,6 +2361,9 @@ function initCardGrid() {
             .grid-card {
                 transition: box-shadow 0.3s ease;
                 transform: none !important; /* Вимикаємо трансформації */
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 auto 15px !important;
             }
             
             .grid-card:hover {
@@ -2139,7 +2387,7 @@ function initCardGrid() {
             
             .grid-card {
                 width: 85%;
-                margin: 0 auto;
+                margin: 0 auto 15px;
             }
         }
     `;
@@ -2154,8 +2402,16 @@ function initCardGrid() {
         card.setAttribute('aria-label', `Метафорична карта ${index + 1}`);
         card.setAttribute('tabindex', '0');
         
-        // Забезпечуємо співвідношення сторін 2:3
+        // Забезпечуємо співвідношення сторін 2:3 і додаємо will-change
         card.style.aspectRatio = '2/3';
+        card.style.willChange = 'transform';
+        
+        // Додаємо lazy loading для зображень
+        const img = card.querySelector('img');
+        if (img && !img.hasAttribute('loading')) {
+            img.loading = 'lazy';
+            img.decoding = 'async';
+        }
     });
     
     // Додаємо 3D ефект ТІЛЬКИ для десктопів
@@ -2239,13 +2495,17 @@ function initCardGrid() {
         // Додаємо ефект наведення для кожної картки
         gridCards.forEach(card => {
             card.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.05) translateZ(40px)';
-                this.style.zIndex = '10';
+                requestAnimationFrame(() => {
+                    this.style.transform = 'scale(1.05) translateZ(40px)';
+                    this.style.zIndex = '10';
+                });
             });
             
             card.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(0.98) translateZ(0)';
-                this.style.zIndex = '';
+                requestAnimationFrame(() => {
+                    this.style.transform = 'scale(0.98) translateZ(0)';
+                    this.style.zIndex = '';
+                });
             });
         });
     } else {
@@ -2706,6 +2966,7 @@ function initLegalButtons() {
                 color: #fff; /* Білий текст для кнопок */
                 font-family: inherit;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                will-change: transform; /* Для апаратного прискорення */
             }
             
             .legal-button:hover {
@@ -2772,6 +3033,7 @@ function initLegalButtons() {
                 max-width: 700px;
                 margin: auto;
                 box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+                will-change: transform; /* Для апаратного прискорення */
             }
             
             .modal-close {
@@ -3078,6 +3340,7 @@ function initModals() {
         .modal {
             opacity: 0;
             transition: opacity 0.3s ease;
+            will-change: transform, opacity; /* Для апаратного прискорення */
         }
         
         .modal.open {
@@ -3087,6 +3350,7 @@ function initModals() {
         .modal-content {
             transform: translateY(20px);
             transition: transform 0.3s ease;
+            will-change: transform; /* Для апаратного прискорення */
         }
         
         .modal.open .modal-content {
@@ -3207,6 +3471,7 @@ function initEnhancedFallingCards(forceStart = false) {
             transition: transform 0.3s ease;
             opacity: 0;
             aspect-ratio: 2/3;
+            will-change: transform, opacity; /* Для апаратного прискорення */
         }
         
         .falling-card img {
@@ -3248,6 +3513,12 @@ function initEnhancedFallingCards(forceStart = false) {
                 transform-origin: center;
                 margin-left: calc(var(--data-card-size, 420px) / -2);
             }
+            
+            /* Повністю видимі падаючі картки */
+            .falling-cards-container {
+                overflow: visible;
+                padding-bottom: 100px; /* Додатковий простір внизу */
+            }
         }
         
         @media (max-width: 767px) {
@@ -3260,6 +3531,8 @@ function initEnhancedFallingCards(forceStart = false) {
             
             .falling-cards-container {
                 min-height: 800px;
+                overflow: visible; /* Забезпечуємо повну видимість */
+                padding-bottom: 100px; /* Додатковий простір внизу */
             }
         }
     `;
@@ -3310,6 +3583,7 @@ function initEnhancedFallingCards(forceStart = false) {
         card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
         card.style.setProperty('--data-falling-delay', fallingDelay + 's');
         card.style.setProperty('--data-falling-duration', fallingDuration + 's');
+        card.style.setProperty('--data-will-change', 'transform, opacity');
         
         if (isMobile) {
             card.style.setProperty('--data-mobile-card-size', cardSize + 'px');
@@ -3328,6 +3602,7 @@ function initEnhancedFallingCards(forceStart = false) {
         img.src = imageUrl;
         img.alt = 'Метафорична карта';
         img.loading = 'lazy';
+        img.decoding = 'async';
         card.appendChild(img);
         
         // Додаємо картку в контейнер
@@ -3425,6 +3700,19 @@ function adjustCardSizeToImages() {
             // Забезпечуємо співвідношення сторін 2:3 (ширина:висота)
             card.style.aspectRatio = '2/3';
             
+            // Додаємо will-change для апаратного прискорення
+            card.style.willChange = 'transform';
+            
+            // Забезпечуємо однакові розміри для всіх карток
+            card.style.width = '100%';
+            card.style.height = 'auto';
+            
+            // Додаємо lazy loading, якщо його ще немає
+            if (!cardImage.hasAttribute('loading')) {
+                cardImage.loading = 'lazy';
+                cardImage.decoding = 'async';
+            }
+            
             // Після завантаження зображення налаштовуємо розмір
             if (cardImage.complete) {
                 adjustCardImage(card, cardImage);
@@ -3454,6 +3742,9 @@ window.addEventListener('load', function() {
     if (window.innerWidth <= 768) {
         setTimeout(fixMobileCarouselVisibility, 1000);
     }
+    
+    // Ініціалізуємо оптимізацію зображень після завантаження сторінки
+    optimizeImageLoading();
 });
 
 // Оптимізація для обробки зміни розміру вікна
