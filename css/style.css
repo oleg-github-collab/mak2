@@ -101,6 +101,10 @@
   /* Розміри хедера */
   --header-height: 80px;
   --header-height-scrolled: 60px;
+  
+  /* Розміри карт для консистентності */
+  --card-width: 280px;
+  --card-height: 420px;
 }
 
 /* ===== Reset ===== */
@@ -270,7 +274,7 @@ button {
   display: none !important;
 }
 
-/* ===== Preloader з індикатором прогресу ===== */
+/* ===== Вдосконалений прелоадер з індикатором прогресу ===== */
 .preloader {
   position: fixed;
   top: 0;
@@ -283,6 +287,7 @@ button {
   align-items: center;
   z-index: var(--z-extreme);
   transition: opacity var(--transition-slow), visibility var(--transition-slow);
+  cursor: none;
 }
 
 .preloader.hidden {
@@ -306,28 +311,38 @@ button {
   margin: 0 auto var(--space-md);
 }
 
-/* Новий індикатор прогресу для прелоадера */
+/* Вдосконалений індикатор прогресу для прелоадера */
 .progress-container {
   width: 100%;
-  height: 6px;
+  height: 8px;
   background-color: var(--color-light-gray);
   border-radius: var(--radius-full);
   margin-top: var(--space-md);
   overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar {
   height: 100%;
   width: 0;
-  background-color: var(--color-accent);
-  transition: width 0.3s ease;
+  background: linear-gradient(to right, var(--color-accent-darker), var(--color-accent-light));
+  transition: width 0.5s ease;
   border-radius: var(--radius-full);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background-size: 200% 100%;
+  animation: progress-gradient 2s linear infinite;
 }
 
 .progress-text {
   margin-top: var(--space-sm);
   font-size: var(--text-sm);
-  color: var(--color-text-light);
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
+}
+
+@keyframes progress-gradient {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes loader-spin {
@@ -337,11 +352,18 @@ button {
 .loading-text {
   font-size: var(--text-md);
   font-weight: var(--weight-medium);
-  color: var(--color-text-light);
+  color: var(--color-accent);
   letter-spacing: 2px;
+  margin-bottom: var(--space-md);
+  animation: loading-pulse 1.5s ease-in-out infinite;
 }
 
-/* ===== Custom Cursor ===== */
+@keyframes loading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Custom Cursor - Підвищена якість ===== */
 .cursor-container {
   position: fixed;
   top: 0;
@@ -360,6 +382,7 @@ button {
   transition: width var(--transition-fast), height var(--transition-fast), background-color var(--transition-fast);
   z-index: var(--z-high);
   will-change: transform;
+  box-shadow: 0 0 10px var(--color-accent), 0 0 5px var(--color-accent);
 }
 
 .cursor-outline {
@@ -372,11 +395,12 @@ button {
   transition: width var(--transition-medium), height var(--transition-medium), transform var(--transition-medium);
   z-index: var(--z-med);
   will-change: transform;
+  box-shadow: 0 0 15px rgba(230, 126, 34, 0.3);
 }
 
 .cursor-text {
   position: fixed;
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
   color: var(--color-white);
   font-size: var(--text-xs);
   padding: var(--space-xs) var(--space-sm);
@@ -389,6 +413,7 @@ button {
   text-align: center;
   white-space: nowrap;
   will-change: transform, opacity;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .cursor-hover {
@@ -418,7 +443,8 @@ button {
   body.cursor-enabled .interactive,
   body.cursor-enabled input,
   body.cursor-enabled textarea,
-  body.cursor-enabled .cursor-hover-trigger {
+  body.cursor-enabled .cursor-hover-trigger,
+  body.cursor-enabled .preloader {
     cursor: none;
   }
 }
@@ -954,10 +980,10 @@ button {
 
 .carousel-card {
   position: absolute;
-  width: 280px;
-  height: 420px;
-  left: calc(50% - 140px);
-  top: calc(50% - 210px);
+  width: var(--card-width);
+  height: var(--card-height);
+  left: calc(50% - (var(--card-width) / 2));
+  top: calc(50% - (var(--card-height) / 2));
   transition: transform 2s ease-out, opacity 1s ease, filter 1s ease;
   backface-visibility: hidden;
   will-change: transform, opacity, filter;
@@ -1089,13 +1115,13 @@ button {
   z-index: 0;
 }
 
-/* ===== Falling Cards Section - Вдосконалена ===== */
+/* ===== Вдосконалена секція падаючих карток - Без обрізання та однакові розміри ===== */
 .falling-cards {
   padding: var(--space-xxl) 0;
   position: relative;
-  min-height: 80vh;
+  min-height: 100vh;
   overflow: visible; /* Забезпечує, щоб картки не обрізались внизу */
-  padding-bottom: 350px; /* Збільшений простір внизу для падіння карток */
+  padding-bottom: 500px; /* Збільшений простір внизу для повного відображення карток */
 }
 
 .falling-cards-container {
@@ -1103,22 +1129,22 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% + 400px); /* Збільшена висота контейнера */
+  height: calc(100% + 600px); /* Значно збільшена висота контейнера */
   pointer-events: none;
   z-index: 1;
   overflow: visible; /* Дозволяє карткам виходити за межі контейнера */
 }
 
-/* Оптимізовані стилі для падаючих карток */
+/* Оптимізовані стилі для падаючих карток - однаковий розмір з картками колоди */
 .falling-card {
   position: absolute;
-  width: 280px;
-  height: 420px;
+  width: var(--card-width); /* Використовуємо змінну для узгодженості */
+  height: var(--card-height); /* Використовуємо змінну для узгодженості */
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl); /* Посилена тінь для кращої видимості */
   opacity: 0;
-  top: -350px; /* Початкова позиція вище для плавного входу */
+  top: -450px; /* Початкова позиція вище для плавного входу */
   transform-origin: center center;
   will-change: transform, opacity;
   visibility: hidden;
@@ -1137,7 +1163,7 @@ button {
   left: calc(var(--data-x-position, 50) * 1%);
 }
 
-/* Сповільнена анімація падіння на 30% */
+/* Сповільнена анімація падіння з плавними переходами */
 .falling-card.animated {
   animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
@@ -1162,31 +1188,35 @@ button {
     opacity: 0;
   }
   100% {
-    transform: translateY(calc(100vh + 500px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+    transform: translateY(calc(100vh + 600px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
     opacity: 0;
   }
 }
 
 /* Оптимізовані медіа-запити для адаптивності падаючих карток */
 @media (max-width: 992px) {
-  .falling-card {
-    width: 240px;
-    height: 360px;
+  :root {
+    --card-width: 240px;
+    --card-height: 360px;
   }
   
   .falling-cards {
-    padding-bottom: 400px;
+    padding-bottom: 450px;
+  }
+  
+  .falling-cards-container {
+    height: calc(100% + 550px);
   }
 }
 
 @media (max-width: 768px) {
-  .falling-card {
-    width: 200px;
-    height: 300px;
+  :root {
+    --card-width: 200px;
+    --card-height: 300px;
   }
   
   .falling-cards-container {
-    height: calc(100% + 450px);
+    height: calc(100% + 500px);
   }
   
   /* Відображення тільки однієї карти на мобільних */
@@ -1224,7 +1254,7 @@ button {
       opacity: 0;
     }
     100% {
-      transform: translateX(-50%) translateY(calc(100vh + 500px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+      transform: translateX(-50%) translateY(calc(100vh + 600px)) rotate(calc(var(--data-rotate-end, 0) * 1deg));
       opacity: 0;
     }
   }
@@ -1329,7 +1359,7 @@ button {
   color: var(--color-text-light);
 }
 
-/* ===== Cards Grid 3D Section ===== */
+/* ===== Cards Grid 3D Section - Оптимізовані однакові розміри карток ===== */
 .cards-grid-3d {
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
@@ -1349,7 +1379,7 @@ button {
   transform-style: preserve-3d;
 }
 
-/* Оновлені стилі для однакових розмірів карток у гріді */
+/* Оптимізовані стилі для однакових розмірів карток у гріді */
 .grid-card {
   position: relative;
   width: 100%;
@@ -2215,8 +2245,8 @@ button {
   }
   
   .carousel-card {
-    width: 260px;
-    height: 390px;
+    width: var(--card-width);
+    height: var(--card-height);
   }
 }
 
@@ -2224,6 +2254,8 @@ button {
   :root {
     --header-height: 70px;
     --header-height-scrolled: 60px;
+    --card-width: 240px;
+    --card-height: 360px;
   }
 
   .hero-content {
@@ -2272,14 +2304,14 @@ button {
     height: 450px;
     transform: scale(0.9);
   }
-  
-  .carousel-card {
-    width: 220px;
-    height: 330px;
-  }
 }
 
 @media (max-width: 768px) {
+  :root {
+    --card-width: 200px;
+    --card-height: 300px;
+  }
+  
   .container {
     padding-left: var(--space-lg);
     padding-right: var(--space-lg);
@@ -2316,13 +2348,6 @@ button {
   .circular-carousel {
     height: 350px;
     transform: scale(0.8);
-  }
-  
-  .carousel-card {
-    width: 180px;
-    height: 270px;
-    left: calc(50% - 90px);
-    top: calc(50% - 135px);
   }
   
   .modal-content {
@@ -2364,13 +2389,6 @@ button {
   .circular-carousel {
     height: 300px;
     transform: scale(0.7);
-  }
-  
-  .carousel-card {
-    width: 160px;
-    height: 240px;
-    left: calc(50% - 80px);
-    top: calc(50% - 120px);
   }
 
   .hero-buttons {

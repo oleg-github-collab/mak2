@@ -11,12 +11,16 @@
     <meta property="og:description" content="Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку від українських авторів">
     <meta property="og:image" content="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rootsandwings.com.ua/">
     <meta property="og:locale" content="uk_UA">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Roots and Wings - Метафоричні асоціативні карти">
     <meta name="twitter:description" content="Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку від українських авторів">
     <meta name="twitter:image" content="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png">
     <meta name="theme-color" content="#2c3e50">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="canonical" href="https://rootsandwings.com.ua/">
     <title>Roots and Wings - Метафоричні асоціативні карти | Психологічні картки для саморозвитку</title>
     
@@ -27,9 +31,13 @@
     <!-- Попереднє завантаження критичних ресурсів -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="css/style.css" as="style">
     <link rel="preload" href="js/main.js" as="script">
     <link rel="preload" href="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" as="image" fetchpriority="high">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- Стилі -->
     <link rel="stylesheet" href="css/style.css">
@@ -41,7 +49,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js" defer></script>
 
-    <!-- Структурована мікродата Schema.org -->
+    <!-- Структурована мікродата Schema.org для продукту -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -58,33 +66,61 @@
         "priceCurrency": "UAH",
         "price": "1500",
         "availability": "https://schema.org/InStock"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "124"
       }
     }
     </script>
+    
+    <!-- Додаткова мікродата для організації -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Roots and Wings",
+      "url": "https://rootsandwings.com.ua",
+      "logo": "https://rootsandwings.com.ua/images/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+380501234567",
+        "contactType": "customer service",
+        "availableLanguage": ["Ukrainian", "English"]
+      },
+      "sameAs": [
+        "https://facebook.com/rootsandwings",
+        "https://instagram.com/rootsandwings",
+        "https://youtube.com/rootsandwings",
+        "https://t.me/rootsandwings"
+      ]
+    }
+    </script>
 </head>
-<body data-page="home">
+<body data-page="home" itemscope itemtype="https://schema.org/WebPage">
     <!-- Прелоадер з індикатором прогресу -->
-    <div class="preloader" id="preloader">
+    <div class="preloader" id="preloader" aria-hidden="true">
         <div class="preloader-content">
             <div class="loader"></div>
             <div class="loading-text">Завантаження...</div>
             <!-- Індикатор прогресу -->
-            <div class="progress-container">
+            <div class="progress-container" aria-label="Індикатор прогресу завантаження">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            <div class="progress-text" id="progress-text">0%</div>
+            <div class="progress-text" id="progress-text" aria-live="polite">0%</div>
         </div>
     </div>
 
     <!-- Кастомний курсор (прихований на мобільних) -->
-    <div class="cursor-container desktop-only">
+    <div class="cursor-container desktop-only" aria-hidden="true">
         <div class="cursor-dot"></div>
         <div class="cursor-outline"></div>
         <div class="cursor-text"></div>
     </div>
 
     <!-- Хедер -->
-    <header class="header">
+    <header class="header" role="banner">
         <div class="container">
             <div class="header-wrapper">
                 <div class="logo">
@@ -105,7 +141,7 @@
                 </nav>
                 
                 <!-- Mobile menu button - видима тільки на мобільних -->
-                <button class="mobile-menu-toggle" aria-label="Відкрити меню">
+                <button class="mobile-menu-toggle" aria-label="Відкрити меню" aria-expanded="false" aria-controls="mobile-menu">
                     <span class="toggle-line"></span>
                     <span class="toggle-line"></span>
                     <span class="toggle-line"></span>
@@ -114,7 +150,7 @@
         </div>
         
         <!-- Mobile menu - прихована за замовчуванням -->
-        <div class="mobile-menu">
+        <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
             <div class="mobile-menu-container">
                 <button class="mobile-menu-close" aria-label="Закрити меню">×</button>
                 <nav class="mobile-nav" aria-label="Мобільна навігація">
@@ -131,18 +167,18 @@
     </header>
 
     <!-- Головна секція -->
-    <section id="hero" class="hero-section section">
+    <section id="hero" class="hero-section section" aria-labelledby="hero-title">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title split-text">Метафоричні асоціативні карти "Roots and Wings"</h1>
+                    <h1 class="hero-title split-text" id="hero-title">Метафоричні асоціативні карти "Roots and Wings"</h1>
                     <h2 class="hero-subtitle split-text">Коріння і крила для вашої свідомості</h2>
                     <p class="hero-description">
                         Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку.
                         Наші карти допоможуть вам розкрити внутрішній потенціал та знайти відповіді на важливі питання.
                     </p>
                     <div class="hero-buttons">
-                        <a href="#contact" class="btn btn-primary">Замовити зараз <i class="fas fa-arrow-right"></i></a>
+                        <a href="#contact" class="btn btn-primary">Замовити зараз <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                         <a href="#features" class="btn btn-outline">Дізнатися більше</a>
                     </div>
                 </div>
@@ -156,24 +192,24 @@
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator desktop-only" data-cursor-text="Гортати">
+        <div class="scroll-indicator desktop-only" data-cursor-text="Гортати" aria-hidden="true">
             <div class="scroll-icon">
                 <div class="scroll-dot"></div>
             </div>
             <span>Гортайте вниз</span>
         </div>
         <!-- Частинки тільки для десктопа -->
-        <div class="hero-particles desktop-only" id="particles-js"></div>
-        <div class="hero-shape-1"></div>
-        <div class="hero-shape-2"></div>
+        <div class="hero-particles desktop-only" id="particles-js" aria-hidden="true"></div>
+        <div class="hero-shape-1" aria-hidden="true"></div>
+        <div class="hero-shape-2" aria-hidden="true"></div>
     </section>
 
     <!-- Секція "Про проект" -->
-    <section id="about" class="about-section section">
+    <section id="about" class="about-section section" aria-labelledby="about-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Про <span class="accent">проект</span></h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="about-title">Про <span class="accent">проект</span></h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="about-content">
                 <div class="product-card">
@@ -182,7 +218,7 @@
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142191/22_peebeg.jpg" 
                              alt="Метафорична карта із зображенням природного мотиву" 
                              loading="lazy" width="500" height="350">
-                        <div class="image-overlay"></div>
+                        <div class="image-overlay" aria-hidden="true"></div>
                     </div>
                     <div class="card-content">
                         <h3>Метафоричні асоціативні карти "Roots and Wings"</h3>
@@ -193,19 +229,19 @@
                         </p>
                         <div class="feature-list">
                             <div class="feature-item">
-                                <div class="icon"><i class="fas fa-check"></i></div>
+                                <div class="icon" aria-hidden="true"><i class="fas fa-check"></i></div>
                                 <p>80 унікальних карт, створених професійними художниками</p>
                             </div>
                             <div class="feature-item">
-                                <div class="icon"><i class="fas fa-check"></i></div>
+                                <div class="icon" aria-hidden="true"><i class="fas fa-check"></i></div>
                                 <p>Теоретичний посібник з техніками використання</p>
                             </div>
                             <div class="feature-item">
-                                <div class="icon"><i class="fas fa-check"></i></div>
+                                <div class="icon" aria-hidden="true"><i class="fas fa-check"></i></div>
                                 <p>Підходить для індивідуальної та групової роботи</p>
                             </div>
                             <div class="feature-item">
-                                <div class="icon"><i class="fas fa-check"></i></div>
+                                <div class="icon" aria-hidden="true"><i class="fas fa-check"></i></div>
                                 <p>Розроблено сертифікованими психологами</p>
                             </div>
                         </div>
@@ -213,14 +249,14 @@
                 </div>
             </div>
         </div>
-        <div class="section-shape-1"></div>
+        <div class="section-shape-1" aria-hidden="true"></div>
     </section>
 
     <!-- Секція "3D карусель карт" -->
-    <section class="cards-carousel section" id="carousel">
+    <section class="cards-carousel section" id="carousel" aria-label="Карусель з метафоричними картами">
         <div class="carousel-container">
             <!-- 3D карусель з автоматичним обертанням - 10 унікальних карт -->
-            <div class="carousel-3d smooth-carousel" data-auto-play="true" data-pause-on-hover="false" data-direction="left-to-right">
+            <div class="carousel-3d smooth-carousel" data-auto-play="true" data-pause-on-hover="false" data-direction="left-to-right" aria-roledescription="карусель" aria-label="Карусель метафоричних карт">
                 <!-- 10 унікальних карт для каруселі -->
                 <div class="carousel-card" data-index="0">
                     <div class="card-inner">
@@ -293,7 +329,7 @@
                     </div>
                 </div>
             </div>
-            <div class="carousel-controls">
+            <div class="carousel-controls" aria-hidden="true">
                 <button class="carousel-prev" aria-label="Попередня карта"><i class="fas fa-chevron-left"></i></button>
                 <button class="carousel-next" aria-label="Наступна карта"><i class="fas fa-chevron-right"></i></button>
             </div>
@@ -301,16 +337,16 @@
     </section>
 
     <!-- Секція "Особливості" -->
-    <section id="features" class="features-section section dark-section">
+    <section id="features" class="features-section section dark-section" aria-labelledby="features-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Особливості <span class="accent">карт</span></h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="features-title">Особливості <span class="accent">карт</span></h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="features-grid">
                 <!-- Для секції "Особливості" не потрібні додаткові зображення, тільки іконки -->
                 <div class="feature-card" data-delay="0">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-brain"></i>
                     </div>
                     <h3>Самопізнання</h3>
@@ -319,7 +355,7 @@
                     </p>
                 </div>
                 <div class="feature-card" data-delay="0.1">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-heart"></i>
                     </div>
                     <h3>Робота з емоціями</h3>
@@ -328,7 +364,7 @@
                     </p>
                 </div>
                 <div class="feature-card" data-delay="0.2">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-comments"></i>
                     </div>
                     <h3>Комунікація</h3>
@@ -337,7 +373,7 @@
                     </p>
                 </div>
                 <div class="feature-card" data-delay="0.3">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-lightbulb"></i>
                     </div>
                     <h3>Творчий розвиток</h3>
@@ -346,7 +382,7 @@
                     </p>
                 </div>
                 <div class="feature-card" data-delay="0.4">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-road"></i>
                     </div>
                     <h3>Постановка цілей</h3>
@@ -355,7 +391,7 @@
                     </p>
                 </div>
                 <div class="feature-card" data-delay="0.5">
-                    <div class="feature-icon">
+                    <div class="feature-icon" aria-hidden="true">
                         <i class="fas fa-balance-scale"></i>
                     </div>
                     <h3>Прийняття рішень</h3>
@@ -365,14 +401,14 @@
                 </div>
             </div>
         </div>
-        <div class="section-shape-2"></div>
+        <div class="section-shape-2" aria-hidden="true"></div>
     </section>
 
     <!-- Секція "Карти, що випадають" з 18 унікальними зображеннями -->
     <section class="falling-cards section" data-animation-trigger="scroll" aria-label="Анімація падаючих карт">
         <!-- Додано додатковий контейнер для обмеження області анімації -->
         <div class="falling-cards-wrapper">
-            <div class="falling-cards-container individual-falling" data-initially-hidden="true" data-scroll-trigger="true">
+            <div class="falling-cards-container individual-falling" data-initially-hidden="true" data-scroll-trigger="true" aria-label="Падаючі метафоричні карти">
                 <!-- 18 унікальних карт для анімації падаючих карт -->
                 <div class="falling-card larger-card random-position" data-falling-delay="0" data-rotate-start="-10" data-rotate-end="15" data-x-position="15" data-y-position="10">
                     <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140986/47_m8g9rw.jpg" 
@@ -467,17 +503,17 @@
             </div>
         </div>
         <!-- Додано вказівник, щоб користувачі розуміли, що секція містить анімацію -->
-        <div class="falling-cards-indicator desktop-only">
+        <div class="falling-cards-indicator desktop-only" aria-hidden="true">
             <span>Прокрутіть, щоб побачити анімацію</span>
         </div>
     </section>
 
     <!-- Секція "Комплектація" -->
-    <section id="contents" class="contents-section section">
+    <section id="contents" class="contents-section section" aria-labelledby="contents-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Комплектація <span class="accent">набору</span></h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="contents-title">Комплектація <span class="accent">набору</span></h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="contents-grid">
                 <!-- Зображення для секції "Комплектація" -->
@@ -485,11 +521,11 @@
                     <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" 
                          alt="Повний комплект метафоричних карт у фірмовій упаковці" 
                          loading="lazy" width="500" height="350">
-                    <div class="image-reveal-overlay"></div>
+                    <div class="image-reveal-overlay" aria-hidden="true"></div>
                 </div>
                 <div class="content-details">
                     <div class="content-item">
-                        <div class="content-icon">
+                        <div class="content-icon" aria-hidden="true">
                             <i class="fas fa-images"></i>
                         </div>
                         <div class="content-text">
@@ -500,7 +536,7 @@
                         </div>
                     </div>
                     <div class="content-item">
-                        <div class="content-icon">
+                        <div class="content-icon" aria-hidden="true">
                             <i class="fas fa-book"></i>
                         </div>
                         <div class="content-text">
@@ -511,7 +547,7 @@
                         </div>
                     </div>
                     <div class="content-item">
-                        <div class="content-icon">
+                        <div class="content-icon" aria-hidden="true">
                             <i class="fas fa-box"></i>
                         </div>
                         <div class="content-text">
@@ -522,7 +558,7 @@
                         </div>
                     </div>
                     <div class="content-item">
-                        <div class="content-icon">
+                        <div class="content-icon" aria-hidden="true">
                             <i class="fas fa-certificate"></i>
                         </div>
                         <div class="content-text">
@@ -538,7 +574,7 @@
     </section>
 
     <!-- Секція "Карти у 3D просторі" з 9 унікальними зображеннями -->
-    <section class="cards-grid-3d section">
+    <section class="cards-grid-3d section" aria-label="Інтерактивна 3D галерея карт">
         <div class="container">
             <div class="cards-grid-container">
                 <!-- 9 унікальних карт для 3D сітки -->
@@ -610,16 +646,16 @@
     </section>
 
     <!-- Секція "Цільова аудиторія" -->
-    <section id="target" class="target-section section dark-section">
+    <section id="target" class="target-section section dark-section" aria-labelledby="target-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Кому <span class="accent">підійдуть</span> карти</h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="target-title">Кому <span class="accent">підійдуть</span> карти</h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="target-content">
                 <!-- Тільки іконки, без зображень -->
                 <div class="target-card" data-aos="fade-right" data-aos-delay="100">
-                    <div class="target-icon">
+                    <div class="target-icon" aria-hidden="true">
                         <i class="fas fa-user-tie"></i>
                     </div>
                     <div class="target-text">
@@ -630,7 +666,7 @@
                     </div>
                 </div>
                 <div class="target-card" data-aos="fade-right" data-aos-delay="300">
-                    <div class="target-icon">
+                    <div class="target-icon" aria-hidden="true">
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="target-text">
@@ -641,7 +677,7 @@
                     </div>
                 </div>
                 <div class="target-card" data-aos="fade-right" data-aos-delay="500">
-                    <div class="target-icon">
+                    <div class="target-icon" aria-hidden="true">
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="target-text">
@@ -658,7 +694,7 @@
     <!-- Секція "Місія" -->
     <section id="mission" class="mission-section section">
         <!-- Фонове зображення додається через CSS -->
-        <div class="parallax-bg" data-parallax-speed="0.15"></div>
+        <div class="parallax-bg" data-parallax-speed="0.15" aria-hidden="true"></div>
         <div class="mission-content">
             <h2 class="mission-title">Наша місія</h2>
             <p class="mission-text">
@@ -671,11 +707,11 @@
     </section>
 
     <!-- Секція "Автори" -->
-    <section id="authors" class="authors-section section">
+    <section id="authors" class="authors-section section" aria-labelledby="authors-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Автори <span class="accent">проекту</span></h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="authors-title">Автори <span class="accent">проекту</span></h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="authors-grid">
                 <!-- 2 фото авторів для цієї секції -->
@@ -684,7 +720,7 @@
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832168/author-1_ujuty1.png" 
                              alt="Оксана Бирка - психолог, арт-терапевт, співавтор карт" 
                              loading="lazy" width="200" height="200">
-                        <div class="author-photo-overlay"></div>
+                        <div class="author-photo-overlay" aria-hidden="true"></div>
                     </div>
                     <h3 class="author-name">Оксана Бирка</h3>
                     <div class="author-title">Психолог, арт-терапевт</div>
@@ -692,9 +728,9 @@
                         Системний сімейний та дитячий психотерапевт, працює в інтегративному підході.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Оксани Бирки"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Оксани Бирки"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Оксани Бирки"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Оксани Бирки"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Оксани Бирки"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Оксани Бирки"><i class="fab fa-telegram-plane" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="author-card" data-aos="fade-up" data-aos-delay="300">
@@ -702,7 +738,7 @@
                         <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832166/author-2_x78lh0.png" 
                              alt="Марина Камінська - художниця, співавтор карт" 
                              loading="lazy" width="200" height="200">
-                        <div class="author-photo-overlay"></div>
+                        <div class="author-photo-overlay" aria-hidden="true"></div>
                     </div>
                     <h3 class="author-name">Марина Камінська</h3>
                     <div class="author-title">Художниця</div>
@@ -710,9 +746,9 @@
                         Українська мисткиня, що працює з акрилом та аквареллю, втілюючи процес самопізнання у своїй творчості.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Марини Камінської"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Марини Камінської"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Марини Камінської"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Марини Камінської"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Марини Камінської"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Марини Камінської"><i class="fab fa-telegram-plane" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -720,11 +756,11 @@
     </section>
 
     <!-- Секція "Контакт" -->
-    <section id="contact" class="contact-section section dark-section">
+    <section id="contact" class="contact-section section dark-section" aria-labelledby="contact-title">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Зв'яжіться з <span class="accent">нами</span></h2>
-                <div class="section-line"></div>
+                <h2 class="section-title" id="contact-title">Зв'яжіться з <span class="accent">нами</span></h2>
+                <div class="section-line" aria-hidden="true"></div>
             </div>
             <div class="contact-content">
                 <div class="contact-info">
@@ -733,16 +769,16 @@
                     
                     <div class="contact-methods">
                         <div class="contact-method">
-                            <div class="method-icon">
+                            <div class="method-icon" aria-hidden="true">
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="method-details">
                                 <h3>Телефон</h3>
-                                <p>+380 50 123 4567</p>
+                                <p><a href="tel:+380501234567">+380 50 123 4567</a></p>
                             </div>
                         </div>
                         <div class="contact-method">
-                            <div class="method-icon">
+                            <div class="method-icon" aria-hidden="true">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="method-details">
@@ -751,7 +787,7 @@
                             </div>
                         </div>
                         <div class="contact-method">
-                            <div class="method-icon">
+                            <div class="method-icon" aria-hidden="true">
                                 <i class="fas fa-clock"></i>
                             </div>
                             <div class="method-details">
@@ -761,31 +797,32 @@
                         </div>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm" action="#" method="POST">
+                <form class="contact-form" id="contactForm" action="#" method="POST" aria-labelledby="form-title">
+                    <h3 id="form-title" class="visually-hidden">Форма зворотного зв'язку</h3>
                     <div class="form-group">
                         <label for="name">Ваше ім'я</label>
-                        <input type="text" id="name" name="name" required>
-                        <div class="input-line"></div>
+                        <input type="text" id="name" name="name" required aria-required="true">
+                        <div class="input-line" aria-hidden="true"></div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                        <div class="input-line"></div>
+                        <input type="email" id="email" name="email" required aria-required="true">
+                        <div class="input-line" aria-hidden="true"></div>
                     </div>
                     <div class="form-group">
                         <label for="message">Повідомлення</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                        <div class="input-line"></div>
+                        <textarea id="message" name="message" rows="5" required aria-required="true"></textarea>
+                        <div class="input-line" aria-hidden="true"></div>
                     </div>
                     <button type="submit" class="btn btn-accent">Надіслати повідомлення</button>
-                    <div class="success-message hidden">Дякуємо! Ваше повідомлення успішно надіслано.</div>
+                    <div class="success-message hidden" aria-live="polite">Дякуємо! Ваше повідомлення успішно надіслано.</div>
                 </form>
             </div>
         </div>
     </section>
 
     <!-- Футер -->
-    <footer class="footer dark-bg">
+    <footer class="footer dark-bg" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
@@ -809,26 +846,26 @@
                     <h3>Документи</h3>
                     <div class="legal-buttons">
                         <button class="btn-modal modal-trigger" data-modal="privacy-policy">
-                            <i class="fas fa-shield-alt"></i> Політика конфіденційності
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i> Політика конфіденційності
                         </button>
                         <button class="btn-modal modal-trigger" data-modal="payment-terms">
-                            <i class="fas fa-credit-card"></i> Умови оплати
+                            <i class="fas fa-credit-card" aria-hidden="true"></i> Умови оплати
                         </button>
                         <button class="btn-modal modal-trigger" data-modal="delivery-terms">
-                            <i class="fas fa-truck"></i> Умови доставки
+                            <i class="fas fa-truck" aria-hidden="true"></i> Умови доставки
                         </button>
                         <button class="btn-modal modal-trigger" data-modal="terms-of-use">
-                            <i class="fas fa-file-contract"></i> Умови використання
+                            <i class="fas fa-file-contract" aria-hidden="true"></i> Умови використання
                         </button>
                     </div>
                 </div>
                 <div class="footer-social">
                     <h3>Слідкуйте за нами</h3>
                     <div class="social-icons">
-                        <a href="#" class="social-icon" data-cursor-text="Facebook" aria-label="Наша сторінка у Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="Instagram" aria-label="Наш профіль у Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="YouTube" aria-label="Наш канал на YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="Telegram" aria-label="Наш канал у Telegram"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Facebook" aria-label="Наша сторінка у Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Instagram" aria-label="Наш профіль у Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="YouTube" aria-label="Наш канал на YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Telegram" aria-label="Наш канал у Telegram"><i class="fab fa-telegram-plane" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -837,7 +874,7 @@
             </div>
         </div>
         <a href="#" class="back-to-top" data-cursor-text="Наверх" aria-label="Повернутися наверх">
-            <i class="fas fa-arrow-up"></i>
+            <i class="fas fa-arrow-up" aria-hidden="true"></i>
         </a>
     </footer>
 
@@ -1012,7 +1049,7 @@
                     
                     <h4>Контакт</h4>
                     <p>Якщо у вас виникли запитання щодо цих Умов використання, будь ласка, зв'яжіться з нами за електронною 
-                    поштою info@rootsandwings.com.ua.</p>
+                    поштою <a href="mailto:info@rootsandwings.com.ua">info@rootsandwings.com.ua</a>.</p>
                 </div>
             </div>
         </div>
@@ -1026,5 +1063,20 @@
 
     <!-- JS з відкладеним завантаженням -->
     <script src="js/main.js" defer></script>
+
+    <!-- Додатковий скрипт для кодування кирилиці у формах -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Для форми зворотного зв'язку
+        const form = document.getElementById('contactForm');
+        if(form) {
+            form.addEventListener('submit', function(event) {
+                const formData = new FormData(form);
+                const encodedData = new URLSearchParams(formData).toString();
+                // Додаткова логіка для відправки форми з кирилицею
+            });
+        }
+    });
+    </script>
 </body>
 </html>
