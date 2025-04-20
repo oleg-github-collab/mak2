@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Метафоричні асоціативні карти 'Roots and Wings' - інструмент для самопізнання, психологічної роботи та творчого розвитку">
-    <title>Roots and Wings - Метафоричні асоціативні карти</title>
+    <meta name="description" content="Метафоричні асоціативні карти 'Roots and Wings' - унікальний інструмент для саморозвитку, психологічної роботи та пошуку відповідей на важливі питання. Розроблено українськими психологами.">
+    <meta name="keywords" content="метафоричні карти, МАК, психологія, саморозвиток, асоціативні карти, психологічні карти, Україна, коріння та крила">
+    <meta name="author" content="Roots and Wings">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Roots and Wings - Метафоричні асоціативні карти">
+    <meta property="og:description" content="Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку від українських авторів">
+    <meta property="og:image" content="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="uk_UA">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Roots and Wings - Метафоричні асоціативні карти">
+    <meta name="twitter:description" content="Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку від українських авторів">
+    <meta name="twitter:image" content="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="canonical" href="https://rootsandwings.com.ua/">
+    <title>Roots and Wings - Метафоричні асоціативні карти | Психологічні картки для саморозвитку</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+    <!-- Попереднє завантаження критичних ресурсів -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="js/main.js" as="script">
+    <link rel="preload" href="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" as="image" fetchpriority="high">
 
     <!-- Стилі -->
     <link rel="stylesheet" href="css/style.css">
@@ -16,15 +38,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
     <!-- GSAP для анімацій -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js" defer></script>
+
+    <!-- Структурована мікродата Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Метафоричні асоціативні карти Roots and Wings",
+      "image": "https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png",
+      "description": "Унікальний інструмент для самопізнання, психологічної роботи та творчого розвитку. Набір з 80 карт.",
+      "brand": {
+        "@type": "Brand",
+        "name": "Roots and Wings"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "UAH",
+        "price": "1500",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
 </head>
 <body data-page="home">
-    <!-- Прелоадер -->
-    <div class="preloader">
+    <!-- Прелоадер з індикатором прогресу -->
+    <div class="preloader" id="preloader">
         <div class="preloader-content">
             <div class="loader"></div>
             <div class="loading-text">Завантаження...</div>
+            <!-- Індикатор прогресу -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0%</div>
         </div>
     </div>
 
@@ -40,13 +88,13 @@
         <div class="container">
             <div class="header-wrapper">
                 <div class="logo">
-                    <a href="#" class="logo-link">
+                    <a href="#" class="logo-link" aria-label="Головна сторінка">
                         <span class="logo-text">Roots & Wings</span>
                     </a>
                 </div>
                 
                 <!-- Desktop navigation - видима тільки на десктопі -->
-                <nav class="nav desktop-nav">
+                <nav class="nav desktop-nav" aria-label="Основна навігація">
                     <ul class="nav-list no-underline">
                         <li class="nav-item"><a href="#about" class="nav-link">Про карти</a></li>
                         <li class="nav-item"><a href="#features" class="nav-link">Особливості</a></li>
@@ -57,7 +105,7 @@
                 </nav>
                 
                 <!-- Mobile menu button - видима тільки на мобільних -->
-                <button class="mobile-menu-toggle" aria-label="Menu">
+                <button class="mobile-menu-toggle" aria-label="Відкрити меню">
                     <span class="toggle-line"></span>
                     <span class="toggle-line"></span>
                     <span class="toggle-line"></span>
@@ -68,8 +116,8 @@
         <!-- Mobile menu - прихована за замовчуванням -->
         <div class="mobile-menu">
             <div class="mobile-menu-container">
-                <button class="mobile-menu-close" aria-label="Close Menu">×</button>
-                <nav class="mobile-nav">
+                <button class="mobile-menu-close" aria-label="Закрити меню">×</button>
+                <nav class="mobile-nav" aria-label="Мобільна навігація">
                     <ul class="mobile-nav-list no-underline">
                         <li class="mobile-nav-item"><a href="#about" class="mobile-nav-link">Про карти</a></li>
                         <li class="mobile-nav-item"><a href="#features" class="mobile-nav-link">Особливості</a></li>
@@ -101,11 +149,9 @@
                 <div class="hero-image">
                     <div class="image-container rounded-image">
                         <!-- Основне зображення hero секції -->
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" alt="Метафоричні карти Roots and Wings" width="600" height="400">
-                        <!-- Рухомі елементи на десктопі - 3 додаткові карти -->
-                        <div class="floating-card card-1 desktop-only" data-hover-shift="true" data-shift-x="15" data-shift-y="-10"></div>
-                        <div class="floating-card card-2 desktop-only" data-hover-shift="true" data-shift-x="-10" data-shift-y="15"></div>
-                        <div class="floating-card card-3 desktop-only" data-hover-shift="true" data-shift-x="20" data-shift-y="5"></div>
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/card-1_viswaq.png" 
+                             alt="Метафоричні карти Roots and Wings - основне зображення колоди" 
+                             width="600" height="400" fetchpriority="high">
                     </div>
                 </div>
             </div>
@@ -122,66 +168,6 @@
         <div class="hero-shape-2"></div>
     </section>
 
-    <!-- Секція "Розкладання карт" -->
-    <section class="cards-spread section">
-        <div class="cards-spread-container">
-            <!-- 5 карт для розкладання, кожна з фронтальною та задньою стороною -->
-            <div class="spread-card card-spread-1" data-depth="0.2" data-rotate-angle="-15" data-move-x="20" data-move-y="-30" data-rotate-add="5">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта 1" loading="lazy" width="300" height="450">
-                    </div>
-                    <div class="card-back">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745151613/0_yfaaw0.jpg" alt="Зворотня сторона карти" loading="lazy" width="300" height="450">
-                    </div>
-                </div>
-            </div>
-            <div class="spread-card card-spread-2" data-depth="0.4" data-rotate-angle="-5" data-move-x="-10" data-move-y="-20" data-rotate-add="-10">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg" alt="Метафорична карта 2" loading="lazy" width="300" height="450">
-                    </div>
-                    <div class="card-back">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/card-back_ixnzqm.jpg" alt="Зворотня сторона карти" loading="lazy" width="300" height="450">
-                    </div>
-                </div>
-            </div>
-            <div class="spread-card card-spread-3" data-depth="0.6" data-rotate-angle="5" data-move-x="-30" data-move-y="10" data-rotate-add="-5">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта 3" loading="lazy" width="300" height="450">
-                    </div>
-                    <div class="card-back">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/card-back_ixnzqm.jpg" alt="Зворотня сторона карти" loading="lazy" width="300" height="450">
-                    </div>
-                </div>
-            </div>
-            <div class="spread-card card-spread-4" data-depth="0.4" data-rotate-angle="10" data-move-x="15" data-move-y="5" data-rotate-add="10">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg" alt="Метафорична карта 4" loading="lazy" width="300" height="450">
-                    </div>
-                    <div class="card-back">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/card-back_ixnzqm.jpg" alt="Зворотня сторона карти" loading="lazy" width="300" height="450">
-                    </div>
-                </div>
-            </div>
-            <div class="spread-card card-spread-5" data-depth="0.2" data-rotate-angle="20" data-move-x="35" data-move-y="15" data-rotate-add="5">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg" alt="Метафорична карта 5" loading="lazy" width="300" height="450">
-                    </div>
-                    <div class="card-back">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/card-back_ixnzqm.jpg" alt="Зворотня сторона карти" loading="lazy" width="300" height="450">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="section-heading">
-            <h2 class="visual-title">Розкрийте потенціал карт</h2>
-        </div>
-    </section>
-
     <!-- Секція "Про проект" -->
     <section id="about" class="about-section section">
         <div class="container">
@@ -191,9 +177,11 @@
             </div>
             <div class="about-content">
                 <div class="product-card">
-                    <!-- 1 зображення для секції "Про проект" -->
+                    <!-- Зображення для секції "Про проект" -->
                     <div class="card-image rounded-corners">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142191/22_peebeg.jpg" alt="Метафоричні карти Roots and Wings" loading="lazy" width="500" height="350">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142191/22_peebeg.jpg" 
+                             alt="Метафорична карта із зображенням природного мотиву" 
+                             loading="lazy" width="500" height="350">
                         <div class="image-overlay"></div>
                     </div>
                     <div class="card-content">
@@ -229,59 +217,79 @@
     </section>
 
     <!-- Секція "3D карусель карт" -->
-    <section class="cards-carousel section">
+    <section class="cards-carousel section" id="carousel">
         <div class="carousel-container">
             <!-- 3D карусель з автоматичним обертанням - 10 унікальних карт -->
             <div class="carousel-3d smooth-carousel" data-auto-play="true" data-pause-on-hover="false" data-direction="left-to-right">
                 <!-- 10 унікальних карт для каруселі -->
                 <div class="carousel-card" data-index="0">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" alt="Метафорична карта 1" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" 
+                             alt="Метафорична карта із зображенням гірського пейзажу" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="1">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141972/21_imridg.jpg" alt="Метафорична карта 2" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141972/21_imridg.jpg" 
+                             alt="Метафорична карта із символічним зображенням дерева" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="2">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140418/17_jxtar0.jpg" alt="Метафорична карта 3" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140418/17_jxtar0.jpg" 
+                             alt="Метафорична карта з абстрактним пейзажем" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="3">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141729/12_ojps39.jpg" alt="Метафорична карта 4" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141729/12_ojps39.jpg" 
+                             alt="Метафорична карта з водною тематикою" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="4">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/carousel-card-5_kc1sog.jpg" alt="Метафорична карта 5" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/carousel-card-5_kc1sog.jpg" 
+                             alt="Метафорична карта із символікою шляху" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="5">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" alt="Метафорична карта 6" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" 
+                             alt="Метафорична карта з повітряною тематикою" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="6">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745139862/24_rc1waw.jpg" alt="Метафорична карта 7" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745139862/24_rc1waw.jpg" 
+                             alt="Метафорична карта із символікою росту" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="7">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" alt="Метафорична карта 8" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg" 
+                             alt="Метафорична карта з тематикою трансформації" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="8">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140516/35_gnpaw6.jpg" alt="Метафорична карта 9" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140516/35_gnpaw6.jpg" 
+                             alt="Метафорична карта з емоційною тематикою" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
                 <div class="carousel-card" data-index="9">
                     <div class="card-inner">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140986/47_m8g9rw.jpg" alt="Метафорична карта 10" loading="lazy" width="300" height="450">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140986/47_m8g9rw.jpg" 
+                             alt="Метафорична карта із символікою переходу" 
+                             loading="lazy" width="300" height="450">
                     </div>
                 </div>
             </div>
@@ -361,64 +369,100 @@
     </section>
 
     <!-- Секція "Карти, що випадають" з 18 унікальними зображеннями -->
-    <section class="falling-cards section" data-animation-trigger="scroll">
+    <section class="falling-cards section" data-animation-trigger="scroll" aria-label="Анімація падаючих карт">
         <!-- Додано додатковий контейнер для обмеження області анімації -->
         <div class="falling-cards-wrapper">
             <div class="falling-cards-container individual-falling" data-initially-hidden="true" data-scroll-trigger="true">
                 <!-- 18 унікальних карт для анімації падаючих карт -->
                 <div class="falling-card larger-card random-position" data-falling-delay="0" data-rotate-start="-10" data-rotate-end="15" data-x-position="15" data-y-position="10">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140986/47_m8g9rw.jpg" alt="Метафорична карта 1" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140986/47_m8g9rw.jpg" 
+                         alt="Метафорична карта з символікою подорожі" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="0.7" data-rotate-start="5" data-rotate-end="-8" data-x-position="55" data-y-position="25">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141233/27_qemurs.jpg" alt="Метафорична карта 2" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141233/27_qemurs.jpg" 
+                         alt="Метафорична карта з природною тематикою" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="1.4" data-rotate-start="-15" data-rotate-end="12" data-x-position="25" data-y-position="45">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140941/49_u4028x.jpg" alt="Метафорична карта 3" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140941/49_u4028x.jpg" 
+                         alt="Метафорична карта із зображенням життєвого шляху" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="2.1" data-rotate-start="8" data-rotate-end="-18" data-x-position="75" data-y-position="30">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140516/35_gnpaw6.jpg" alt="Метафорична карта 4" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140516/35_gnpaw6.jpg" 
+                         alt="Метафорична карта з символікою внутрішнього світу" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="2.8" data-rotate-start="-5" data-rotate-end="10" data-x-position="40" data-y-position="60">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745139629/28_t8yo2z.jpg" alt="Метафорична карта 5" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745139629/28_t8yo2z.jpg" 
+                         alt="Метафорична карта з духовною тематикою" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="3.5" data-rotate-start="12" data-rotate-end="-5" data-x-position="65" data-y-position="15">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" alt="Метафорична карта 6" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg" 
+                         alt="Метафорична карта з водною тематикою" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="4.2" data-rotate-start="-8" data-rotate-end="20" data-x-position="30" data-y-position="20">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140418/17_jxtar0.jpg" alt="Метафорична карта 7" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140418/17_jxtar0.jpg" 
+                         alt="Метафорична карта з символікою трансформації" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="4.9" data-rotate-start="10" data-rotate-end="-15" data-x-position="70" data-y-position="40">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140916/23_u0hkzl.jpg" alt="Метафорична карта 8" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140916/23_u0hkzl.jpg" 
+                         alt="Метафорична карта з тематикою зростання" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="5.6" data-rotate-start="-12" data-rotate-end="8" data-x-position="20" data-y-position="55">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140576/50_vtgxjy.jpg" alt="Метафорична карта 9" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745140576/50_vtgxjy.jpg" 
+                         alt="Метафорична карта з символікою життєвих циклів" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="6.3" data-rotate-start="15" data-rotate-end="-10" data-x-position="60" data-y-position="35">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141187/40_saoy88.jpg" alt="Метафорична карта 10" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141187/40_saoy88.jpg" 
+                         alt="Метафорична карта з символікою емоційних станів" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="7.0" data-rotate-start="-20" data-rotate-end="5" data-x-position="35" data-y-position="25">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141551/19_hrxokh.jpg" alt="Метафорична карта 11" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141551/19_hrxokh.jpg" 
+                         alt="Метафорична карта з абстрактною символікою" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="7.7" data-rotate-start="7" data-rotate-end="-25" data-x-position="50" data-y-position="50">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141394/44_uj2oic.jpg" alt="Метафорична карта 12" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141394/44_uj2oic.jpg" 
+                         alt="Метафорична карта з символікою внутрішнього світла" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="8.4" data-rotate-start="-18" data-rotate-end="7" data-x-position="25" data-y-position="30">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141716/20_xy76b0.jpg" alt="Метафорична карта 13" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141716/20_xy76b0.jpg" 
+                         alt="Метафорична карта з символікою вибору шляху" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="9.1" data-rotate-start="22" data-rotate-end="-12" data-x-position="45" data-y-position="15">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141729/12_ojps39.jpg" alt="Метафорична карта 14" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141729/12_ojps39.jpg" 
+                         alt="Метафорична карта з природною гармонією" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="9.8" data-rotate-start="-13" data-rotate-end="18" data-x-position="65" data-y-position="45">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142191/22_peebeg.jpg" alt="Метафорична карта 15" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142191/22_peebeg.jpg" 
+                         alt="Метафорична карта з символікою життєвої енергії" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="10.5" data-rotate-start="9" data-rotate-end="-22" data-x-position="10" data-y-position="35">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142396/3_hpkvqi.jpg" alt="Метафорична карта 16" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142396/3_hpkvqi.jpg" 
+                         alt="Метафорична карта з символікою захисту" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="11.2" data-rotate-start="-25" data-rotate-end="15" data-x-position="80" data-y-position="20">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" alt="Метафорична карта 17" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" 
+                         alt="Метафорична карта з символікою розкриття потенціалу" 
+                         loading="lazy" width="300" height="450">
                 </div>
                 <div class="falling-card larger-card random-position" data-falling-delay="11.9" data-rotate-start="13" data-rotate-end="-20" data-x-position="40" data-y-position="40">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" alt="Метафорична карта 18" loading="lazy" width="300" height="450">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" 
+                         alt="Метафорична карта з тематикою балансу" 
+                         loading="lazy" width="300" height="450">
                 </div>
             </div>
         </div>
@@ -436,9 +480,11 @@
                 <div class="section-line"></div>
             </div>
             <div class="contents-grid">
-                <!-- 1 зображення для секції "Комплектація" -->
+                <!-- Зображення для секції "Комплектація" -->
                 <div class="content-image rounded-corners">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" alt="Комплект метафоричних карт" loading="lazy" width="500" height="350">
+                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" 
+                         alt="Повний комплект метафоричних карт у фірмовій упаковці" 
+                         loading="lazy" width="500" height="350">
                     <div class="image-reveal-overlay"></div>
                 </div>
                 <div class="content-details">
@@ -497,31 +543,67 @@
             <div class="cards-grid-container">
                 <!-- 9 унікальних карт для 3D сітки -->
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/grid-card-1_ncakxb.jpg" alt="Метафорична карта 1" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/grid-card-1_ncakxb.jpg" 
+                             alt="Метафорична карта із зображенням води" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/grid-card-2_zljtc1.jpg" alt="Метафорична карта 2" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/grid-card-2_zljtc1.jpg" 
+                             alt="Метафорична карта з абстрактним пейзажем" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/grid-card-3_bbaqor.jpg" alt="Метафорична карта 3" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/grid-card-3_bbaqor.jpg" 
+                             alt="Метафорична карта з символікою трансформації" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/grid-card-4_kc1sog.jpg" alt="Метафорична карта 4" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/grid-card-4_kc1sog.jpg" 
+                             alt="Метафорична карта з тематикою росту" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/grid-card-5_twzep6.jpg" alt="Метафорична карта 5" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/grid-card-5_twzep6.jpg" 
+                             alt="Метафорична карта з образами природи" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" alt="Метафорична карта 6" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142192/25_my6afc.jpg" 
+                             alt="Метафорична карта із символікою внутрішнього світу" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141972/21_imridg.jpg" alt="Метафорична карта 7" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141972/21_imridg.jpg" 
+                             alt="Метафорична карта з символікою вибору шляху" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" alt="Метафорична карта 8" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745142212/15_axedbv.jpg" 
+                             alt="Метафорична карта з символікою особистісного зростання" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
                 <div class="grid-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-perspective="800">
-                    <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141187/40_saoy88.jpg" alt="Метафорична карта 9" loading="lazy" width="300" height="450">
+                    <div class="grid-card-wrapper">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1745141187/40_saoy88.jpg" 
+                             alt="Метафорична карта з символікою внутрішніх ресурсів" 
+                             loading="lazy" width="300" height="450">
+                    </div>
                 </div>
             </div>
         </div>
@@ -599,7 +681,9 @@
                 <!-- 2 фото авторів для цієї секції -->
                 <div class="author-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="author-photo circular">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832168/author-1_ujuty1.png" alt="Оксана Бирка" loading="lazy" width="200" height="200">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832168/author-1_ujuty1.png" 
+                             alt="Оксана Бирка - психолог, арт-терапевт, співавтор карт" 
+                             loading="lazy" width="200" height="200">
                         <div class="author-photo-overlay"></div>
                     </div>
                     <h3 class="author-name">Оксана Бирка</h3>
@@ -608,14 +692,16 @@
                         Системний сімейний та дитячий психотерапевт, працює в інтегративному підході.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link" data-cursor-text="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Оксани Бирки"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Оксани Бирки"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Оксани Бирки"><i class="fab fa-telegram-plane"></i></a>
                     </div>
                 </div>
                 <div class="author-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="author-photo circular">
-                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832166/author-2_x78lh0.png" alt="Марина Камінська" loading="lazy" width="200" height="200">
+                        <img src="https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832166/author-2_x78lh0.png" 
+                             alt="Марина Камінська - художниця, співавтор карт" 
+                             loading="lazy" width="200" height="200">
                         <div class="author-photo-overlay"></div>
                     </div>
                     <h3 class="author-name">Марина Камінська</h3>
@@ -624,9 +710,9 @@
                         Українська мисткиня, що працює з акрилом та аквареллю, втілюючи процес самопізнання у своїй творчості.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link" data-cursor-text="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" data-cursor-text="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Facebook" aria-label="Facebook Марини Камінської"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Instagram" aria-label="Instagram Марини Камінської"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" data-cursor-text="Telegram" aria-label="Telegram Марини Камінської"><i class="fab fa-telegram-plane"></i></a>
                     </div>
                 </div>
             </div>
@@ -643,7 +729,7 @@
             <div class="contact-content">
                 <div class="contact-info">
                     <p class="contact-text">Маєте запитання про нашу продукцію або хочете замовити набір карт "Roots and Wings"? Напишіть нам:</p>
-                    <a href="mailto:info@rootsandwings.com" class="email-link">info@rootsandwings.com</a>
+                    <a href="mailto:info@rootsandwings.com.ua" class="email-link">info@rootsandwings.com.ua</a>
                     
                     <div class="contact-methods">
                         <div class="contact-method">
@@ -675,7 +761,7 @@
                         </div>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm">
+                <form class="contact-form" id="contactForm" action="#" method="POST">
                     <div class="form-group">
                         <label for="name">Ваше ім'я</label>
                         <input type="text" id="name" name="name" required>
@@ -739,10 +825,10 @@
                 <div class="footer-social">
                     <h3>Слідкуйте за нами</h3>
                     <div class="social-icons">
-                        <a href="#" class="social-icon" data-cursor-text="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-icon" data-cursor-text="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Facebook" aria-label="Наша сторінка у Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Instagram" aria-label="Наш профіль у Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="YouTube" aria-label="Наш канал на YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon" data-cursor-text="Telegram" aria-label="Наш канал у Telegram"><i class="fab fa-telegram-plane"></i></a>
                     </div>
                 </div>
             </div>
@@ -750,16 +836,16 @@
                 <p>&copy; 2025 МАК "Коріння та крила". Всі права захищені.</p>
             </div>
         </div>
-        <a href="#" class="back-to-top" data-cursor-text="Наверх">
+        <a href="#" class="back-to-top" data-cursor-text="Наверх" aria-label="Повернутися наверх">
             <i class="fas fa-arrow-up"></i>
         </a>
     </footer>
 
     <!-- Модальні вікна для правових документів -->
-    <div id="privacy-policy" class="modal">
+    <div id="privacy-policy" class="modal" aria-hidden="true" role="dialog" aria-labelledby="privacy-policy-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Політика конфіденційності</h2>
+                <h2 id="privacy-policy-title">Політика конфіденційності</h2>
                 <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
             <div class="modal-body">
@@ -801,10 +887,10 @@
         </div>
     </div>
 
-    <div id="payment-terms" class="modal">
+    <div id="payment-terms" class="modal" aria-hidden="true" role="dialog" aria-labelledby="payment-terms-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Умови оплати</h2>
+                <h2 id="payment-terms-title">Умови оплати</h2>
                 <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
             <div class="modal-body">
@@ -844,10 +930,10 @@
         </div>
     </div>
 
-    <div id="delivery-terms" class="modal">
+    <div id="delivery-terms" class="modal" aria-hidden="true" role="dialog" aria-labelledby="delivery-terms-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Умови доставки</h2>
+                <h2 id="delivery-terms-title">Умови доставки</h2>
                 <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
             <div class="modal-body">
@@ -892,10 +978,10 @@
         </div>
     </div>
 
-    <div id="terms-of-use" class="modal">
+    <div id="terms-of-use" class="modal" aria-hidden="true" role="dialog" aria-labelledby="terms-of-use-title">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Умови використання</h2>
+                <h2 id="terms-of-use-title">Умови використання</h2>
                 <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
             <div class="modal-body">
@@ -926,19 +1012,19 @@
                     
                     <h4>Контакт</h4>
                     <p>Якщо у вас виникли запитання щодо цих Умов використання, будь ласка, зв'яжіться з нами за електронною 
-                    поштою info@rootsandwings.com.</p>
+                    поштою info@rootsandwings.com.ua.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Vanilla-tilt.js для 3D ефектів -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js" defer></script>
 
     <!-- Particles.js для часточок на фоні -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 
-    <!-- JS -->
-    <script src="js/main.js"></script>
+    <!-- JS з відкладеним завантаженням -->
+    <script src="js/main.js" defer></script>
 </body>
 </html>
