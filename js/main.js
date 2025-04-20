@@ -219,6 +219,19 @@ function initEnhancedPreloader() {
         .preloader {
             animation: forceHidePreloader 0s 12s forwards !important;
         }
+        
+        /* Курсор на прелоадері */
+        .preloader .cursor-dot, 
+        .preloader .cursor-outline, 
+        .preloader .cursor-hover, 
+        .preloader .cursor-click {
+            z-index: 10000 !important;
+        }
+        
+        /* Покажемо текст курсора над прелоадером */
+        body.cursor-text-visible .cursor-text {
+            z-index: 10000;
+        }
     `;
     document.head.appendChild(style);
     
@@ -350,6 +363,17 @@ function initEnhancedPreloader() {
  * Optimized image loading system
  */
 function initOptimizedImageLoading() {
+    // Додавання preconnect для доменів зображень
+    const domains = ['res.cloudinary.com', 'cdnjs.cloudflare.com'];
+    domains.forEach(domain => {
+        if (!document.querySelector(`link[rel="preconnect"][href="https://${domain}"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = `https://${domain}`;
+            document.head.appendChild(link);
+        }
+    });
+    
     // Check if IntersectionObserver is supported
     if (!('IntersectionObserver' in window)) {
         // Fallback for browsers without support - just load all images normally
@@ -511,17 +535,28 @@ function initOptimizedFallingCards(forceStart = false) {
     // Add CSS for falling animation - removed overflow: hidden
     const style = document.createElement('style');
     style.textContent = `
-        .falling-cards-container {
+        /* Контейнер для падаючих карток - без обмеження переповнення */
+        .falling-cards {
             position: relative;
+            overflow: visible !important;
+            padding-bottom: 800px !important; /* Збільшений відступ знизу */
+            z-index: 1;
+        }
+        
+        .falling-cards-container {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100%;
-            min-height: 1000px;
-            padding-bottom: 100px; /* Add space at bottom to ensure no overlap */
+            height: calc(100% + 1000px) !important; /* Збільшена висота контейнера */
+            pointer-events: none;
+            z-index: 5;
+            overflow: visible !important; /* Критично важливо для запобігання обрізанню */
         }
         
         .falling-card {
             position: absolute;
-            z-index: 2;
+            z-index: 10 !important; /* Пріоритет над іншими елементами */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             transform: rotate(var(--data-rotate-angle, 0deg));
@@ -543,6 +578,7 @@ function initOptimizedFallingCards(forceStart = false) {
             animation: falling var(--data-falling-duration, 17.5s) forwards var(--data-falling-delay, 0s) linear;
         }
         
+        /* Оновлені ключові кадри для анімації з меншим діапазоном падіння */
         @keyframes falling {
             0% {
                 top: -300px;
@@ -552,11 +588,14 @@ function initOptimizedFallingCards(forceStart = false) {
             10% {
                 opacity: 1;
             }
-            90% {
-                opacity: 0.8;
+            85% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 0;
             }
             100% {
-                top: calc(100% - 200px);
+                top: 65vh; /* Зменшена висота падіння */
                 transform: rotate(var(--data-rotate-angle, 0deg));
                 opacity: 0;
             }
@@ -577,6 +616,19 @@ function initOptimizedFallingCards(forceStart = false) {
         }
     `;
     document.head.appendChild(style);
+    
+    // Переконаємося, що секції та батьківські елементи не обрізають контент
+    if (fallingCardsSection) {
+        // Встановлюємо overflow: visible для всіх батьківських елементів
+        let parent = fallingCardsSection.parentElement;
+        while (parent && parent !== document.body) {
+            const computedStyle = window.getComputedStyle(parent);
+            if (computedStyle.overflow === 'hidden') {
+                parent.style.overflow = 'visible';
+            }
+            parent = parent.parentElement;
+        }
+    }
     
     // Track animation state
     let animationActive = forceStart;
@@ -1582,6 +1634,11 @@ function initCursor() {
             .preloader .cursor-dot, .preloader .cursor-outline, 
             .preloader .cursor-hover, .preloader .cursor-click {
                 z-index: 10000 !important;
+            }
+            
+            /* Show text cursor above preloader */
+            body.cursor-text-visible .cursor-text {
+                z-index: 10000;
             }
         `;
         document.head.appendChild(style);
