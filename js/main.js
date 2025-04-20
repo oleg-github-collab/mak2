@@ -107,139 +107,90 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function fixMobileCarouselVisibility() {
     if (window.innerWidth <= 768) {
-        // Знаходимо всі компоненти каруселі
-        const carouselSections = document.querySelectorAll('.carousel-section, .smooth-carousel, .carousel-3d');
-        const carouselContainers = document.querySelectorAll('.carousel-container');
-        const carousels = document.querySelectorAll('.carousel, .carousel-cards-container');
-        const carouselItems = document.querySelectorAll('.carousel-card, .carousel-item');
-        
-        // Логуємо для дебагу
-        console.log('Fixing mobile carousel visibility');
-        console.log('Found carousel sections:', carouselSections.length);
-        console.log('Found carousel containers:', carouselContainers.length);
-        
-        // Додаємо критичні стилі для мобільної каруселі
+        // Створюємо спеціальні стилі для мобільної каруселі
         const carouselFixStyle = document.createElement('style');
         carouselFixStyle.textContent = `
             @media (max-width: 768px) {
-                /* Виправлення каруселі на мобільних - КРИТИЧНИЙ FIX */
-                .carousel-section,
-                .carousel-container,
-                .smooth-carousel,
-                .carousel-3d,
-                .carousel,
-                .carousel-cards-container,
-                .carousel-card,
-                .carousel-item {
-                    display: block !important;
-                    visibility: visible !important;
-                    opacity: 1 !important;
-                    overflow: visible !important;
+                .smooth-carousel {
+                    height: 400px;
+                    overflow: hidden;
+                    padding: 20px 0;
+                    position: relative;
                 }
                 
-                .carousel-section,
-                .smooth-carousel,
-                .carousel-3d {
-                    min-height: 450px !important;
-                    padding: 40px 0 !important;
-                    margin: 50px 0 !important;
-                    z-index: 5 !important;
-                    position: relative !important;
+                .carousel-cards-container {
+                    display: flex;
+                    width: max-content;
+                    animation: carousel-mobile 30s linear infinite;
+                    padding: 10px;
                 }
                 
-                .carousel-container {
-                    height: 350px !important;
-                    width: 100% !important;
-                    perspective: 800px !important;
+                .carousel-card {
+                    width: 220px;
+                    height: 330px;
+                    margin-right: 20px;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    flex-shrink: 0;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                    position: relative;
                     transform: none !important;
+                    opacity: 1 !important;
                 }
                 
-                .carousel, 
-                .carousel-cards-container {
-                    transform: scale(0.55) !important;
-                    position: absolute !important;
-                    left: 50% !important;
-                    margin-left: -150px !important;
-                    width: 300px !important;
-                    height: 300px !important;
+                .carousel-card img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                 }
                 
-                .carousel-card,
-                .carousel-item {
-                    left: auto !important;
-                    top: auto !important;
-                    position: relative !important;
-                    display: inline-block !important;
-                    margin: 10px !important;
-                }
-                
-                /* Застосовуємо flex для каруселі на мобільному */
-                .carousel, 
-                .carousel-cards-container {
-                    display: flex !important;
-                    flex-wrap: nowrap !important;
-                    overflow-x: auto !important;
-                    padding: 20px !important;
-                    justify-content: center !important;
+                @keyframes carousel-mobile {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-100%); }
                 }
             }
         `;
         document.head.appendChild(carouselFixStyle);
         
-        // Застосовуємо інлайн-стилі для гарантії видимості
-        carouselSections.forEach(section => {
-            section.style.display = 'block';
-            section.style.visibility = 'visible';
-            section.style.opacity = '1';
-            section.style.overflow = 'visible';
-            section.style.height = 'auto';
-            section.style.minHeight = '450px';
-        });
-        
-        carouselContainers.forEach(container => {
-            container.style.display = 'block';
-            container.style.visibility = 'visible';
-            container.style.opacity = '1';
-            container.style.height = '350px';
-            container.style.width = '100%';
-            container.style.overflow = 'visible';
-        });
-        
-        carousels.forEach(carousel => {
-            carousel.style.transform = 'scale(0.55)';
-            carousel.style.position = 'absolute';
-            carousel.style.left = '50%';
-            carousel.style.marginLeft = '-150px';
-            carousel.style.display = 'flex';
-            carousel.style.flexWrap = 'nowrap';
-            carousel.style.justifyContent = 'center';
-        });
-        
-        carouselItems.forEach(item => {
-            item.style.display = 'inline-block';
-            item.style.margin = '10px';
-            item.style.opacity = '1';
-            item.style.visibility = 'visible';
-        });
-        
-        // Прискорюємо анімацію обертання каруселі для мобільних
-        const styleEl = document.createElement('style');
-        styleEl.innerHTML = `
-            @media (max-width: 768px) {
-                @keyframes carousel-rotate {
-                    0% { transform: rotateY(0deg); }
-                    100% { transform: rotateY(360deg); }
-                }
-                .carousel-cards-container {
-                    animation: carousel-rotate 15s linear infinite !important;
-                }
+        // Знаходимо карусель і перебудовуємо її для мобільних
+        const carousel = document.querySelector('.smooth-carousel');
+        if (carousel) {
+            const cardsContainer = carousel.querySelector('.carousel-cards-container');
+            const cards = carousel.querySelectorAll('.carousel-card');
+            
+            if (cardsContainer && cards.length) {
+                // Очищаємо всі стилі і трансформації
+                cardsContainer.removeAttribute('style');
+                cardsContainer.style.display = 'flex';
+                cardsContainer.style.width = 'max-content';
+                
+                // Дублюємо картки для безперервної анімації
+                const originalCards = Array.from(cards);
+                originalCards.forEach(card => {
+                    const clone = card.cloneNode(true);
+                    cardsContainer.appendChild(clone);
+                });
+                
+                // Застосовуємо стилі до всіх карток
+                carousel.querySelectorAll('.carousel-card').forEach(card => {
+                    card.removeAttribute('style');
+                    card.style.width = '220px';
+                    card.style.height = '330px';
+                    card.style.marginRight = '20px';
+                    card.style.opacity = '1';
+                    card.style.transform = 'none';
+                    card.style.position = 'relative';
+                    card.style.borderRadius = '12px';
+                    card.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.15)';
+                    
+                    const img = card.querySelector('img');
+                    if (img) {
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                    }
+                });
             }
-        `;
-        document.head.appendChild(styleEl);
-        
-        // Оновлюємо глобальну функцію для мобільної підтримки
-        if (typeof updateCarouselGlobal === 'function') {
-            setTimeout(updateCarouselGlobal, 500);
         }
     }
 }
@@ -1675,7 +1626,7 @@ function initImprovedCarousel() {
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     }
     
-    // ВАЖЛИВО: видаляємо будь-які існуючі кнопки навігації
+    // Видаляємо будь-які існуючі кнопки навігації
     const prevButton = carousel.querySelector('.carousel-prev');
     const nextButton = carousel.querySelector('.carousel-next');
     const controlsContainer = carousel.querySelector('.carousel-controls');
@@ -1702,6 +1653,7 @@ function initImprovedCarousel() {
             height: 500px;
             margin: 50px auto;
             perspective: 1000px;
+            overflow: hidden;
         }
         
         .carousel-cards-container {
@@ -1711,8 +1663,6 @@ function initImprovedCarousel() {
             transform-style: preserve-3d;
             animation: carousel-rotate 32s linear infinite;
         }
-        
-        /* ВАЖЛИВО: Прибрано зупинку анімації при наведенні */
         
         .carousel-card {
             position: absolute;
@@ -1727,7 +1677,6 @@ function initImprovedCarousel() {
             overflow: hidden;
             backface-visibility: hidden;
             opacity: 0.9;
-            /* Додаємо фіксоване співвідношення сторін 2:3 */
             aspect-ratio: 2/3;
         }
         
@@ -1742,32 +1691,38 @@ function initImprovedCarousel() {
             100% { transform: rotateY(360deg); }
         }
         
-        /* Блокуємо взаємодію з картками, коли вони задом */
-        .carousel-card.back-facing {
-            pointer-events: none;
-        }
-        
         /* Мобільна версія каруселі */
         @media (max-width: 767px) {
             .smooth-carousel {
                 height: 400px;
+                overflow: hidden;
             }
             
             .carousel-cards-container {
-                animation: carousel-rotate-mobile 24s linear infinite;
+                display: flex;
+                width: max-content;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                animation: carousel-mobile 30s linear infinite;
+                padding: 0;
             }
             
             .carousel-card {
+                position: relative;
                 width: 220px;
                 height: 330px;
-                transform: translate(-50%, -50%) translateX(var(--tx)) !important;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                margin-right: 20px;
+                top: 0;
+                left: 0;
+                transform: none !important;
+                opacity: 1 !important;
+                flex-shrink: 0;
             }
             
-            /* Анімація для мобільних без кутового зміщення */
-            @keyframes carousel-rotate-mobile {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(100%); }
+            @keyframes carousel-mobile {
+                0% { transform: translateY(-50%) translateX(0); }
+                100% { transform: translateY(-50%) translateX(-100%); }
             }
         }
     `;
@@ -1803,35 +1758,43 @@ function initImprovedCarousel() {
 function setupMobileCarousel(carousel, cards) {
     const cardsContainer = carousel.querySelector('.carousel-cards-container');
     
-    // Встановлюємо стиль контейнера
-    cardsContainer.style.animation = 'carousel-rotate-mobile 24s linear infinite';
+    // Очищаємо контейнер та встановлюємо базові стилі
+    cardsContainer.style.position = 'absolute';
+    cardsContainer.style.display = 'flex';
+    cardsContainer.style.width = 'max-content';
+    cardsContainer.style.animation = 'carousel-mobile 30s linear infinite';
+    cardsContainer.style.top = '50%';
     
-    // Рівномірно розподіляємо картки по ширині
-    const containerWidth = carousel.offsetWidth;
-    const totalCards = cards.length;
-    const fullWidth = containerWidth * 2; // Подвійна ширина для повного циклу
-    const cardWidth = 220; // Фіксований розмір картки
-    const cardSpacing = 30; // Відстань між картками
+    // Дублюємо картки для безперервної анімації
+    // Спочатку видаляємо всі клони
+    carousel.querySelectorAll('.carousel-card.cloned').forEach(clone => clone.remove());
     
-    // Розрахунок загальної ширини всіх карток з відступами
-    const totalCardWidth = (cardWidth + cardSpacing) * totalCards;
+    // Отримуємо оновлений список оригінальних карток
+    const originalCards = Array.from(cards);
     
-    cards.forEach((card, index) => {
-        // Позиція картки в ряду з рівними відступами
-        const tx = -containerWidth + (cardWidth + cardSpacing) * index;
-        
-        // Встановлюємо позицію без обертання
-        card.style.setProperty('--tx', `${tx}px`);
-        card.style.transform = `translate(-50%, -50%) translateX(${tx}px)`;
+    // Створюємо копії для безперервної прокрутки
+    originalCards.forEach(card => {
+        const clone = card.cloneNode(true);
+        clone.classList.add('cloned');
+        cardsContainer.appendChild(clone);
+    });
+    
+    // Застосовуємо стилі до всіх карток
+    carousel.querySelectorAll('.carousel-card').forEach(card => {
+        card.style.position = 'relative';
+        card.style.top = 'auto';
+        card.style.left = 'auto';
+        card.style.width = '220px';
+        card.style.height = '330px';
+        card.style.marginRight = '20px';
+        card.style.transform = 'none';
         card.style.opacity = '1';
-        card.style.filter = 'none';
+        card.style.flexShrink = '0';
         
-        // Однаковий розмір для всіх карток
-        card.style.width = `${cardWidth}px`;
-        card.style.height = 'auto';
+        // Забезпечуємо співвідношення сторін 2:3
         card.style.aspectRatio = '2/3';
         
-        // Оновлюємо стилі зображень
+        // Оновлюємо стилі зображення
         const img = card.querySelector('img');
         if (img) {
             img.style.width = '100%';
@@ -1839,31 +1802,6 @@ function setupMobileCarousel(carousel, cards) {
             img.style.objectFit = 'cover';
         }
     });
-    
-    // Оновлюємо стилі анімації для плавного циклічного руху
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-        @keyframes carousel-rotate-mobile {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(${totalCardWidth}px); }
-        }
-        
-        .carousel-cards-container {
-            display: flex;
-            gap: ${cardSpacing}px;
-            padding: 0 ${containerWidth/2 - cardWidth/2}px;
-        }
-        
-        .carousel-card {
-            flex: 0 0 ${cardWidth}px;
-            margin: 0;
-            position: relative;
-            transform: none !important;
-            left: auto;
-            top: auto;
-        }
-    `;
-    document.head.appendChild(styleSheet);
 }
 
 /**
@@ -1873,7 +1811,12 @@ function setupDesktopCarousel(carousel, cards) {
     const cardsContainer = carousel.querySelector('.carousel-cards-container');
     
     // Встановлюємо стиль контейнера
+    cardsContainer.style.display = '';
+    cardsContainer.style.position = 'absolute';
+    cardsContainer.style.width = '100%';
+    cardsContainer.style.height = '100%';
     cardsContainer.style.animation = 'carousel-rotate 32s linear infinite';
+    cardsContainer.style.top = '';
     
     // Розміщуємо картки по колу
     const radius = 400; // Радіус кола каруселі
@@ -1887,6 +1830,9 @@ function setupDesktopCarousel(carousel, cards) {
         const z = radius * Math.cos(angle);
         
         // Трансформація для розміщення картки в 3D-просторі
+        card.style.position = 'absolute';
+        card.style.top = '50%';
+        card.style.left = '50%';
         card.style.transform = `translate(-50%, -50%) translateX(${x}px) translateZ(${z}px) rotateY(${-angle * 180 / Math.PI}deg)`;
         
         // Забезпечуємо співвідношення сторін 2:3
@@ -1905,35 +1851,6 @@ function setupDesktopCarousel(carousel, cards) {
             img.style.objectFit = 'cover';
         }
     });
-    
-    // Функція для динамічного оновлення стилю карток в залежності від їх положення
-    function updateCardStyles() {
-        cards.forEach((card, index) => {
-            const angle = (angleStep * index) + getCurrentRotation();
-            const z = radius * Math.cos(angle);
-            
-            // Якщо картка повернута задом (z < 0), зменшуємо її непрозорість
-            if (z < 0) {
-                card.style.opacity = '0.5';
-                card.style.filter = 'blur(3px)';
-                card.classList.add('back-facing');
-            } else {
-                card.style.opacity = '0.9';
-                card.style.filter = 'none';
-                card.classList.remove('back-facing');
-            }
-        });
-    }
-    
-    // Отримання поточного кута обертання контейнера
-    function getCurrentRotation() {
-        const style = window.getComputedStyle(cardsContainer);
-        const matrix = new DOMMatrix(style.transform);
-        return Math.atan2(matrix.m32, matrix.m33);
-    }
-    
-    // Запускаємо оновлення кожні 100ms
-    setInterval(updateCardStyles, 100);
 }
 
 /**
@@ -3225,127 +3142,6 @@ function initVanillaTilt() {
 }
 
 /**
- * Ініціалізація фонових частинок з використанням Particles.js
- */
-function initParticles() {
-    // Перевіряємо, чи завантажено бібліотеку particlesJS
-    if (typeof particlesJS === 'undefined') {
-        console.warn('Particles.js library not loaded. Background particles will not work.');
-        return;
-    }
-    
-    // Ініціалізуємо фонові частинки для hero-секції
-    const particlesContainer = document.getElementById('particles-js');
-    if (!particlesContainer) return;
-    
-    particlesJS('particles-js', {
-        "particles": {
-            "number": {
-                "value": 70,
-                "density": {
-                    "enable": true,
-                    "value_area": 800
-                }
-            },
-            "color": {
-                "value": "#f5f5f5"
-            },
-            "shape": {
-                "type": "circle",
-                "stroke": {
-                    "width": 0,
-                    "color": "#000000"
-                },
-                "polygon": {
-                    "nb_sides": 5
-                }
-            },
-            "opacity": {
-                "value": 0.5,
-                "random": true,
-                "anim": {
-                    "enable": true,
-                    "speed": 1,
-                    "opacity_min": 0.1,
-                    "sync": false
-                }
-            },
-            "size": {
-                "value": 3,
-                "random": true,
-                "anim": {
-                    "enable": true,
-                    "speed": 2,
-                    "size_min": 0.3,
-                    "sync": false
-                }
-            },
-            "line_linked": {
-                "enable": true,
-                "distance": 150,
-                "color": "#f5f5f5",
-                "opacity": 0.4,
-                "width": 1
-            },
-            "move": {
-                "enable": true,
-                "speed": 1,
-                "direction": "none",
-                "random": true,
-                "straight": false,
-                "out_mode": "out",
-                "bounce": false,
-                "attract": {
-                    "enable": false,
-                    "rotateX": 600,
-                    "rotateY": 1200
-                }
-            }
-        },
-        "interactivity": {
-            "detect_on": "canvas",
-            "events": {
-                "onhover": {
-                    "enable": true,
-                    "mode": "grab"
-                },
-                "onclick": {
-                    "enable": true,
-                    "mode": "push"
-                },
-                "resize": true
-            },
-            "modes": {
-                "grab": {
-                    "distance": 140,
-                    "line_linked": {
-                        "opacity": 1
-                    }
-                },
-                "bubble": {
-                    "distance": 400,
-                    "size": 40,
-                    "duration": 2,
-                    "opacity": 8,
-                    "speed": 3
-                },
-                "repulse": {
-                    "distance": 200,
-                    "duration": 0.4
-                },
-                "push": {
-                    "particles_nb": 4
-                },
-                "remove": {
-                    "particles_nb": 2
-                }
-            }
-        },
-        "retina_detect": true
-    });
-}
-
-/**
  * Покращена анімація падаючих карт з повною видимістю
  * (Сповільнено на 30% та запускається одразу при завантаженні сторінки)
  * @param {boolean} forceStart - Чи примусово запустити анімацію
@@ -3390,14 +3186,14 @@ function initEnhancedFallingCards(forceStart = false) {
     // Визначаємо, чи це мобільний пристрій
     const isMobile = window.innerWidth < 768;
     
-    // Додаємо CSS для анімації падіння
+    // Додаємо CSS для анімації падіння (сповільнено на 30%)
     const style = document.createElement('style');
     style.textContent = `
         .falling-cards-container {
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 1000px; /* Збільшуємо висоту контейнера для більших карток */
+            min-height: 1000px;
             overflow: hidden;
         }
         
@@ -3410,7 +3206,6 @@ function initEnhancedFallingCards(forceStart = false) {
             transform: rotate(var(--data-rotate-angle, 0deg));
             transition: transform 0.3s ease;
             opacity: 0;
-            /* Забезпечення співвідношення сторін 2:3 для всіх падаючих карток */
             aspect-ratio: 2/3;
         }
         
@@ -3423,56 +3218,55 @@ function initEnhancedFallingCards(forceStart = false) {
         }
         
         .falling-card.animated {
-            animation: falling var(--data-falling-duration, 13.5s) forwards var(--data-falling-delay, 0s) linear;
+            animation: falling var(--data-falling-duration, 17.5s) forwards var(--data-falling-delay, 0s) linear;
         }
         
         @keyframes falling {
             0% {
-                top: -300px; /* Збільшуємо початкову точку для більших карток */
+                top: -300px;
                 transform: rotate(var(--data-rotate-angle, 0deg));
                 opacity: 0;
             }
             10% {
                 opacity: 1;
             }
+            80% {
+                opacity: 1;
+            }
             100% {
-                top: calc(100% - 100px); /* Гарантуємо, що картки плавно зникають під наступною секцією */
-                transform: rotate(var(--data-rotate-angle, 0deg)); /* Постійний кут */
-                opacity: 0.8;
+                top: calc(100% - 100px);
+                transform: rotate(var(--data-rotate-angle, 0deg));
+                opacity: 0;
             }
         }
         
-        /* Вдвічі більші картки для десктопів та мобільних */
+        /* Розміри карток для десктопів і мобільних */
         @media (min-width: 768px) {
             .falling-card {
-                width: var(--data-card-size, 420px); /* Вдвічі більший розмір на десктопах */
+                width: var(--data-card-size, 420px);
+                left: var(--data-x-position, 50%);
+                transform-origin: center;
+                margin-left: calc(var(--data-card-size, 420px) / -2);
             }
         }
         
         @media (max-width: 767px) {
             .falling-card {
-                width: var(--data-mobile-card-size, 300px); /* Вдвічі більший розмір на мобільних */
+                width: var(--data-mobile-card-size, 300px);
+                left: 50%;
+                transform-origin: center;
+                margin-left: calc(var(--data-mobile-card-size, 300px) / -2);
             }
             
             .falling-cards-container {
-                min-height: 800px; /* Менше висоти на мобільних */
+                min-height: 800px;
             }
-        }
-        
-        /* Впевнюємось, що картки не перекриваються */
-        .falling-card:nth-child(odd) {
-            z-index: 1;
-        }
-        
-        .falling-card:nth-child(even) {
-            z-index: 2;
         }
     `;
     document.head.appendChild(style);
     
-    // Зменшуємо кількість карток
+    // Зменшуємо кількість карток для мобільних (тільки 1)
     const numCards = isMobile ? 1 : 2;
-    const segmentWidth = 100 / numCards;
     
     // Змінна для відстеження активного стану анімації
     let animationActive = forceStart;
@@ -3492,24 +3286,27 @@ function initEnhancedFallingCards(forceStart = false) {
         const card = document.createElement('div');
         card.className = 'falling-card';
         
-        // Рівномірний розподіл по ширині з невеликим випадковим зміщенням
-        // Збільшуємо відстань між картками
-        const leftPosition = 15 + Math.random() * 70; // від 15% до 85% ширини
+        // Розміщення картки в залежності від типу пристрою
+        if (isMobile) {
+            // На мобільних завжди по центру
+            card.style.setProperty('--data-x-position', '50%');
+        } else {
+            // На десктопах випадкова позиція
+            const leftPosition = 15 + Math.random() * 70; // від 15% до 85% ширини
+            card.style.setProperty('--data-x-position', leftPosition + '%');
+        }
         
-        // Випадкові параметри для падіння з постійною швидкістю та кутом
-        const rotateAngle = -5 + Math.random() * 10; // від -5 до 5 градусів
-        const fallingDelay = 3 + Math.random() * 3; // від 3 до 6 секунд, як запитано
+        // Випадкові параметри для падіння з випадковим кутом (сповільнено на 30%)
+        const rotateAngle = -5 + Math.random() * 10; // випадковий кут від -5 до 5 градусів
+        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3); // затримка для десктопів
+        const fallingDuration = 17.5; // сповільнено на 30% (раніше було 13.5)
         
-        // Сповільнюємо анімацію в 1.5 рази
-        const fallingDuration = 13.5;
-        
-        // Вдвічі більші картки
+        // Встановлюємо розмір картки
         const cardSize = isMobile 
             ? 300 + Math.random() * 30  // від 300px до 330px на мобільних
             : 420 + Math.random() * 40; // від 420px до 460px на десктопах
         
         // Встановлюємо CSS змінні для анімації
-        card.style.setProperty('--data-x-position', leftPosition + '%');
         card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
         card.style.setProperty('--data-falling-delay', fallingDelay + 's');
         card.style.setProperty('--data-falling-duration', fallingDuration + 's');
@@ -3521,15 +3318,9 @@ function initEnhancedFallingCards(forceStart = false) {
         }
         
         // Встановлюємо початкове положення
-        card.style.left = leftPosition + '%';
-        if (isMobile) {
-            card.style.width = cardSize + 'px';
-        } else {
-            card.style.width = cardSize + 'px';
-        }
         card.style.top = '-' + cardSize + 'px';
         
-        // Встановлюємо співвідношення сторін 2:3
+        // Забезпечуємо співвідношення сторін 2:3
         card.style.aspectRatio = '2/3';
         
         // Додаємо зображення
@@ -3557,8 +3348,8 @@ function initEnhancedFallingCards(forceStart = false) {
     if (forceStart) {
         // Створюємо декілька початкових карток
         createFallingCard();
-        // Використовуємо інтервал з більшою затримкою (8 секунд замість 4)
-        animationInterval = setInterval(createFallingCard, 8000);
+        // Використовуємо інтервал з більшою затримкою для мобільних
+        animationInterval = setInterval(createFallingCard, isMobile ? 12000 : 8000);
         animationActive = true;
     } else {
         // Використовуємо IntersectionObserver для запуску анімації, коли секція входить у в'юпорт
@@ -3570,37 +3361,36 @@ function initEnhancedFallingCards(forceStart = false) {
                         if (!animationActive) {
                             animationActive = true;
                             createFallingCard();
-                            // Більший інтервал - 8 секунд
-                            animationInterval = setInterval(createFallingCard, 8000);
+                            // Більший інтервал для мобільних
+                            animationInterval = setInterval(createFallingCard, isMobile ? 12000 : 8000);
                         }
                     } else {
                         // Не зупиняємо анімацію, коли секція виходить з в'юпорта
-                        // Залишаємо безперервне падіння
                     }
                 });
             }, {
-                threshold: 0.1, // Запуск, коли 10% секції у в'юпорті
-                rootMargin: '0px' // Додаткова область навколо в'юпорта
+                threshold: 0.1,
+                rootMargin: '0px'
             });
             
             if (fallingCardsSection) {
                 observer.observe(fallingCardsSection);
             }
         } else {
-            // Запасний варіант для старих браузерів - просто запускаємо анімацію
+            // Запасний варіант для старих браузерів
             animationActive = true;
             createFallingCard();
-            animationInterval = setInterval(createFallingCard, 8000);
+            animationInterval = setInterval(createFallingCard, isMobile ? 12000 : 8000);
         }
     }
     
-    // Зупиняємо анімацію, коли сторінка не активна, але НЕ скидаємо активний стан
+    // Зупиняємо анімацію, коли сторінка не активна
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             clearInterval(animationInterval);
         } else if (animationActive) {
             clearInterval(animationInterval);
-            animationInterval = setInterval(createFallingCard, 8000);
+            animationInterval = setInterval(createFallingCard, isMobile ? 12000 : 8000);
         }
     });
 }
@@ -3660,7 +3450,7 @@ window.addEventListener('load', function() {
         startInitialAnimations();
     }
     
-    // Виправлення для каруселі на мобільних
+    // Виправлення для каруселі на мобільних пристроях
     if (window.innerWidth <= 768) {
         setTimeout(fixMobileCarouselVisibility, 1000);
     }
