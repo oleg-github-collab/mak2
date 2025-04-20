@@ -69,11 +69,14 @@ function initEnhancedPreloader() {
     const preloader = document.querySelector('.preloader');
     if (!preloader) return;
     
+    // Add class for custom cursor
+    preloader.classList.add('cursor-hover-trigger');
+    
     // Create progress bar if it doesn't exist
     let progressBar = preloader.querySelector('.preloader-progress');
     if (!progressBar) {
         progressBar = document.createElement('div');
-        progressBar.className = 'preloader-progress';
+        progressBar.className = 'preloader-progress cursor-hover-trigger';
         
         const progressInner = document.createElement('div');
         progressInner.className = 'preloader-progress-inner';
@@ -86,7 +89,7 @@ function initEnhancedPreloader() {
     let welcomeMessage = preloader.querySelector('.preloader-welcome');
     if (!welcomeMessage) {
         welcomeMessage = document.createElement('div');
-        welcomeMessage.className = 'preloader-welcome';
+        welcomeMessage.className = 'preloader-welcome cursor-hover-trigger';
         welcomeMessage.innerHTML = '<h2>Roots & Wings</h2><p>Метафоричні асоціативні карти</p>';
         
         preloader.appendChild(welcomeMessage);
@@ -96,7 +99,7 @@ function initEnhancedPreloader() {
     let enterButton = preloader.querySelector('.preloader-enter');
     if (!enterButton) {
         enterButton = document.createElement('button');
-        enterButton.className = 'preloader-enter';
+        enterButton.className = 'preloader-enter cursor-hover-trigger';
         enterButton.textContent = 'Увійти на сайт';
         enterButton.style.display = 'none'; // Initially hidden
         
@@ -223,7 +226,7 @@ function initEnhancedPreloader() {
     let particlesContainer = preloader.querySelector('.preloader-particles');
     if (!particlesContainer) {
         particlesContainer = document.createElement('div');
-        particlesContainer.className = 'preloader-particles';
+        particlesContainer.className = 'preloader-particles cursor-hover-trigger';
         preloader.appendChild(particlesContainer);
         
         // Initialize particles if library available
@@ -369,15 +372,13 @@ function initOptimizedImageLoading() {
                 if (img.dataset.src) {
                     // Create a low-quality placeholder effect
                     if (!img.dataset.loaded) {
-                        img.style.filter = 'blur(10px)';
-                        img.style.transition = 'filter 0.5s ease';
+                        img.style.filter = 'blur(5px)'; // Reduced blur for faster perception
+                        img.style.transition = 'filter 0.3s ease'; // Faster transition
                     }
                     
-                    // Load actual image
-                    const actualImage = new Image();
-                    actualImage.src = img.dataset.src;
-                    actualImage.onload = () => {
-                        img.src = img.dataset.src;
+                    // Load actual image with higher priority
+                    img.src = img.dataset.src;
+                    img.onload = () => {
                         img.style.filter = '';
                         img.dataset.loaded = 'true';
                     };
@@ -390,29 +391,39 @@ function initOptimizedImageLoading() {
             }
         });
     }, {
-        rootMargin: '100px', // Start loading images when they're 100px from viewport
-        threshold: 0.1
+        rootMargin: '200px', // Increased margin for earlier loading
+        threshold: 0.01 // Lower threshold to start loading sooner
     });
     
     // Observe all images with loading="lazy" or data-src
     document.querySelectorAll('img[loading="lazy"], img[data-src]').forEach(img => {
         // Set initial size to prevent layout shifts
         if (!img.width && !img.height && !img.style.width && !img.style.height) {
-            // If aspect ratio is known from inline style
-            if (img.style.aspectRatio) {
-                img.style.width = '100%';
-                img.style.height = 'auto';
-            } 
             // For card images, enforce 2:3 aspect ratio
-            else if (img.closest('.carousel-card, .grid-card, .falling-card, .deck-card')) {
+            if (img.closest('.carousel-card, .grid-card, .falling-card, .deck-card')) {
                 img.style.aspectRatio = '2/3';
                 img.style.width = '100%';
                 img.style.height = 'auto';
             }
         }
         
-        // Observe the image
-        imageObserver.observe(img);
+        // Prefetch critical images immediately
+        if (img.classList.contains('critical-image') || 
+            img.closest('.hero-section, .carousel-card:nth-child(-n+3)') ||
+            img.closest('.preloader, .header')) {
+            if (img.dataset.src) {
+                // Use higher priority for critical images
+                const imgLoader = new Image();
+                imgLoader.src = img.dataset.src;
+                imgLoader.onload = () => {
+                    img.src = img.dataset.src;
+                    delete img.dataset.src;
+                };
+            }
+        } else {
+            // Observe non-critical images
+            imageObserver.observe(img);
+        }
     });
     
     // Prioritize images in the viewport
@@ -437,7 +448,7 @@ function initOptimizedImageLoading() {
     
     // Call once and then on scroll
     prioritizeViewportImages();
-    window.addEventListener('scroll', debounce(prioritizeViewportImages, 200));
+    window.addEventListener('scroll', debounce(prioritizeViewportImages, 100)); // Reduced delay
 }
 
 /**
@@ -497,7 +508,7 @@ function initOptimizedFallingCards(forceStart = false) {
     // Check if mobile device
     const isMobile = window.innerWidth < 768;
     
-    // Add CSS for falling animation
+    // Add CSS for falling animation - removed overflow: hidden
     const style = document.createElement('style');
     style.textContent = `
         .falling-cards-container {
@@ -505,7 +516,6 @@ function initOptimizedFallingCards(forceStart = false) {
             width: 100%;
             height: 100%;
             min-height: 1000px;
-            overflow: hidden; /* Prevent cards from overlapping adjacent sections */
             padding-bottom: 100px; /* Add space at bottom to ensure no overlap */
         }
         
@@ -514,7 +524,6 @@ function initOptimizedFallingCards(forceStart = false) {
             z-index: 2;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            overflow: hidden;
             transform: rotate(var(--data-rotate-angle, 0deg));
             transition: transform 0.3s ease;
             opacity: 0;
@@ -1487,17 +1496,95 @@ function initScrollObserver() {
  * Only displays on desktop and popup windows
  */
 function initCursor() {
-    const cursor = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    const cursorText = document.querySelector('.cursor-text');
+    const cursor = document.querySelector('.cursor-dot') || createCursorElement('cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline') || createCursorElement('cursor-outline');
+    const cursorText = document.querySelector('.cursor-text') || createCursorElement('cursor-text');
     
-    if (!cursor || !cursorOutline) return;
+    // Function to create cursor elements if they don't exist
+    function createCursorElement(className) {
+        const element = document.createElement('div');
+        element.className = className;
+        document.body.appendChild(element);
+        return element;
+    }
     
     // Check if device has touch capabilities
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     
     if (!isTouchDevice && window.innerWidth >= 768) {
         document.body.classList.add('cursor-enabled');
+        
+        // Apply styles for cursor elements
+        const style = document.createElement('style');
+        style.textContent = `
+            .cursor-dot, .cursor-outline, .cursor-text {
+                position: fixed;
+                pointer-events: none;
+                z-index: 9999;
+            }
+            
+            .cursor-dot {
+                width: 8px;
+                height: 8px;
+                background-color: #fff;
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.2s, height 0.2s, opacity 0.2s;
+            }
+            
+            .cursor-outline {
+                width: 40px;
+                height: 40px;
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.3s, height 0.3s, border-color 0.3s;
+            }
+            
+            .cursor-text {
+                background-color: #fff;
+                color: #000;
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 14px;
+                transform: translate(-50%, -50%) translateY(-30px);
+                opacity: 0;
+                visibility: hidden;
+                white-space: nowrap;
+            }
+            
+            body.cursor-text-visible .cursor-text {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .cursor-hover {
+                transform: translate(-50%, -50%) scale(1.5) !important;
+            }
+            
+            .cursor-dot.cursor-hover {
+                background-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+            
+            .cursor-outline.cursor-hover {
+                border-color: rgba(255, 255, 255, 0.9);
+                width: 50px;
+                height: 50px;
+            }
+            
+            .cursor-click {
+                transform: translate(-50%, -50%) scale(0.8) !important;
+                opacity: 0.8;
+            }
+            
+            /* Show cursor on preloader */
+            .preloader .cursor-dot, .preloader .cursor-outline, 
+            .preloader .cursor-hover, .preloader .cursor-click {
+                z-index: 10000 !important;
+            }
+        `;
+        document.head.appendChild(style);
         
         // Update cursor position on mouse move using requestAnimationFrame
         let mouseX = 0;
@@ -1534,8 +1621,8 @@ function initCursor() {
             frameId = requestAnimationFrame(updateCursor);
         }
         
-        // Add effect on hover over interactive elements
-        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card, .legal-button, .btn-modal, .modal-content, .modal-body, .modal-trigger');
+        // Add effect on hover over interactive elements (including preloader elements)
+        const interactiveElements = document.querySelectorAll('a, button, .card, .interactive, input, textarea, .cursor-hover-trigger, .spread-card, .carousel-card, .grid-card, .deck-card, .draw-button, .carousel-prev, .carousel-next, .modal-close, .author-photo, .floating-card, .legal-button, .btn-modal, .modal-content, .modal-body, .modal-trigger, .preloader, .preloader-enter, .preloader-welcome, .preloader-progress, .preloader-particles');
         
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -1847,6 +1934,22 @@ function initSmoothScroll() {
         scrollIndicator.style.display = 'none'; // Hide as requested
         scrollIndicator.remove(); // Remove completely
     }
+    
+    // Remove all "scroll to see animation" text
+    document.querySelectorAll('.scroll-text, .scroll-hint, .scroll-instruction').forEach(el => {
+        el.style.display = 'none';
+        el.remove(); // Remove completely
+    });
+    
+    // Check for any element containing text about scrolling
+    document.querySelectorAll('p, div, span').forEach(el => {
+        if (el.textContent && 
+            (el.textContent.toLowerCase().includes('прокрутіть') || 
+             el.textContent.toLowerCase().includes('scroll'))) {
+            el.style.display = 'none';
+            el.remove();
+        }
+    });
 }
 
 /**
@@ -1855,6 +1958,11 @@ function initSmoothScroll() {
 function initBackToTop() {
     const backToTopBtn = document.querySelector('.back-to-top');
     if (!backToTopBtn) return;
+    
+    // Add icon if not present
+    if (!backToTopBtn.querySelector('i')) {
+        backToTopBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
+    }
     
     // Check scroll position and toggle button visibility
     function checkScrollPosition() {
@@ -1903,19 +2011,23 @@ function initBackToTop() {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #fff;
-            color: #333;
+            background-color: #333;
+            color: #fff;
             border-radius: 50%;
             width: 50px;
             height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 90;
+        }
+        
+        .back-to-top i {
+            font-size: 20px;
         }
         
         .back-to-top.visible {
@@ -1925,7 +2037,8 @@ function initBackToTop() {
         
         .back-to-top:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            background-color: #444;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
         }
         
         @media (max-width: 767px) {
@@ -1934,6 +2047,10 @@ function initBackToTop() {
                 height: 40px;
                 bottom: 15px;
                 right: 15px;
+            }
+            
+            .back-to-top i {
+                font-size: 16px;
             }
         }
     `;
@@ -3512,8 +3629,12 @@ function initAnimatedCardDeck() {
     if (!deckSection.querySelector('.draw-button')) {
         const drawButton = document.createElement('button');
         drawButton.className = 'draw-button';
-        drawButton.textContent = 'Draw a Card';
+        drawButton.textContent = 'Витягти карту';
         deckSection.appendChild(drawButton);
+    } else {
+        // Update text of existing button
+        const existingButton = deckSection.querySelector('.draw-button');
+        existingButton.textContent = 'Витягти карту';
     }
 }
 
