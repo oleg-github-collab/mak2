@@ -1135,6 +1135,10 @@ button {
   overflow: visible; /* Дозволяє карткам виходити за межі контейнера */
 }
 
+section.section.falling-cards {
+  overflow: visible !important;
+}
+
 /* Оптимізовані стилі для падаючих карток - однаковий розмір з картками колоди */
 .falling-card {
   position: absolute;
