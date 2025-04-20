@@ -3471,8 +3471,8 @@ function initAnimatedCardDeck() {
         const sectionHeader = document.createElement('div');
         sectionHeader.className = 'section-header';
         sectionHeader.innerHTML = `
-            <h2 class="section-title">Metaphorical Cards</h2>
-            <p class="section-description">Select a card from the deck for a closer look</p>
+            <h2 class="section-title">Метафоричні карти</h2>
+            <p class="section-description">Витягніть та погляньте на деякі ближче</p>
         `;
         deckSection.appendChild(sectionHeader);
     }

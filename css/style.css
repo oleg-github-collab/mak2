@@ -2563,3 +2563,82 @@ img, video {
 .progress-text {
   display: none;
 }
+/* Повне виправлення для падаючих карток - останній пріоритет */
+.falling-cards {
+  padding: var(--space-xxl) 0;
+  position: relative;
+  min-height: 100vh;
+  overflow: visible !important;
+  padding-bottom: 800px !important; /* Значно збільшений нижній відступ */
+  z-index: 1;
+}
+
+.falling-cards-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 1000px) !important; /* Максимально збільшена висота */
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible !important;
+}
+
+.falling-card {
+  z-index: 10 !important; /* Підвищений z-index щоб картки були над усіма елементами */
+}
+
+/* Переписана анімація з меншим діапазоном руху */
+@keyframes individualFallAnimation {
+  0% {
+    transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+    opacity: 0;
+  }
+  5% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(60vh) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  @keyframes mobileFallAnimation {
+    0% {
+      transform: translateX(-50%) translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+      opacity: 0;
+    }
+    5% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    95% {
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(-50%) translateY(60vh) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+      opacity: 0;
+    }
+  }
+}
+
+/* Переконуємося, що жодна секція після падаючих карток не перекриває їх */
+.falling-cards + section {
+  position: relative;
+  z-index: 1;
+}
