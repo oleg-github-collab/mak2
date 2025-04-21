@@ -194,7 +194,7 @@ function initGradientPreloader() {
         const textContainer = preloader.querySelector('.preloader-text-container');
         if (!textContainer) return;
         
-        textContainer.innerHTML = '<div class="preloader-animated-text">Ласкаво просимо</div>';
+        textContainer.innerHTML = '<div class="preloader-animated-text">Ласкаво просимо!</div>';
         
         // Set up event that will trigger after animation completes
         setTimeout(() => {
