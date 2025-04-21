@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Gradient preloader with text animation
+ * Виправлено для повного відображення тексту на мобільних пристроях
  */
 function initGradientPreloader() {
     const preloader = document.querySelector('.preloader');
@@ -80,7 +81,7 @@ function initGradientPreloader() {
         </div>
     `;
     
-    // Add styles for gradient preloader
+    // Add styles for gradient preloader with improved mobile text display
     const style = document.createElement('style');
     style.textContent = `
         .preloader {
@@ -120,10 +121,11 @@ function initGradientPreloader() {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
+            width: 90%;
             max-width: 800px;
-            height: 120px;
-            overflow: hidden;
+            min-height: 150px;
+            padding: 20px;
+            overflow: visible;
         }
         
         .preloader-animated-text {
@@ -134,8 +136,24 @@ function initGradientPreloader() {
             opacity: 0;
             transform: translateY(20px);
             animation: textFadeIn 0.8s ease forwards 0.5s, 
-                       textHold 1.4s ease forwards 1.3s,
-                       textFadeOut 0.8s ease forwards 2.7s;
+                       textHold 1.6s ease forwards 1.3s,
+                       textFadeOut 0.8s ease forwards 2.9s;
+            width: 100%;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 767px) {
+            .preloader-text-container {
+                min-height: 180px;
+                padding: 15px 10px;
+            }
+            
+            .preloader-animated-text {
+                font-size: 1.8rem;
+                width: 100%;
+                word-wrap: break-word;
+                line-height: 1.3;
+            }
         }
         
         @keyframes textFadeIn {
@@ -343,7 +361,9 @@ function initOptimizedImageLoading() {
 }
 
 /**
- * Optimized falling cards animation - one at a time on mobile
+ * Optimized falling cards animation
+ * Вдосконалено анімацію падаючих карток: центрування на мобільних, 
+ * нахил 5-20 градусів, швидше на 20%, лише 1-2 картки одночасно
  * @param {boolean} forceStart - Force animation to start immediately
  */
 function initOptimizedFallingCards(forceStart = false) {
@@ -374,7 +394,7 @@ function initOptimizedFallingCards(forceStart = false) {
     // Clear container
     fallingCardsContainer.innerHTML = '';
     
-    // Card image URLs - using up to 18 different images as requested
+    // Card image URLs - using all 17 images for card variety
     const cardImages = [
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
@@ -398,14 +418,14 @@ function initOptimizedFallingCards(forceStart = false) {
     // Check if mobile device
     const isMobile = window.innerWidth < 768;
     
-    // Add CSS for falling animation - optimized for mobile with no cropping
+    // Add CSS for falling animation - improved for mobile with no cropping
     const style = document.createElement('style');
     style.textContent = `
         /* Контейнер для падаючих карток - без обмеження переповнення */
         .falling-cards {
             position: relative;
             overflow: visible !important;
-            padding-bottom: 800px !important; /* Збільшений відступ знизу */
+            padding-bottom: 800px !important;
             z-index: 1;
         }
         
@@ -414,23 +434,23 @@ function initOptimizedFallingCards(forceStart = false) {
             top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% + 1000px) !important; /* Збільшена висота контейнера */
+            height: calc(100% + 1000px) !important;
             pointer-events: none;
             z-index: 5;
-            overflow: visible !important; /* Критично важливо для запобігання обрізанню */
+            overflow: visible !important;
         }
         
         .falling-card {
             position: absolute;
-            z-index: 10 !important; /* Пріоритет над іншими елементами */
+            z-index: 10 !important;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             transform: rotate(var(--data-rotate-angle, 0deg));
             transition: transform 0.3s ease;
             opacity: 0;
             width: var(--data-card-size, 420px) !important;
-            height: auto !important; /* скасовуємо фіксовану висоту */
-            aspect-ratio: 2/3; /* нехай браузер сам порахує висоту */
+            height: auto !important;
+            aspect-ratio: 2/3;
         }
         
         .falling-card img {
@@ -442,10 +462,10 @@ function initOptimizedFallingCards(forceStart = false) {
         }
         
         .falling-card.animated {
-            animation: falling var(--data-falling-duration, 17.5s) forwards var(--data-falling-delay, 0s) linear;
+            animation: falling var(--data-falling-duration, 14s) forwards var(--data-falling-delay, 0s) linear;
         }
         
-        /* Оновлені ключові кадри для анімації з меншим діапазоном падіння */
+        /* Оновлені ключові кадри для анімації - на 20% швидше */
         @keyframes falling {
             0% {
                 top: -300px;
@@ -462,7 +482,7 @@ function initOptimizedFallingCards(forceStart = false) {
                 opacity: 0;
             }
             100% {
-                top: 65vh; /* Зменшена висота падіння */
+                top: 65vh;
                 transform: rotate(var(--data-rotate-angle, 0deg));
                 opacity: 0;
             }
@@ -483,13 +503,11 @@ function initOptimizedFallingCards(forceStart = false) {
                 overflow: visible !important;
             }
             
-            /* Забезпечуємо, щоб на мобільних карти були видимі повністю */
             .falling-cards {
                 overflow: visible !important;
                 padding-bottom: 900px !important;
             }
             
-            /* Збільшуємо відстань між карточками на мобільних */
             .falling-card + .falling-card {
                 margin-top: 200px !important;
             }
@@ -499,7 +517,6 @@ function initOptimizedFallingCards(forceStart = false) {
     
     // Переконаємося, що секції та батьківські елементи не обрізають контент
     if (fallingCardsSection) {
-        // Встановлюємо overflow: visible для всіх батьківських елементів
         let parent = fallingCardsSection.parentElement;
         while (parent && parent !== document.body) {
             const computedStyle = window.getComputedStyle(parent);
@@ -544,25 +561,24 @@ function initOptimizedFallingCards(forceStart = false) {
             leftPosition = 15 + Math.random() * 70; // 15% to 85% width on desktop
         }
         
-        // Random parameters with specified tilt range for mobile
+        // Random tilt angle 5-20 degrees (positive or negative)
         let rotateAngle;
         if (isMobile) {
-            // Random angle between 5 and 15 degrees (positive or negative)
             rotateAngle = Math.random() > 0.5 ? 
-                5 + Math.random() * 10 : // 5 to 15 degrees
-                -(5 + Math.random() * 10); // -5 to -15 degrees
+                5 + Math.random() * 15 : // 5 to 20 degrees
+                -(5 + Math.random() * 15); // -5 to -20 degrees
         } else {
-            // Desktop angle remains as before
-            rotateAngle = -5 + Math.random() * 10; // -5 to 5 degrees
+            rotateAngle = -5 + Math.random() * 10; // -5 to 5 degrees for desktop
         }
         
-        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3); // 3-6 seconds delay, none on mobile
-        const fallingDuration = 17.5; // Slowed down by 30% as requested
+        // Instant start on mobile, delayed on desktop
+        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3);
+        
+        // 20% faster animation (original was 17.5s)
+        const fallingDuration = 14; 
         
         // Card size
-        const cardSize = isMobile 
-            ? 300 // Fixed size on mobile
-            : 420 + Math.random() * 40; // 420px to 460px on desktop
+        const cardSize = isMobile ? 300 : 420 + Math.random() * 40;
         
         // Set CSS variables for animation
         card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
@@ -575,7 +591,7 @@ function initOptimizedFallingCards(forceStart = false) {
         card.style.width = cardSize + 'px';
         card.style.top = '-' + cardSize + 'px';
         card.style.aspectRatio = '2/3';
-        card.style.height = 'auto'; // Let aspect-ratio control height
+        card.style.height = 'auto';
         
         // Make sure mobile cards are fully visible
         if (isMobile) {
@@ -615,9 +631,7 @@ function initOptimizedFallingCards(forceStart = false) {
         createFallingCard();
         
         // Different intervals for mobile and desktop
-        // Mobile: longer interval for better visibility of each card
-        // Desktop: one card every 8 seconds
-        const interval = isMobile ? 15000 : 8000;
+        const interval = isMobile ? 9000 : 8000; // Faster interval on mobile (12s → 9s)
         animationInterval = setInterval(createFallingCard, interval);
         animationActive = true;
     } else {
@@ -632,7 +646,7 @@ function initOptimizedFallingCards(forceStart = false) {
                             createFallingCard();
                             
                             // Different intervals for mobile and desktop
-                            const interval = isMobile ? 15000 : 8000;
+                            const interval = isMobile ? 9000 : 8000;
                             animationInterval = setInterval(createFallingCard, interval);
                         }
                     }
@@ -649,7 +663,7 @@ function initOptimizedFallingCards(forceStart = false) {
             // Fallback for older browsers
             animationActive = true;
             createFallingCard();
-            const interval = isMobile ? 15000 : 8000;
+            const interval = isMobile ? 9000 : 8000;
             animationInterval = setInterval(createFallingCard, interval);
         }
     }
@@ -660,7 +674,7 @@ function initOptimizedFallingCards(forceStart = false) {
             clearInterval(animationInterval);
         } else if (animationActive) {
             clearInterval(animationInterval);
-            const interval = isMobile ? 15000 : 8000;
+            const interval = isMobile ? 9000 : 8000;
             animationInterval = setInterval(createFallingCard, interval);
         }
     });
@@ -673,6 +687,7 @@ function initOptimizedFallingCards(forceStart = false) {
 
 /**
  * Initialize improved carousel with continuous rotation
+ * Виправлено перекриття карток у каруселі
  */
 function initImprovedCarousel() {
     const carousel = document.querySelector('.carousel-3d, .smooth-carousel');
@@ -698,18 +713,24 @@ function initImprovedCarousel() {
     // Get cards in carousel
     let cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     
-    // If fewer than 8 cards, duplicate them to reach 8-10 as requested
-    if (cards.length < 8) {
+    // Adjust card count to optimal number (8-10) to prevent overlapping
+    const isMobile = window.innerWidth < 768;
+    const optimalCount = isMobile ? 6 : 8;
+    
+    if (cards.length > optimalCount + 2) {
+        // Too many cards - remove excess
+        for (let i = optimalCount; i < cards.length; i++) {
+            cards[i].remove();
+        }
+        cards = cards.slice(0, optimalCount);
+    } else if (cards.length < optimalCount) {
+        // Too few cards - duplicate some
         const initialCount = cards.length;
-        const targetCount = Math.min(10, Math.max(8, initialCount * 2)); // Between 8-10 cards
-        
-        for (let i = 0; i < targetCount - initialCount; i++) {
+        for (let i = 0; i < optimalCount - initialCount; i++) {
             const sourceCard = cards[i % initialCount];
             const clonedCard = sourceCard.cloneNode(true);
             cardsContainer.appendChild(clonedCard);
         }
-        
-        // Update cards list
         cards = Array.from(carousel.querySelectorAll('.carousel-card'));
     }
     
@@ -729,7 +750,7 @@ function initImprovedCarousel() {
         }
     });
     
-    // Add carousel styles
+    // Add carousel styles with improved spacing
     const style = document.createElement('style');
     style.textContent = `
         .smooth-carousel {
@@ -737,7 +758,7 @@ function initImprovedCarousel() {
             width: 100%;
             height: 540px;
             margin: 50px auto;
-            perspective: 1200px;
+            perspective: 1400px;
             overflow: visible;
         }
         
@@ -746,13 +767,13 @@ function initImprovedCarousel() {
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            animation: carousel-rotate 32s linear infinite;
+            animation: carousel-rotate 36s linear infinite;
         }
         
         .carousel-card {
             position: absolute;
-            width: 320px;
-            height: 480px;
+            width: 300px;
+            height: 450px;
             top: 50%;
             left: 50%;
             transform-origin: center center;
@@ -784,18 +805,17 @@ function initImprovedCarousel() {
             }
             
             .carousel-cards-container {
-                animation: carousel-rotate 32s linear infinite;
+                animation: carousel-rotate 36s linear infinite;
                 transform: scale(0.85);
             }
             
             .carousel-card {
-                width: 320px;
-                height: 480px;
+                width: 280px;
+                height: 420px;
                 border-radius: 12px;
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
                 opacity: 1 !important;
                 filter: none !important;
-                aspect-ratio: 2/3;
             }
         }
     `;
@@ -819,11 +839,13 @@ function initImprovedCarousel() {
 function setupCarousel(carousel, cards) {
     const cardsContainer = carousel.querySelector('.carousel-cards-container');
     const isMobile = window.innerWidth < 768;
-    const radius = isMobile ? 350 : 450; // Larger radius to show full cards
+    
+    // Adjust radius for better spacing - prevents overlapping
+    const radius = isMobile ? 380 : 550; 
     const totalCards = cards.length;
     const angleStep = (2 * Math.PI) / totalCards;
     
-    // Position cards in a circle
+    // Position cards in a circle with increased spacing
     cards.forEach((card, index) => {
         // Calculate position
         const angle = angleStep * index;
@@ -833,9 +855,9 @@ function setupCarousel(carousel, cards) {
         // Position card in 3D space
         card.style.transform = `translate(-50%, -50%) translateX(${x}px) translateZ(${z}px) rotateY(${-angle * 180 / Math.PI}deg)`;
         
-        // Ensure 2:3 aspect ratio
-        card.style.width = '320px';
-        card.style.height = '480px';
+        // Ensure consistent size
+        card.style.width = isMobile ? '280px' : '300px';
+        card.style.height = isMobile ? '420px' : '450px';
         card.style.aspectRatio = '2/3';
         
         // Set transition delay for smooth animation
@@ -856,7 +878,7 @@ function setupCarousel(carousel, cards) {
             const angle = (angleStep * index) + getCurrentRotation();
             const z = radius * Math.cos(angle);
             
-            // Apply blur to back-facing cards
+            // Apply blur to back-facing cards only on desktop
             if (z < 0 && !isMobile) {
                 card.style.opacity = '0.5';
                 card.style.filter = 'blur(3px)';
@@ -988,9 +1010,41 @@ function initDeckDrawButton() {
             activeCard.style.boxShadow = '';
         });
         
+        // Get all available card images
+        let allCardImages;
+        try {
+            allCardImages = JSON.parse(deckContainer.dataset.allCardImages || '[]');
+        } catch(e) {
+            // Use falling cards images as fallback
+            allCardImages = [
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg'
+            ];
+        }
+        
         // Randomly select a card
         const randomIndex = Math.floor(Math.random() * cards.length);
         const selectedCard = cards[randomIndex];
+        
+        // Also randomly select an image from all available cards
+        const randomImageIndex = Math.floor(Math.random() * allCardImages.length);
+        const randomImage = allCardImages[randomImageIndex];
+        
+        // Update card image if different from current
+        const cardImage = selectedCard.querySelector('img');
+        if (cardImage && cardImage.src !== randomImage) {
+            cardImage.src = randomImage;
+        }
         
         // Activate selected card
         selectedCard.classList.add('active');
@@ -3540,6 +3594,7 @@ function initVanillaTilt() {
 
 /**
  * Initialize animated card deck
+ * Додано всі картки з масиву для можливості витягування випадкової карти
  */
 function initAnimatedCardDeck() {
     // Find or create section for card deck
@@ -3604,7 +3659,6 @@ function initAnimatedCardDeck() {
                         z-index 0s 0.5s;
             cursor: pointer;
             transform-origin: center center;
-            /* Ensure 2:3 aspect ratio */
             aspect-ratio: 2/3;
         }
         
@@ -3634,26 +3688,37 @@ function initAnimatedCardDeck() {
     `;
     document.head.appendChild(style);
     
-    // Card images for deck
+    // Include all available card images from the script for variety
     const cardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg'
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
     ];
     
-    // Create 6 cards for deck
+    // Create 6 cards for deck display (more cards will be available for random draw)
     for (let i = 0; i < 6; i++) {
         const card = document.createElement('div');
         card.className = 'deck-card';
         card.dataset.index = i;
         
         // Random position and rotation for chaotic look
-        const randomRotate = -15 + Math.random() * 30; // -15 to 15 degrees
-        const randomX = -15 + Math.random() * 30; // -15px to 15px
-        const randomY = -15 + Math.random() * 30; // -15px to 15px
+        const randomRotate = -15 + Math.random() * 30;
+        const randomX = -15 + Math.random() * 30;
+        const randomY = -15 + Math.random() * 30;
         const zIndex = i;
         
         // Set initial styles
@@ -3662,7 +3727,7 @@ function initAnimatedCardDeck() {
         
         // Create image for card
         const img = document.createElement('img');
-        img.src = cardImages[i];
+        img.src = cardImages[i % cardImages.length];
         img.alt = 'Metaphorical card ' + (i + 1);
         img.loading = 'lazy';
         card.appendChild(img);
@@ -3709,6 +3774,9 @@ function initAnimatedCardDeck() {
             this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
         });
     }
+    
+    // Store all card images for button to randomly select from
+    deckContainer.dataset.allCardImages = JSON.stringify(cardImages);
     
     // Add button for drawing card
     if (!deckSection.querySelector('.draw-button')) {
