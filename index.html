@@ -99,16 +99,12 @@
     </script>
 </head>
 <body data-page="home" itemscope itemtype="https://schema.org/WebPage">
-    <!-- Прелоадер з індикатором прогресу -->
+    <!-- Градієнтний прелоадер з анімованими буквами -->
     <div class="preloader" id="preloader" aria-hidden="true">
-        <div class="preloader-content">
-            <div class="loader"></div>
-            <div class="loading-text">Завантаження...</div>
-            <!-- Індикатор прогресу -->
-            <div class="progress-container" aria-label="Індикатор прогресу завантаження">
-                <div class="progress-bar" id="progress-bar"></div>
+        <div class="gradient-preloader">
+            <div class="preloader-title">
+                <span class="preloader-text animated-text" id="preloader-text">Метафоричні карти серії "Коріння та Крила"</span>
             </div>
-            <div class="progress-text" id="progress-text" aria-live="polite">0%</div>
         </div>
     </div>
 
@@ -797,7 +793,8 @@
                         </div>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm" action="#" method="POST" aria-labelledby="form-title">
+                <!-- Оптимізована форма зворотного зв'язку для інтеграції з Google Apps Script -->
+                <form class="contact-form" id="contactForm" method="POST" aria-labelledby="form-title">
                     <h3 id="form-title" class="visually-hidden">Форма зворотного зв'язку</h3>
                     <div class="form-group">
                         <label for="name">Ваше ім'я</label>
@@ -815,7 +812,10 @@
                         <div class="input-line" aria-hidden="true"></div>
                     </div>
                     <button type="submit" class="btn btn-accent">Надіслати повідомлення</button>
-                    <div class="success-message hidden" aria-live="polite">Дякуємо! Ваше повідомлення успішно надіслано.</div>
+                    <div class="form-status">
+                        <div class="success-message hidden" aria-live="polite">Дякуємо! Ваше повідомлення успішно надіслано.</div>
+                        <div class="error-message hidden" aria-live="polite">Виникла помилка при відправці. Будь ласка, спробуйте ще раз.</div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -1064,16 +1064,100 @@
     <!-- JS з відкладеним завантаженням -->
     <script src="js/main.js" defer></script>
 
-    <!-- Додатковий скрипт для кодування кирилиці у формах -->
+    <!-- Скрипт для інтеграції форми з Google Apps Script -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Для форми зворотного зв'язку
-        const form = document.getElementById('contactForm');
-        if(form) {
-            form.addEventListener('submit', function(event) {
-                const formData = new FormData(form);
-                const encodedData = new URLSearchParams(formData).toString();
-                // Додаткова логіка для відправки форми з кирилицею
+        // Форма зворотного зв'язку
+        const contactForm = document.getElementById('contactForm');
+        const successMessage = document.querySelector('.success-message');
+        const errorMessage = document.querySelector('.error-message');
+        
+        if(contactForm) {
+            // Додаємо URL Google Apps Script для відправки форми
+            // Замініть URL_ВАШОГО_GOOGLE_APPS_SCRIPT на реальну URL вашого розгорнутого Apps Script
+            const scriptURL = 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE';
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Відображаємо статус відправки
+                const submitButton = contactForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Відправка...';
+                
+                // Збираємо дані форми
+                const formData = new FormData(contactForm);
+                
+                // Конвертуємо FormData в JSON
+                const data = {};
+                formData.forEach((value, key) => {
+                    // Кодуємо кирилицю для правильної передачі
+                    data[key] = value;
+                });
+                
+                // Відправляємо дані через fetch API
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Необхідно для Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    // Показуємо повідомлення про успіх
+                    successMessage.classList.remove('hidden');
+                    errorMessage.classList.add('hidden');
+                    
+                    // Очищаємо форму
+                    contactForm.reset();
+                    
+                    // Відновлюємо кнопку відправки
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Надіслати повідомлення';
+                    
+                    // Ховаємо повідомлення про успіх через 5 секунд
+                    setTimeout(() => {
+                        successMessage.classList.add('hidden');
+                    }, 5000);
+                })
+                .catch(error => {
+                    // Показуємо повідомлення про помилку
+                    errorMessage.classList.remove('hidden');
+                    successMessage.classList.add('hidden');
+                    
+                    // Відновлюємо кнопку відправки
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Надіслати повідомлення';
+                    
+                    // Ховаємо повідомлення про помилку через 5 секунд
+                    setTimeout(() => {
+                        errorMessage.classList.add('hidden');
+                    }, 5000);
+                    
+                    console.error('Помилка відправки форми:', error);
+                });
+            });
+        }
+        
+        // Додатковий код для адаптації форми під мобільні пристрої
+        const isMobile = window.matchMedia('(max-width: 767px)').matches;
+        
+        if(isMobile) {
+            // Додаємо специфічні для мобільних пристроїв функції
+            const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
+            
+            formInputs.forEach(input => {
+                // Додаємо обробку фокусу для мобільних пристроїв
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('input-focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if(!this.value) {
+                        this.parentElement.classList.remove('input-focused');
+                    }
+                });
             });
         }
     });

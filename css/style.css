@@ -299,6 +299,16 @@ button {
 .preloader-content {
   text-align: center;
   width: 300px;
+  max-width: 90%; /* Обмеження ширини для мобільних */
+}
+
+.preloader-text {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  padding: 0 10px; /* Додаємо відступи з боків */
 }
 
 .loader {
@@ -362,6 +372,24 @@ button {
 @keyframes loading-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+/* Покращене відображення тексту прелоадера на мобільних */
+@media (max-width: 768px) {
+  .preloader-text {
+    font-size: 14px;
+    padding: 0 15px;
+    width: 100%;
+  }
+  
+  .loading-text {
+    font-size: var(--text-base);
+  }
+  
+  .preloader-content {
+    width: 90%;
+    max-width: 300px;
+  }
 }
 
 /* ===== Custom Cursor - Підвищена якість ===== */
@@ -1645,6 +1673,7 @@ button {
   margin-bottom: 0;
 }
 
+/* Покращена контактна форма */
 .contact-form {
   flex: 1;
   background-color: rgba(255, 255, 255, 0.05);
@@ -1668,18 +1697,20 @@ button {
 .form-group input,
 .form-group textarea {
   width: 100%;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.05);
   border: none;
   border-bottom: 1px solid var(--color-text-lighter);
-  padding: var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-sm);
   color: var(--color-white);
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  border-radius: var(--radius-sm);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-accent);
+  background-color: rgba(230, 126, 34, 0.05);
 }
 
 .form-group textarea {
@@ -1710,6 +1741,41 @@ button {
   border-radius: var(--radius-md);
   text-align: center;
   font-weight: var(--weight-medium);
+}
+
+.error-message {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--color-error);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-weight: var(--weight-medium);
+  display: none;
+}
+
+/* Кнопка відправки форми */
+.btn-submit {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-md);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  display: inline-block;
+  border: none;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-accent-light);
+  transform: translateY(-3px);
+}
+
+.btn-submit:active {
+  transform: translateY(-1px);
 }
 
 /* ===== Footer ===== */
@@ -2216,6 +2282,11 @@ button {
     height: 60px;
     font-size: var(--text-xl);
   }
+
+  /* Стилі для контактної форми на мобільних */
+  .contact-form {
+    padding: var(--space-lg);
+  }
 }
 
 @media (max-width: 576px) {
@@ -2375,14 +2446,13 @@ img, video {
   }
 }
 
-/* ===== Вдосконалені стилі для падаючих карток - ОПТИМІЗОВАНО ===== */
-/* Відокремлений і оптимізований блок для падаючих карток з пріоритетом */
+/* ===== Вдосконалені стилі для падаючих карток - ВИПРАВЛЕНІ ДЛЯ МОБІЛЬНИХ ===== */
 section.section.falling-cards {
   padding: var(--space-xxl) 0;
   position: relative;
   min-height: 100vh;
-  overflow: visible !important; /* Забезпечує видимість карток за межами секції */
-  padding-bottom: 800px !important; /* Додатковий простір внизу для повної анімації */
+  overflow: visible !important;
+  padding-bottom: 800px !important;
   z-index: 1;
 }
 
@@ -2391,7 +2461,7 @@ section.section.falling-cards {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100vh + 800px);  /* замість 100%+1000px */
+  height: calc(100vh + 800px);
   overflow: visible;
   pointer-events: none;
   z-index: 10;
@@ -2399,17 +2469,17 @@ section.section.falling-cards {
 
 .falling-card {
   position: absolute;
-  width: var(--card-width); /* Використовуємо змінну для узгодженості з іншими картками */
-  height: var(--card-height); /* Використовуємо змінну для узгодженості з іншими картками */
+  width: var(--card-width);
+  height: var(--card-height);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-xl); /* Посилена тінь для кращої видимості */
+  box-shadow: var(--shadow-xl);
   opacity: 0;
-  top: -450px; /* Початкова позиція вище viewport для плавного входу */
+  top: -450px;
   transform-origin: center center;
   will-change: transform, opacity;
   visibility: hidden;
-  z-index: 10 !important; /* Підвищений z-index для відображення над іншими елементами */
+  z-index: 10 !important;
 }
 
 .falling-card img {
@@ -2424,7 +2494,7 @@ section.section.falling-cards {
   left: calc(var(--data-x-position, 50) * 1%);
 }
 
-/* Оновлена анімація з меншим діапазоном руху вниз для уникнення обрізання */
+/* Оновлена анімація для десктопу з уповільненням на 30% */
 @keyframes individualFallAnimation {
   0% {
     transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
@@ -2449,12 +2519,12 @@ section.section.falling-cards {
 }
 
 .falling-card.animated {
-  animation: individualFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  animation: individualFallAnimation 42s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* уповільнено на 30% з 36s до 42s */
   animation-delay: calc(var(--data-falling-delay, 0) * 1s);
   visibility: visible;
 }
 
-/* Специфічні налаштування для мобільних пристроїв - тільки одна картка */
+/* Специфічні налаштування для мобільних пристроїв - центровані картки, швидша анімація */
 @media (max-width: 768px) {
   .falling-card:not(:first-child) {
     display: none;
@@ -2489,7 +2559,7 @@ section.section.falling-cards {
   }
   
   .falling-card.animated:first-child {
-    animation: mobileFallAnimation 36s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation: mobileFallAnimation 28s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Швидша анімація на мобільних */
     animation-delay: 1s;
   }
 }
@@ -2499,8 +2569,9 @@ section.section.falling-cards {
   position: relative;
   z-index: 1;
 }
+
 .falling-cards-wrapper {
   position: relative;
   z-index: 5;
-  overflow: visible;          /* зробити спочатку */
+  overflow: visible;
 }

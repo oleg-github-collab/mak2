@@ -76,7 +76,7 @@ function initGradientPreloader() {
     preloader.innerHTML = `
         <div class="preloader-gradient"></div>
         <div class="preloader-text-container">
-            <div class="preloader-animated-text">Метафоричні карти серії "Коріння та крила"</div>
+            <div class="preloader-animated-text">Метафоричні карти серії "Коріння та Крила"</div>
         </div>
     `;
     
