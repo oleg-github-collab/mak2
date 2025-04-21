@@ -2591,33 +2591,37 @@ section.section.falling-cards {
   left: calc(var(--data-x-position, 50) * 1%);
 }
 
-/* Прискорена на 20% анімація падаючих карток (з 17.5 до 14 секунд) */
-@keyframes individualFallAnimation {
+/* Нові keyframes з використанням transform для десктопної версії */
+@-webkit-keyframes falling {
   0% {
-    transform: translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+    transform: translateY(-300px) rotate(var(--data-rotate-start, 0deg));
     opacity: 0;
   }
-  5% {
-    opacity: 0;
-  }
-  10% {
+  10%, 85% {
     opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  95% {
-    opacity: 0;
   }
   100% {
-    transform: translateY(60vh) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+    transform: translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+    opacity: 0;
+  }
+}
+@keyframes falling {
+  0% {
+    transform: translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+    opacity: 0;
+  }
+  10%, 85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(var(--data-rotate-end, 0deg));
     opacity: 0;
   }
 }
 
 .falling-card.animated {
-  animation: individualFallAnimation 14s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  animation-delay: calc(var(--data-falling-delay, 0) * 1s);
+  -webkit-animation: falling var(--data-falling-duration, 14s) linear var(--data-falling-delay, 0s) forwards;
+          animation: falling var(--data-falling-duration, 14s) linear var(--data-falling-delay, 0s) forwards;
   visibility: visible;
 }
 
@@ -2628,39 +2632,36 @@ section.section.falling-cards {
   }
   
   .falling-card:nth-child(-n+2) {
-    left: 50% !important;
-    transform: translateX(-50%) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+    left: 50%;
+    /* Видалено !important на transform, оскільки тепер все керується keyframes */
   }
-  
-  @keyframes mobileFallAnimation {
+
+  /* Префіксовані keyframes для мобільної версії з translateX(-50%) */
+  @-webkit-keyframes falling {
     0% {
-      transform: translateX(-50%) translateY(0) rotate(calc(var(--data-rotate-start, 0) * 1deg));
+      transform: translateX(-50%) translateY(-300px) rotate(var(--data-rotate-start, 0deg));
       opacity: 0;
     }
-    5% {
-      opacity: 0;
-    }
-    10% {
+    10%, 85% {
       opacity: 1;
-    }
-    85% {
-      opacity: 1;
-    }
-    95% {
-      opacity: 0;
     }
     100% {
-      transform: translateX(-50%) translateY(60vh) rotate(calc(var(--data-rotate-end, 0) * 1deg));
+      transform: translateX(-50%) translateY(100vh) rotate(var(--data-rotate-end, 0deg));
       opacity: 0;
     }
   }
-  
-  .falling-card.animated:nth-child(-n+2) {
-    animation: mobileFallAnimation 14s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
-  }
-  
-  .falling-card.animated:nth-child(2) {
-    animation-delay: 7s; /* Затримка для другої картки */
+  @keyframes falling {
+    0% {
+      transform: translateX(-50%) translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+      opacity: 0;
+    }
+    10%, 85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-50%) translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+      opacity: 0;
+    }
   }
 }
 
