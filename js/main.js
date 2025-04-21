@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initModals();
         initVanillaTilt();
         simplifyHeroSection();
-        initOptimizedFallingCards();
+        initOptimizedFallingCards(true);
         hideLogoImage();
         adjustCardSizeToImages();
         initLegalButtons();
@@ -534,7 +534,7 @@ function initOptimizedFallingCards(forceStart = false) {
     let animationActive = forceStart;
     let animationInterval;
     let mobileCardCount = 0; // Track number of cards currently falling on mobile
-    const maxMobileCards = 2; // Maximum number of cards for mobile
+    const maxMobileCards = 3; // Maximum number of cards for mobile
     
     // Function to create falling cards
     function createFallingCard() {
@@ -578,7 +578,7 @@ function initOptimizedFallingCards(forceStart = false) {
         const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3);
         
         // 20% faster animation (original was 17.5s)
-        const fallingDuration = 14; 
+        const fallingDuration = 8; 
         
         // Card size
         const cardSize = isMobile ? 300 : 420 + Math.random() * 40;
@@ -634,7 +634,7 @@ function initOptimizedFallingCards(forceStart = false) {
         createFallingCard();
         
         // Different intervals for mobile and desktop
-        const interval = isMobile ? 9000 : 8000; // Faster interval on mobile (12s → 9s)
+        const interval = isMobile ? 5000 : 8000; // Faster interval on mobile (4s instead of 9s)
         animationInterval = setInterval(createFallingCard, interval);
         animationActive = true;
     } else {
@@ -649,7 +649,7 @@ function initOptimizedFallingCards(forceStart = false) {
                             createFallingCard();
                             
                             // Different intervals for mobile and desktop
-                            const interval = isMobile ? 9000 : 8000;
+                            const interval = isMobile ? 4000 : 8000;
                             animationInterval = setInterval(createFallingCard, interval);
                         }
                     }
@@ -666,7 +666,7 @@ function initOptimizedFallingCards(forceStart = false) {
             // Fallback for older browsers
             animationActive = true;
             createFallingCard();
-            const interval = isMobile ? 9000 : 8000;
+            const interval = isMobile ? 5000 : 8000;
             animationInterval = setInterval(createFallingCard, interval);
         }
     }
@@ -677,7 +677,7 @@ function initOptimizedFallingCards(forceStart = false) {
             clearInterval(animationInterval);
         } else if (animationActive) {
             clearInterval(animationInterval);
-            const interval = isMobile ? 9000 : 8000;
+            const interval = isMobile ? 4000 : 8000;
             animationInterval = setInterval(createFallingCard, interval);
         }
     });
