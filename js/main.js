@@ -480,299 +480,129 @@ function initOptimizedImageLoading() {
  * @param {boolean} forceStart - Force animation to start immediately
  */
 function initOptimizedFallingCards(forceStart = false) {
-    const fallingCardsSection = document.querySelector('.falling-cards');
-    let fallingCardsContainer = document.querySelector('.falling-cards-container');
-    
-    // Create container if it doesn't exist
-    if (!fallingCardsContainer) {
-        // Find or create the section
-        const sectionWrapper = fallingCardsSection || document.createElement('section');
-        if (!fallingCardsSection) {
-            sectionWrapper.className = 'section falling-cards';
-            // Find appropriate place to insert in DOM
-            const targetSection = document.querySelector('.section:nth-child(2)');
-            if (targetSection) {
-                document.body.insertBefore(sectionWrapper, targetSection);
-            } else {
-                document.body.appendChild(sectionWrapper);
-            }
-        }
-        
-        // Create container for falling cards
-        fallingCardsContainer = document.createElement('div');
-        fallingCardsContainer.className = 'falling-cards-container';
-        sectionWrapper.appendChild(fallingCardsContainer);
+  const fallingCardsSection = document.querySelector('.falling-cards');
+  if (!fallingCardsSection) return;
+
+  // знайдемо або створимо контейнер для карток
+  let fallingCardsContainer = fallingCardsSection.querySelector('.falling-cards-container');
+  if (!fallingCardsContainer) {
+    fallingCardsContainer = document.createElement('div');
+    fallingCardsContainer.className = 'falling-cards-container';
+    fallingCardsSection.appendChild(fallingCardsContainer);
+  }
+  fallingCardsContainer.innerHTML = '';
+
+  // URL‑и ваших 18 карток
+  const cardImages = [
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
+    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
+  ];
+
+  const isMobile   = window.innerWidth < 768;
+  const duration   = isMobile ? 8  : 12;    // моб. 8s, десктоп 12s
+  const maxTilt    = 15;                   // ±15°
+  const slots      = [25, 75];             // два центрові слоти для моб.
+  const intervalMs = isMobile ? 4000 : 8000;
+
+  // вставимо CSS правила
+  const style = document.createElement('style');
+  style.textContent = `
+    .falling-cards { position: relative; overflow: visible!important; padding-bottom:800px!important; }
+    .falling-cards-container {
+      position:absolute; top:0; left:0;
+      width:100%; height:calc(100%+1000px)!important;
+      pointer-events:none; overflow:visible!important;
     }
-    
-    // Clear container
-    fallingCardsContainer.innerHTML = '';
-    
-    // Card image URLs - using up to 18 different images as requested
-    const cardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-1_ncakxb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-2_kc1sog.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-3_zljtc1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-4_twzep6.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-5_bbaqor.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-6.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-7.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-8.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-9.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-10.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-11.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-12.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-13.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832728/falling-card-14.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832838/falling-card-15.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832849/falling-card-16.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832174/falling-card-17.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1744832846/falling-card-18.jpg'
-    ];
-    
-    // Check if mobile device
-    const isMobile = window.innerWidth < 768;
-    
-    // Add CSS for falling animation - removed overflow: hidden
-    const style = document.createElement('style');
-    style.textContent = `
-        /* Контейнер для падаючих карток - без обмеження переповнення */
-        .falling-cards {
-            position: relative;
-            overflow: visible !important;
-            padding-bottom: 800px !important; /* Збільшений відступ знизу */
-            z-index: 1;
-        }
-        
-        .falling-cards-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: calc(100% + 1000px) !important; /* Збільшена висота контейнера */
-            pointer-events: none;
-            z-index: 5;
-            overflow: visible !important; /* Критично важливо для запобігання обрізанню */
-        }
-        
-        .falling-card {
-            position: absolute;
-            z-index: 10 !important; /* Пріоритет над іншими елементами */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            transform: rotate(var(--data-rotate-angle, 0deg));
-            transition: transform 0.3s ease;
-            opacity: 0;
-            width: var(--data-card-size, 420px) !important;
-            height: auto !important; /* скасовуємо фіксовану висоту */
-            aspect-ratio: 2/3; /* нехай браузер сам порахує висоту */
-        }
-        
-        .falling-card img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        
-        .falling-card.animated {
-            animation: falling var(--data-falling-duration, 17.5s) forwards var(--data-falling-delay, 0s) linear;
-        }
-        
-        /* Оновлені ключові кадри для анімації з меншим діапазоном падіння */
-        @keyframes falling {
-            0% {
-                top: -300px;
-                transform: rotate(var(--data-rotate-angle, 0deg));
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            85% {
-                opacity: 1;
-            }
-            95% {
-                opacity: 0;
-            }
-            100% {
-                top: 65vh; /* Зменшена висота падіння */
-                transform: rotate(var(--data-rotate-angle, 0deg));
-                opacity: 0;
-            }
-        }
-        
-        /* Mobile styles - one card at a time */
-        @media (max-width: 767px) {
-            .falling-card {
-                width: 300px !important;
-                height: auto !important;
-                left: 50% !important;
-                margin-left: -150px !important;
-            }
-            
-            .falling-cards-container {
-                min-height: 800px;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Переконаємося, що секції та батьківські елементи не обрізають контент
-    if (fallingCardsSection) {
-        // Встановлюємо overflow: visible для всіх батьківських елементів
-        let parent = fallingCardsSection.parentElement;
-        while (parent && parent !== document.body) {
-            const computedStyle = window.getComputedStyle(parent);
-            if (computedStyle.overflow === 'hidden') {
-                parent.style.overflow = 'visible';
-            }
-            parent = parent.parentElement;
-        }
+    .falling-card {
+      position:absolute; opacity:0; z-index:10;
+      box-shadow:0 5px 15px rgba(0,0,0,0.1);
+      border-radius:8px;
+      transform:rotate(var(--tilt,0deg));
+      transition:transform 0.3s ease;
+      width:var(--size,300px)!important;
+      aspect-ratio:2/3;
     }
-    
-    // Track animation state
-    let animationActive = forceStart;
-    let animationInterval;
-    let mobileCardFalling = false; // Track if a card is currently falling on mobile
-    
-    // Function to create falling cards
-    function createFallingCard() {
-        // On mobile, check if a card is already falling
-        if (isMobile && mobileCardFalling) {
-            return; // Skip creating a new card until the current one finishes
-        }
-        
-        // Clean up completed cards
-        fallingCardsContainer.querySelectorAll('.falling-card.completed').forEach(card => {
-            card.remove();
-        });
-        
-        // Create new card
-        const cardIndex = Math.floor(Math.random() * cardImages.length);
-        const imageUrl = cardImages[cardIndex];
-        
-        const card = document.createElement('div');
-        card.className = 'falling-card';
-        
-        // Position distribution
-        let leftPosition;
-        if (isMobile) {
-            leftPosition = 50; // Center on mobile
-            mobileCardFalling = true; // Mark that a mobile card is falling
-        } else {
-            leftPosition = 15 + Math.random() * 70; // 15% to 85% width
-        }
-        
-        // Random parameters
-        const rotateAngle = -5 + Math.random() * 10; // -5 to 5 degrees
-        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3); // 3-6 seconds delay, none on mobile
-        const fallingDuration = 17.5; // Slowed down by 30% as requested
-        
-        // Card size
-        const cardSize = isMobile 
-            ? 300 // Fixed size on mobile
-            : 420 + Math.random() * 40; // 420px to 460px on desktop
-        
-        // Set CSS variables for animation
-        card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
-        card.style.setProperty('--data-falling-delay', fallingDelay + 's');
-        card.style.setProperty('--data-falling-duration', fallingDuration + 's');
-        card.style.setProperty('--data-card-size', cardSize + 'px');
-        
-        // Set initial position
-        card.style.left = leftPosition + '%';
-        card.style.width = cardSize + 'px';
-        card.style.top = '-' + cardSize + 'px';
-        card.style.aspectRatio = '2/3';
-        card.style.height = 'auto'; // Let aspect-ratio control height
-        
-        // Add image
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = 'Metaphorical card';
-        img.loading = 'lazy';
-        card.appendChild(img);
-        
-        // Add to container
-        fallingCardsContainer.appendChild(card);
-        
-        // Activate animation
-        setTimeout(() => {
-            card.classList.add('animated');
-            
-            // Mark as completed after animation ends
-            setTimeout(() => {
-                card.classList.add('completed');
-                
-                // On mobile, allow new card to be created after this one completes
-                if (isMobile) {
-                    mobileCardFalling = false;
-                }
-            }, fallingDuration * 1000);
-        }, 100);
+    .falling-card img {
+      width:100%; height:100%; object-fit:cover; border-radius:8px;
     }
-    
-    // Start animation if forced or section is visible
-    if (forceStart) {
-        // Create initial card
-        createFallingCard();
-        
-        // Different intervals for mobile and desktop
-        // Mobile: one card every 13 seconds
-        // Desktop: one card every 8 seconds
-        const interval = isMobile ? 13000 : 8000;
-        animationInterval = setInterval(createFallingCard, interval);
-        animationActive = true;
-    } else {
-        // Use IntersectionObserver to start animation when section enters viewport
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Start animation if not already running
-                        if (!animationActive) {
-                            animationActive = true;
-                            createFallingCard();
-                            
-                            // Different intervals for mobile and desktop
-                            const interval = isMobile ? 13000 : 8000;
-                            animationInterval = setInterval(createFallingCard, interval);
-                        }
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px'
-            });
-            
-            if (fallingCardsSection) {
-                observer.observe(fallingCardsSection);
-            }
-        } else {
-            // Fallback for older browsers
-            animationActive = true;
-            createFallingCard();
-            const interval = isMobile ? 13000 : 8000;
-            animationInterval = setInterval(createFallingCard, interval);
-        }
+    .falling-card.animated {
+      animation:fall ${duration}s linear forwards var(--delay,0s);
     }
-    
-    // Pause animation when page is not active
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            clearInterval(animationInterval);
-        } else if (animationActive) {
-            clearInterval(animationInterval);
-            const interval = isMobile ? 13000 : 8000;
-            animationInterval = setInterval(createFallingCard, interval);
-        }
-    });
-    
-    // Clean up on page unload
-    window.addEventListener('beforeunload', () => {
-        clearInterval(animationInterval);
-    });
+    @keyframes falling {
+      0%   { top:-300px; opacity:0; }
+      10%  { opacity:1; }
+      85%  { opacity:1; }
+      95%  { opacity:0; }
+      100% { top:65vh; opacity:0; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // фукція створення однієї картки
+  function createCard(slotIndex = 0) {
+    const card = document.createElement('div');
+    card.className = 'falling-card';
+
+    const img = document.createElement('img');
+    img.src = cardImages[Math.floor(Math.random() * cardImages.length)];
+    img.loading = 'lazy';
+    card.appendChild(img);
+
+    // позиція по горизонталі
+    const x = isMobile
+      ? slots[slotIndex]
+      : (15 + Math.random() * 70);
+    card.style.left = x + '%';
+
+    // tilt та delay
+    const tiltVal = (Math.random() * 2 - 1) * maxTilt;
+    card.style.setProperty('--tilt', tiltVal + 'deg');
+    const delay = isMobile ? 0 : (Math.random() * 3 + 1);
+    card.style.setProperty('--delay', delay + 's');
+
+    // розмір картки
+    const size = isMobile ? 280 : (420 + Math.random() * 40);
+    card.style.setProperty('--size', size + 'px');
+    card.style.top = `-${size}px`;
+
+    fallingCardsContainer.appendChild(card);
+
+    // запуск анімації і видалення після завершення
+    setTimeout(() => {
+      card.classList.add('animated');
+      setTimeout(() => card.remove(), (duration + delay) * 1000);
+    }, 50);
+  }
+
+  // ініціалізація та інтервали
+  if (isMobile) {
+    // дві картки одночасно в обох слотах
+    createCard(0);
+    createCard(1);
+    setInterval(() => {
+      createCard(0);
+      createCard(1);
+    }, intervalMs);
+  } else {
+    // десктоп: по одній випадково
+    createCard();
+    setInterval(() => createCard(), intervalMs);
+  }
 }
 
 /**
@@ -2750,7 +2580,7 @@ function initContactForm() {
     }
     
     // Get script URL from data attribute or use default
-    scriptUrlInput.value = contactForm.dataset.scriptUrl || '';
+    scriptUrlInput.value = 'https://script.google.com/macros/s/AKfycbxNSguZ2FH8Bwc6LNxxB1ne8TGQrjqHpM8fLTwPCPcKuhtycmy8aZNCT5KpDVGvBNEXlw/exec';
     
     // Handle form submission to Google Sheets
     contactForm.addEventListener('submit', function(e) {
