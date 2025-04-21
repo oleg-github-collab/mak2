@@ -494,13 +494,11 @@ function initOptimizedFallingCards(forceStart = false) {
                 width: 300px !important;
                 height: auto !important;
                 left: 50% !important;
-                margin-left: -150px !important; /* Центрування */
-                transform-origin: center center !important;
+                transform: translateX(-50%) rotate(var(--data-rotate-angle, 0deg)) !important;
             }
             
             .falling-cards-container {
                 min-height: 800px;
-                overflow: visible !important;
             }
             
             .falling-cards {
@@ -511,6 +509,11 @@ function initOptimizedFallingCards(forceStart = false) {
             .falling-card + .falling-card {
                 margin-top: 200px !important;
             }
+        }
+        
+        /* Дозволяємо .falling-cards-wrapper показувати картки по центру */
+        .falling-cards-wrapper {
+            overflow: visible !important;
         }
     `;
     document.head.appendChild(style);
