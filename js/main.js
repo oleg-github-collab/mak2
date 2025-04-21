@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load required external libraries dynamically
     loadExternalLibraries().then(() => {
-        // Initialize enhanced preloader with progress bar and welcome animation
-        initEnhancedPreloader();
+        // Initialize gradient preloader with text animation
+        initGradientPreloader();
         
         // Detect if mobile device
         const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
@@ -63,50 +63,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Enhanced preloader with progress bar and welcome animation
+ * Gradient preloader with text animation
  */
-function initEnhancedPreloader() {
+function initGradientPreloader() {
     const preloader = document.querySelector('.preloader');
     if (!preloader) return;
     
     // Add class for custom cursor
     preloader.classList.add('cursor-hover-trigger');
     
-    // Create progress bar if it doesn't exist
-    let progressBar = preloader.querySelector('.preloader-progress');
-    if (!progressBar) {
-        progressBar = document.createElement('div');
-        progressBar.className = 'preloader-progress cursor-hover-trigger';
-        
-        const progressInner = document.createElement('div');
-        progressInner.className = 'preloader-progress-inner';
-        progressBar.appendChild(progressInner);
-        
-        preloader.appendChild(progressBar);
-    }
+    // Set up preloader structure with gradient background
+    preloader.innerHTML = `
+        <div class="preloader-gradient"></div>
+        <div class="preloader-text-container">
+            <div class="preloader-animated-text">Метафоричні карти серії "Коріння та крила"</div>
+        </div>
+    `;
     
-    // Create welcome message if it doesn't exist
-    let welcomeMessage = preloader.querySelector('.preloader-welcome');
-    if (!welcomeMessage) {
-        welcomeMessage = document.createElement('div');
-        welcomeMessage.className = 'preloader-welcome cursor-hover-trigger';
-        welcomeMessage.innerHTML = '<h2>Roots & Wings</h2><p>Метафоричні асоціативні карти</p>';
-        
-        preloader.appendChild(welcomeMessage);
-    }
-    
-    // Create enter site button
-    let enterButton = preloader.querySelector('.preloader-enter');
-    if (!enterButton) {
-        enterButton = document.createElement('button');
-        enterButton.className = 'preloader-enter cursor-hover-trigger';
-        enterButton.textContent = 'Увійти на сайт';
-        enterButton.style.display = 'none'; // Initially hidden
-        
-        preloader.appendChild(enterButton);
-    }
-    
-    // Add styles for preloader elements
+    // Add styles for gradient preloader
     const style = document.createElement('style');
     style.textContent = `
         .preloader {
@@ -119,88 +93,63 @@ function initEnhancedPreloader() {
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #121212;
             z-index: 9999;
+            overflow: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         
-        .preloader-welcome {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards 0.5s;
-        }
-        
-        .preloader-welcome h2 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .preloader-welcome p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-        
-        .preloader-progress {
-            width: 300px;
-            height: 4px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        .preloader-progress-inner {
-            height: 100%;
-            width: 0;
-            background-color: white;
-            transition: width 0.3s ease;
-        }
-        
-        .preloader-enter {
-            padding: 12px 30px;
-            background-color: white;
-            color: #121212;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .preloader-enter.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .preloader-enter:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .preloader-particles {
+        .preloader-gradient {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: linear-gradient(-45deg, #ffffff, #f5f5f5, #e0e0e0, #cccccc);
+            background-size: 400% 400%;
+            animation: gradientAnimation 5s ease infinite;
             z-index: -1;
         }
         
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .preloader-text-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            height: 120px;
+            overflow: hidden;
+        }
+        
+        .preloader-animated-text {
+            color: #e67e22;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textFadeIn 0.8s ease forwards 0.5s, 
+                       textHold 1.4s ease forwards 1.3s,
+                       textFadeOut 0.8s ease forwards 2.7s;
+        }
+        
+        @keyframes textFadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes textHold {
+            0%, 100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes textFadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
         
         body.loaded .preloader,
@@ -211,128 +160,49 @@ function initEnhancedPreloader() {
             pointer-events: none !important;
         }
         
-        /* Force hide after 12 seconds as failsafe */
+        /* Force hide after 7 seconds as failsafe */
         @keyframes forceHidePreloader {
             to { opacity: 0; visibility: hidden; z-index: -1; display: none; }
         }
         
         .preloader {
-            animation: forceHidePreloader 0s 12s forwards !important;
-        }
-        
-        /* Курсор на прелоадері */
-        .preloader .cursor-dot, 
-        .preloader .cursor-outline, 
-        .preloader .cursor-hover, 
-        .preloader .cursor-click {
-            z-index: 10000 !important;
-        }
-        
-        /* Покажемо текст курсора над прелоадером */
-        body.cursor-text-visible .cursor-text {
-            z-index: 10000;
+            animation: forceHidePreloader 0s 7s forwards !important;
         }
     `;
     document.head.appendChild(style);
     
-    // Create particles background
-    let particlesContainer = preloader.querySelector('.preloader-particles');
-    if (!particlesContainer) {
-        particlesContainer = document.createElement('div');
-        particlesContainer.className = 'preloader-particles cursor-hover-trigger';
-        preloader.appendChild(particlesContainer);
+    // Text animation sequence
+    setTimeout(() => {
+        const textContainer = preloader.querySelector('.preloader-text-container');
+        if (!textContainer) return;
         
-        // Initialize particles if library available
-        if (typeof particlesJS !== 'undefined') {
-            particlesJS(particlesContainer, {
-                "particles": {
-                    "number": {
-                        "value": 40,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#ffffff"
-                    },
-                    "shape": {
-                        "type": "circle"
-                    },
-                    "opacity": {
-                        "value": 0.4,
-                        "random": true
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#ffffff",
-                        "opacity": 0.2,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 2,
-                        "direction": "none",
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "out"
-                    }
-                }
-            });
-        }
-    }
+        textContainer.innerHTML = '<div class="preloader-animated-text">Ласкаво просимо</div>';
+        
+        // Set up event that will trigger after animation completes
+        setTimeout(() => {
+            removePreloader();
+        }, 3000); // Remove after second text animation completes
+    }, 3000); // Start second text after 3 seconds
+    
+    // Set a timeout to ensure preloader removes after 6 seconds
+    setTimeout(() => {
+        removePreloader();
+    }, 6000);
     
     // Track page load progress
-    const progressInner = progressBar.querySelector('.preloader-progress-inner');
-    let loadProgress = 0;
-    
-    // Simulate progress initially
-    const progressInterval = setInterval(() => {
-        if (loadProgress < 70) {
-            loadProgress += Math.random() * 5;
-            progressInner.style.width = `${loadProgress}%`;
-        }
-    }, 200);
-    
-    // Track actual page resources loading
     window.addEventListener('load', () => {
-        clearInterval(progressInterval);
-        
-        // Complete the progress smoothly
-        const completeProgress = setInterval(() => {
-            if (loadProgress >= 100) {
-                clearInterval(completeProgress);
-                
-                // Show enter button
-                enterButton.style.display = 'block';
-                setTimeout(() => {
-                    enterButton.classList.add('visible');
-                }, 300);
-                
-                // Auto remove preloader after timeout if button not clicked
-                setTimeout(() => {
-                    if (!document.body.classList.contains('loaded')) {
-                        removePreloader();
-                    }
-                }, 5000);
-            } else {
-                loadProgress += (100 - loadProgress) / 10 + 1;
-                if (loadProgress > 100) loadProgress = 100;
-                progressInner.style.width = `${loadProgress}%`;
+        // Auto remove preloader once page is loaded
+        setTimeout(() => {
+            if (!document.body.classList.contains('loaded')) {
+                removePreloader();
             }
-        }, 100);
+        }, 6000);
     });
-    
-    // Enter button click handler
-    enterButton.addEventListener('click', removePreloader);
     
     // Handle preloader removal
     function removePreloader() {
+        if (!preloader.parentNode) return;
+        
         preloader.style.opacity = '0';
         preloader.style.visibility = 'hidden';
         document.body.classList.remove('no-scroll');
@@ -350,12 +220,9 @@ function initEnhancedPreloader() {
     
     // Additional failsafe - if page already loaded, remove preloader immediately
     if (document.readyState === 'complete') {
-        // Set progress to 100%
-        progressInner.style.width = '100%';
-        
-        // Show enter button
-        enterButton.style.display = 'block';
-        enterButton.classList.add('visible');
+        setTimeout(() => {
+            removePreloader();
+        }, 6000);
     }
 }
 
@@ -480,129 +347,328 @@ function initOptimizedImageLoading() {
  * @param {boolean} forceStart - Force animation to start immediately
  */
 function initOptimizedFallingCards(forceStart = false) {
-  const fallingCardsSection = document.querySelector('.falling-cards');
-  if (!fallingCardsSection) return;
-
-  // знайдемо або створимо контейнер для карток
-  let fallingCardsContainer = fallingCardsSection.querySelector('.falling-cards-container');
-  if (!fallingCardsContainer) {
-    fallingCardsContainer = document.createElement('div');
-    fallingCardsContainer.className = 'falling-cards-container';
-    fallingCardsSection.appendChild(fallingCardsContainer);
-  }
-  fallingCardsContainer.innerHTML = '';
-
-  // URL‑и ваших 18 карток
-  const cardImages = [
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
-  ];
-
-  const isMobile   = window.innerWidth < 768;
-  const duration   = isMobile ? 8  : 12;    // моб. 8s, десктоп 12s
-  const maxTilt    = 15;                   // ±15°
-  const slots      = [25, 75];             // два центрові слоти для моб.
-  const intervalMs = isMobile ? 4000 : 8000;
-
-  // вставимо CSS правила
-  const style = document.createElement('style');
-  style.textContent = `
-    .falling-cards { position: relative; overflow: visible!important; padding-bottom:800px!important; }
-    .falling-cards-container {
-      position:absolute; top:0; left:0;
-      width:100%; height:calc(100%+1000px)!important;
-      pointer-events:none; overflow:visible!important;
+    const fallingCardsSection = document.querySelector('.falling-cards');
+    let fallingCardsContainer = document.querySelector('.falling-cards-container');
+    
+    // Create container if it doesn't exist
+    if (!fallingCardsContainer) {
+        // Find or create the section
+        const sectionWrapper = fallingCardsSection || document.createElement('section');
+        if (!fallingCardsSection) {
+            sectionWrapper.className = 'section falling-cards';
+            // Find appropriate place to insert in DOM
+            const targetSection = document.querySelector('.section:nth-child(2)');
+            if (targetSection) {
+                document.body.insertBefore(sectionWrapper, targetSection);
+            } else {
+                document.body.appendChild(sectionWrapper);
+            }
+        }
+        
+        // Create container for falling cards
+        fallingCardsContainer = document.createElement('div');
+        fallingCardsContainer.className = 'falling-cards-container';
+        sectionWrapper.appendChild(fallingCardsContainer);
     }
-    .falling-card {
-      position:absolute; opacity:0; z-index:10;
-      box-shadow:0 5px 15px rgba(0,0,0,0.1);
-      border-radius:8px;
-      transform:rotate(var(--tilt,0deg));
-      transition:transform 0.3s ease;
-      width:var(--size,300px)!important;
-      aspect-ratio:2/3;
+    
+    // Clear container
+    fallingCardsContainer.innerHTML = '';
+    
+    // Card image URLs - using up to 18 different images as requested
+    const cardImages = [
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
+    ];
+    
+    // Check if mobile device
+    const isMobile = window.innerWidth < 768;
+    
+    // Add CSS for falling animation - optimized for mobile with no cropping
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Контейнер для падаючих карток - без обмеження переповнення */
+        .falling-cards {
+            position: relative;
+            overflow: visible !important;
+            padding-bottom: 800px !important; /* Збільшений відступ знизу */
+            z-index: 1;
+        }
+        
+        .falling-cards-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 1000px) !important; /* Збільшена висота контейнера */
+            pointer-events: none;
+            z-index: 5;
+            overflow: visible !important; /* Критично важливо для запобігання обрізанню */
+        }
+        
+        .falling-card {
+            position: absolute;
+            z-index: 10 !important; /* Пріоритет над іншими елементами */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            transform: rotate(var(--data-rotate-angle, 0deg));
+            transition: transform 0.3s ease;
+            opacity: 0;
+            width: var(--data-card-size, 420px) !important;
+            height: auto !important; /* скасовуємо фіксовану висоту */
+            aspect-ratio: 2/3; /* нехай браузер сам порахує висоту */
+        }
+        
+        .falling-card img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .falling-card.animated {
+            animation: falling var(--data-falling-duration, 17.5s) forwards var(--data-falling-delay, 0s) linear;
+        }
+        
+        /* Оновлені ключові кадри для анімації з меншим діапазоном падіння */
+        @keyframes falling {
+            0% {
+                top: -300px;
+                transform: rotate(var(--data-rotate-angle, 0deg));
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 0;
+            }
+            100% {
+                top: 65vh; /* Зменшена висота падіння */
+                transform: rotate(var(--data-rotate-angle, 0deg));
+                opacity: 0;
+            }
+        }
+        
+        /* Mobile styles - centered cards with specific tilt */
+        @media (max-width: 767px) {
+            .falling-card {
+                width: 300px !important;
+                height: auto !important;
+                left: 50% !important;
+                margin-left: -150px !important; /* Центрування */
+                transform-origin: center center !important;
+            }
+            
+            .falling-cards-container {
+                min-height: 800px;
+                overflow: visible !important;
+            }
+            
+            /* Забезпечуємо, щоб на мобільних карти були видимі повністю */
+            .falling-cards {
+                overflow: visible !important;
+                padding-bottom: 900px !important;
+            }
+            
+            /* Збільшуємо відстань між карточками на мобільних */
+            .falling-card + .falling-card {
+                margin-top: 200px !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Переконаємося, що секції та батьківські елементи не обрізають контент
+    if (fallingCardsSection) {
+        // Встановлюємо overflow: visible для всіх батьківських елементів
+        let parent = fallingCardsSection.parentElement;
+        while (parent && parent !== document.body) {
+            const computedStyle = window.getComputedStyle(parent);
+            if (computedStyle.overflow === 'hidden') {
+                parent.style.overflow = 'visible';
+            }
+            parent = parent.parentElement;
+        }
     }
-    .falling-card img {
-      width:100%; height:100%; object-fit:cover; border-radius:8px;
+    
+    // Track animation state
+    let animationActive = forceStart;
+    let animationInterval;
+    let mobileCardCount = 0; // Track number of cards currently falling on mobile
+    const maxMobileCards = 2; // Maximum number of cards for mobile
+    
+    // Function to create falling cards
+    function createFallingCard() {
+        // On mobile, limit number of cards
+        if (isMobile && mobileCardCount >= maxMobileCards) {
+            return; // Skip creating a new card until others finish
+        }
+        
+        // Clean up completed cards
+        fallingCardsContainer.querySelectorAll('.falling-card.completed').forEach(card => {
+            card.remove();
+        });
+        
+        // Create new card
+        const cardIndex = Math.floor(Math.random() * cardImages.length);
+        const imageUrl = cardImages[cardIndex];
+        
+        const card = document.createElement('div');
+        card.className = 'falling-card';
+        
+        // Position distribution
+        let leftPosition;
+        if (isMobile) {
+            leftPosition = 50; // Center on mobile
+            mobileCardCount++; // Increment counter for mobile
+        } else {
+            leftPosition = 15 + Math.random() * 70; // 15% to 85% width on desktop
+        }
+        
+        // Random parameters with specified tilt range for mobile
+        let rotateAngle;
+        if (isMobile) {
+            // Random angle between 5 and 15 degrees (positive or negative)
+            rotateAngle = Math.random() > 0.5 ? 
+                5 + Math.random() * 10 : // 5 to 15 degrees
+                -(5 + Math.random() * 10); // -5 to -15 degrees
+        } else {
+            // Desktop angle remains as before
+            rotateAngle = -5 + Math.random() * 10; // -5 to 5 degrees
+        }
+        
+        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3); // 3-6 seconds delay, none on mobile
+        const fallingDuration = 17.5; // Slowed down by 30% as requested
+        
+        // Card size
+        const cardSize = isMobile 
+            ? 300 // Fixed size on mobile
+            : 420 + Math.random() * 40; // 420px to 460px on desktop
+        
+        // Set CSS variables for animation
+        card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
+        card.style.setProperty('--data-falling-delay', fallingDelay + 's');
+        card.style.setProperty('--data-falling-duration', fallingDuration + 's');
+        card.style.setProperty('--data-card-size', cardSize + 'px');
+        
+        // Set initial position
+        card.style.left = leftPosition + '%';
+        card.style.width = cardSize + 'px';
+        card.style.top = '-' + cardSize + 'px';
+        card.style.aspectRatio = '2/3';
+        card.style.height = 'auto'; // Let aspect-ratio control height
+        
+        // Make sure mobile cards are fully visible
+        if (isMobile) {
+            card.style.overflow = 'visible';
+            card.style.zIndex = '100';
+        }
+        
+        // Add image
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = 'Metaphorical card';
+        img.loading = 'lazy';
+        card.appendChild(img);
+        
+        // Add to container
+        fallingCardsContainer.appendChild(card);
+        
+        // Activate animation
+        setTimeout(() => {
+            card.classList.add('animated');
+            
+            // Mark as completed after animation ends
+            setTimeout(() => {
+                card.classList.add('completed');
+                
+                // On mobile, decrement counter when card completes
+                if (isMobile) {
+                    mobileCardCount--;
+                }
+            }, fallingDuration * 1000);
+        }, 100);
     }
-    .falling-card.animated {
-      animation:fall ${duration}s linear forwards var(--delay,0s);
+    
+    // Start animation if forced or section is visible
+    if (forceStart) {
+        // Create initial card
+        createFallingCard();
+        
+        // Different intervals for mobile and desktop
+        // Mobile: longer interval for better visibility of each card
+        // Desktop: one card every 8 seconds
+        const interval = isMobile ? 15000 : 8000;
+        animationInterval = setInterval(createFallingCard, interval);
+        animationActive = true;
+    } else {
+        // Use IntersectionObserver to start animation when section enters viewport
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Start animation if not already running
+                        if (!animationActive) {
+                            animationActive = true;
+                            createFallingCard();
+                            
+                            // Different intervals for mobile and desktop
+                            const interval = isMobile ? 15000 : 8000;
+                            animationInterval = setInterval(createFallingCard, interval);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px'
+            });
+            
+            if (fallingCardsSection) {
+                observer.observe(fallingCardsSection);
+            }
+        } else {
+            // Fallback for older browsers
+            animationActive = true;
+            createFallingCard();
+            const interval = isMobile ? 15000 : 8000;
+            animationInterval = setInterval(createFallingCard, interval);
+        }
     }
-    @keyframes falling {
-      0%   { top:-300px; opacity:0; }
-      10%  { opacity:1; }
-      85%  { opacity:1; }
-      95%  { opacity:0; }
-      100% { top:65vh; opacity:0; }
-    }
-  `;
-  document.head.appendChild(style);
-
-  // фукція створення однієї картки
-  function createCard(slotIndex = 0) {
-    const card = document.createElement('div');
-    card.className = 'falling-card';
-
-    const img = document.createElement('img');
-    img.src = cardImages[Math.floor(Math.random() * cardImages.length)];
-    img.loading = 'lazy';
-    card.appendChild(img);
-
-    // позиція по горизонталі
-    const x = isMobile
-      ? slots[slotIndex]
-      : (15 + Math.random() * 70);
-    card.style.left = x + '%';
-
-    // tilt та delay
-    const tiltVal = (Math.random() * 2 - 1) * maxTilt;
-    card.style.setProperty('--tilt', tiltVal + 'deg');
-    const delay = isMobile ? 0 : (Math.random() * 3 + 1);
-    card.style.setProperty('--delay', delay + 's');
-
-    // розмір картки
-    const size = isMobile ? 280 : (420 + Math.random() * 40);
-    card.style.setProperty('--size', size + 'px');
-    card.style.top = `-${size}px`;
-
-    fallingCardsContainer.appendChild(card);
-
-    // запуск анімації і видалення після завершення
-    setTimeout(() => {
-      card.classList.add('animated');
-      setTimeout(() => card.remove(), (duration + delay) * 1000);
-    }, 50);
-  }
-
-  // ініціалізація та інтервали
-  if (isMobile) {
-    // дві картки одночасно в обох слотах
-    createCard(0);
-    createCard(1);
-    setInterval(() => {
-      createCard(0);
-      createCard(1);
-    }, intervalMs);
-  } else {
-    // десктоп: по одній випадково
-    createCard();
-    setInterval(() => createCard(), intervalMs);
-  }
+    
+    // Pause animation when page is not active
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            clearInterval(animationInterval);
+        } else if (animationActive) {
+            clearInterval(animationInterval);
+            const interval = isMobile ? 15000 : 8000;
+            animationInterval = setInterval(createFallingCard, interval);
+        }
+    });
+    
+    // Clean up on page unload
+    window.addEventListener('beforeunload', () => {
+        clearInterval(animationInterval);
+    });
 }
 
 /**
@@ -1290,7 +1356,7 @@ function loadExternalLibraries() {
  * Initialize basic functionality that doesn't depend on external libraries
  */
 function initBasicFunctionality() {
-    initEnhancedPreloader();
+    initGradientPreloader();
     initMobileMenu();
     initHeaderScroll();
     initSmoothScroll();
@@ -2580,7 +2646,7 @@ function initContactForm() {
     }
     
     // Get script URL from data attribute or use default
-    scriptUrlInput.value = 'https://script.google.com/macros/s/AKfycbxNSguZ2FH8Bwc6LNxxB1ne8TGQrjqHpM8fLTwPCPcKuhtycmy8aZNCT5KpDVGvBNEXlw/exec';
+    scriptUrlInput.value = contactForm.dataset.scriptUrl || 'https://script.google.com/macros/s/AKfycbxNSguZ2FH8Bwc6LNxxB1ne8TGQrjqHpM8fLTwPCPcKuhtycmy8aZNCT5KpDVGvBNEXlw/exec';
     
     // Handle form submission to Google Sheets
     contactForm.addEventListener('submit', function(e) {
@@ -2596,46 +2662,42 @@ function initContactForm() {
         if (!submitButton) return;
         
         const originalText = submitButton.textContent;
-        submitButton.textContent = 'Sending...';
+        submitButton.textContent = 'Надсилання...';
         submitButton.disabled = true;
         
         // Get Google Apps Script URL
         const scriptUrl = scriptUrlInput.value;
         if (!scriptUrl) {
-            showError(submitButton, 'Script URL not configured');
+            showError(submitButton, 'URL скрипта не налаштовано');
             submitButton.textContent = originalText;
             submitButton.disabled = false;
             return;
         }
         
         // Prepare form data
-        const name = contactForm.querySelector('#name')?.value || '';
-        const email = contactForm.querySelector('#email')?.value || '';
-        const message = contactForm.querySelector('#message')?.value || '';
-        const phone = contactForm.querySelector('#phone')?.value || '';
-        const subject = contactForm.querySelector('#subject')?.value || 'Message from form';
+        const formData = new FormData(contactForm);
+        const jsonData = {};
         
-        // Form data as JSON
-        const formData = {
-            name: name,
-            email: email,
-            message: message,
-            phone: phone,
-            subject: subject,
-            timestamp: new Date().toISOString()
-        };
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
         
-        // Send data to Google Apps Script
+        // Add timestamp
+        jsonData.timestamp = new Date().toISOString();
+        
+        // Send data to Google Apps Script with improved error handling
         fetch(scriptUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(jsonData),
+            mode: 'cors', // Add CORS mode
+            cache: 'no-cache' // Don't use cache
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network or server error');
+                throw new Error(`Мережева помилка: ${response.status}`);
             }
             return response.json();
         })
@@ -2646,7 +2708,7 @@ function initContactForm() {
                 if (!successMessage) {
                     const newSuccessMessage = document.createElement('div');
                     newSuccessMessage.className = 'success-message';
-                    newSuccessMessage.textContent = 'Your message has been sent successfully!';
+                    newSuccessMessage.textContent = 'Ваше повідомлення успішно надіслано!';
                     newSuccessMessage.setAttribute('role', 'alert');
                     contactForm.appendChild(newSuccessMessage);
                 } else {
@@ -2668,12 +2730,24 @@ function initContactForm() {
                     }
                 }, 5000);
             } else {
-                throw new Error(data.error || 'Failed to send message');
+                throw new Error(data.error || 'Не вдалося надіслати повідомлення');
             }
         })
         .catch(error => {
-            console.error('Form submission error:', error);
-            showError(submitButton, 'Error sending: ' + error.message);
+            console.error('Помилка відправки форми:', error);
+            showError(submitButton, 'Помилка відправки: ' + error.message);
+            
+            // Add a fallback method message
+            const fallbackMessage = document.createElement('div');
+            fallbackMessage.className = 'fallback-message';
+            fallbackMessage.innerHTML = `Якщо проблема повторюється, будь ласка, надішліть повідомлення на електронну пошту <a href="mailto:contact@rootsandwings.com">contact@rootsandwings.com</a>`;
+            
+            const existingFallback = contactForm.querySelector('.fallback-message');
+            if (existingFallback) {
+                existingFallback.remove();
+            }
+            
+            contactForm.appendChild(fallbackMessage);
         })
         .finally(() => {
             // Restore button to initial state
@@ -2694,7 +2768,7 @@ function initContactForm() {
         
         // Name validation
         if (name && !name.value.trim()) {
-            showError(name, 'Please enter your name');
+            showError(name, 'Будь ласка, введіть ваше ім\'я');
             isValid = false;
         }
         
@@ -2702,14 +2776,14 @@ function initContactForm() {
         if (email) {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!email.value.trim() || !emailPattern.test(email.value)) {
-                showError(email, 'Please enter a valid email');
+                showError(email, 'Будь ласка, введіть коректну електронну адресу');
                 isValid = false;
             }
         }
         
         // Message validation
         if (message && !message.value.trim()) {
-            showError(message, 'Please enter your message');
+            showError(message, 'Будь ласка, введіть ваше повідомлення');
             isValid = false;
         }
         
@@ -2732,6 +2806,129 @@ function initContactForm() {
             field.parentElement.classList.remove('error');
         }, { once: true });
     }
+    
+    // Add improved styles for contact form
+    const style = document.createElement('style');
+    style.textContent = `
+        .contact-form {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .input-wrapper label {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            color: #666;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .input-wrapper.focused label,
+        .input-wrapper.error label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            background-color: #fff;
+            padding: 0 5px;
+            color: #333;
+        }
+        
+        .input-wrapper.error label {
+            color: #e74c3c;
+        }
+        
+        .input-wrapper input,
+        .input-wrapper textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-wrapper.error input,
+        .input-wrapper.error textarea {
+            border-color: #e74c3c;
+        }
+        
+        .input-wrapper input:focus,
+        .input-wrapper textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            padding-left: 15px;
+        }
+        
+        .success-message {
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .fallback-message {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 3px solid #3498db;
+            font-size: 14px;
+        }
+        
+        .fallback-message a {
+            color: #3498db;
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .contact-form button[type="submit"] {
+            padding: 12px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form button[type="submit"]:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .contact-form button[type="submit"]:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 /**
