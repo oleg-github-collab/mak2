@@ -905,7 +905,7 @@ function initImprovedCarousel() {
             position: absolute;
             width: 320px;
             height: 480px;
-            transition: all 0.8s ease;
+            transition: all 1.5s ease;
             border-radius: 15px;
             overflow: visible;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -1112,30 +1112,6 @@ function initImprovedCarousel() {
             startAutoplay();
         }
     });
-    
-    // Додаємо кнопки навігації
-    //const navPrev = document.createElement('button');
-    //navPrev.className = 'carousel-nav carousel-nav-prev';
-    //navPrev.innerHTML = '&lt;';
-    //navPrev.addEventListener('click', () => {
-        //activeIndex = (activeIndex - 1 + cards.length) % cards.length;
-        //setupCarousel();
-        //stopAutoplay();
-      //  startAutoplay();
-    //});
-    
-    //const navNext = document.createElement('button');
-    //navNext.className = 'carousel-nav carousel-nav-next';
-    //navNext.innerHTML = '&gt;';
-    //navNext.addEventListener('click', () => {
-      //  activeIndex = (activeIndex + 1) % cards.length;
-        //setupCarousel();
-        //stopAutoplay();
-        //startAutoplay();
-    //});
-    
-    carousel.parentNode.appendChild(navPrev);
-    carousel.parentNode.appendChild(navNext);
     
     // Обробка подій перетягування (свайпів) для мобільних
     let startX, moveX, initialX;
@@ -3896,6 +3872,8 @@ function initAnimatedCardDeck() {
         // Create new section after hero section
         deckSection = document.createElement('section');
         deckSection.className = 'section card-deck-section';
+        deckSection.style.display = 'block';
+        deckSection.style.visibility = 'visible';
         heroSection.parentNode.insertBefore(deckSection, heroSection.nextSibling);
         
         // Add header and description
@@ -3913,13 +3891,15 @@ function initAnimatedCardDeck() {
     if (!deckContainer) {
         deckContainer = document.createElement('div');
         deckContainer.className = 'card-deck-container';
+        deckContainer.style.display = 'block';
+        deckContainer.style.visibility = 'visible';
         deckSection.appendChild(deckContainer);
     }
     
     // Clear container
     deckContainer.innerHTML = '';
     
-    // Add styles for card deck
+    // Add styles for card deck with explicit visibility
     const style = document.createElement('style');
     style.textContent = `
         .card-deck-section {
@@ -3928,6 +3908,21 @@ function initAnimatedCardDeck() {
             overflow: visible !important;
             position: relative;
             z-index: 1;
+            display: block !important;
+            visibility: visible !important;
+            min-height: 400px;
+            color: #333;
+        }
+        
+        .card-deck-section .section-title {
+            color: #e67e22;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .card-deck-section .section-description {
+            color: #ffffff;
+            margin-bottom: 30px;
         }
         
         .card-deck-container {
@@ -3937,6 +3932,8 @@ function initAnimatedCardDeck() {
             margin: 40px auto;
             perspective: 1000px;
             overflow: visible !important;
+            display: block !important;
+            visibility: visible !important;
         }
         
         .deck-card {
@@ -3955,6 +3952,8 @@ function initAnimatedCardDeck() {
             transform-origin: center center;
             aspect-ratio: 2/3;
             background-color: #fff;
+            visibility: visible !important;
+            display: block !important;
         }
         
         .deck-card img {
@@ -3963,6 +3962,8 @@ function initAnimatedCardDeck() {
             object-fit: contain;
             border-radius: 15px;
             background-color: #fff;
+            visibility: visible !important;
+            display: block !important;
         }
         
         .deck-card.active {
@@ -4009,6 +4010,8 @@ function initAnimatedCardDeck() {
         // Set initial styles
         card.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
         card.style.zIndex = zIndex;
+        card.style.visibility = 'visible';
+        card.style.display = 'block';
         
         // Get unique image for this card
         const uniqueImage = getUniqueImage('deck');
@@ -4096,6 +4099,19 @@ function initAnimatedCardDeck() {
         const existingButton = deckSection.querySelector('.draw-button');
         existingButton.textContent = 'Витягти карту';
     }
+    
+    // Force visibility
+    setTimeout(() => {
+        deckSection.style.display = 'block';
+        deckSection.style.visibility = 'visible';
+        deckContainer.style.display = 'block';
+        deckContainer.style.visibility = 'visible';
+        
+        document.querySelectorAll('.deck-card').forEach(card => {
+            card.style.display = 'block';
+            card.style.visibility = 'visible';
+        });
+    }, 1000);
 }
 
 /**

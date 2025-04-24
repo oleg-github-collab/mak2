@@ -222,12 +222,13 @@ button {
   margin-right: auto;
   padding-left: var(--space-xl);
   padding-right: var(--space-xl);
+  overflow: visible !important; /* Додано для запобігання обрізання контенту */
 }
 
 .section {
   padding: var(--space-xxl) 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Змінено з hidden на visible для запобігання обрізання елементів */
 }
 
 .dark-section {
@@ -1522,13 +1523,15 @@ button {
 }
 
 /* ===== Cards Deck Section - Покращений стос карт ===== */
-.cards-deck {
-  display: block;
+.cards-deck, .card-deck-section {
+  display: block !important;
+  visibility: visible !important;
   padding: var(--space-xxl) 0;
   background-color: var(--bg-dark);
   color: var(--color-white);
   position: relative;
   overflow: visible !important; /* Changed from hidden to visible */
+  z-index: 5;
 }
 
 .card-deck-container {
@@ -1539,6 +1542,8 @@ button {
   gap: var(--space-xxl);
   min-height: 500px;
   overflow: visible !important; /* Added overflow: visible */
+  position: relative;
+  z-index: 10;
 }
 
 .card-deck {
@@ -1551,6 +1556,7 @@ button {
   cursor: pointer;
   transition: transform var(--transition-medium);
   transform-style: preserve-3d;
+  z-index: 15;
 }
 
 .card-stack {
@@ -1687,6 +1693,60 @@ button {
     width: calc(var(--card-width) * 0.8);
     height: calc(var(--card-height) * 0.8);
   }
+}
+
+/* Додаткові стилі для посилення видимості колоди карт */
+.section.card-deck-section, 
+.section.cards-deck {
+  visibility: visible !important;
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 5;
+}
+
+.section.card-deck-section .container,
+.section.cards-deck .container {
+  overflow: visible !important;
+}
+
+.card-deck-section .section-header,
+.cards-deck .section-header {
+  margin-bottom: 30px;
+}
+
+.deck-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.5s ease, 
+              z-index 0s 0.5s;
+  cursor: pointer;
+  transform-origin: center center;
+  aspect-ratio: 2/3;
+  background-color: #fff;
+  z-index: 5;
+}
+
+.draw-button {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 60px;
+  position: relative;
+  z-index: 15;
+}
+
+.draw-button:hover {
+  background-color: var(--color-accent-light);
 }
 
 /* ===== Authors Section ===== */
@@ -2772,4 +2832,149 @@ section.section.falling-cards {
 .falling-cards + section {
   position: relative;
   z-index: 1;
+}
+
+/* === 3D Carousel Updates === */
+.carousel-3d, .improved-carousel {
+  position: relative;
+  width: 100%;
+  height: 540px; /* Increased carousel height to 540px */
+  margin: 50px auto;
+  perspective: 1500px;
+  overflow: visible !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.carousel-3d .carousel-cards-container,
+.improved-carousel .carousel-cards-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible !important;
+}
+
+.carousel-3d .carousel-card,
+.improved-carousel .carousel-card {
+  position: absolute;
+  width: 320px;
+  height: 480px;
+  transition: all 0.8s ease;
+  border-radius: 15px;
+  overflow: visible;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  aspect-ratio: 2/3;
+  opacity: 0;
+  transform-origin: center;
+  backface-visibility: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.carousel-3d .carousel-card.active,
+.improved-carousel .carousel-card.active {
+  opacity: 1;
+  transform: translateX(0) scale(1.1) rotateY(0deg);
+  z-index: 10;
+  filter: blur(0) brightness(1.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.carousel-3d .carousel-card.prev,
+.improved-carousel .carousel-card.prev {
+  opacity: 0.85;
+  transform: translateX(-65%) scale(0.85) rotateY(25deg);
+  z-index: 5;
+  filter: blur(2px) brightness(0.9);
+  box-shadow: -5px 10px 25px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.carousel-3d .carousel-card.next,
+.improved-carousel .carousel-card.next {
+  opacity: 0.85;
+  transform: translateX(65%) scale(0.85) rotateY(-25deg);
+  z-index: 5;
+  filter: blur(2px) brightness(0.9);
+  box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* === Card Deck Styles Enhancement === */
+.card-deck-section, .cards-deck {
+  background-color: var(--bg-dark);
+  padding: 60px 0;
+  text-align: center;
+  overflow: visible !important;
+  position: relative;
+  z-index: 5;
+  min-height: 600px;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.card-deck-container {
+  position: relative;
+  width: 300px;
+  height: 450px;
+  margin: 40px auto 60px;
+  perspective: 1000px;
+  overflow: visible !important;
+  z-index: 5;
+  display: block !important;
+}
+
+.deck-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease, z-index 0s 0.5s;
+  cursor: pointer;
+  transform-origin: center center;
+  aspect-ratio: 2/3;
+  background-color: #fff;
+  will-change: transform;
+  z-index: 5;
+  display: block !important;
+  visibility: visible !important;
+}
+
+.draw-button {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  position: relative;
+  z-index: 15;
+  display: inline-block !important;
+}
+
+/* Форсуємо видимість для всіх елементів карткової колоди */
+body .card-deck-section *,
+body .cards-deck * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block;
+}
+
+body .card-deck-section .draw-button,
+body .cards-deck .draw-button {
+  display: inline-block !important;
 }
