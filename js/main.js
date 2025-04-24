@@ -3,6 +3,11 @@
  * Metaphorical associative cards
  */
 
+// Глобальні змінні для відстеження унікальних зображень між секціями
+const usedImagesDeck = [];
+const usedImagesFalling = [];
+const usedImagesCarousel = [];
+
 // Global variable for carousel update function
 let updateCarouselGlobal;
 
@@ -63,6 +68,85 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
+ * Функція для отримання унікальних зображень між секціями
+ * @param {string} currentSection - 'deck', 'falling', або 'carousel'
+ * @returns {string} URL зображення, яке не використовується в інших секціях
+ */
+function getUniqueImage(currentSection) {
+    // Масив усіх доступних зображень
+    const cardImages = [
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
+    ];
+    
+    // Створюємо множину всіх зображень, які вже використовуються в інших секціях
+    const excluded = new Set([
+        ...usedImagesDeck,
+        ...usedImagesFalling,
+        ...usedImagesCarousel
+    ]);
+    
+    // Фільтруємо доступні зображення
+    let available = cardImages.filter(img => !excluded.has(img));
+    
+    // Якщо немає доступних зображень, використовуємо всі (крайній випадок)
+    if (available.length === 0) {
+        available = cardImages;
+    }
+    
+    // Вибираємо випадкове зображення з доступних
+    const selected = available[Math.floor(Math.random() * available.length)];
+    
+    // Додаємо зображення до відповідного списку використаних
+    if (currentSection === 'deck') usedImagesDeck.push(selected);
+    if (currentSection === 'falling') usedImagesFalling.push(selected);
+    if (currentSection === 'carousel') usedImagesCarousel.push(selected);
+    
+    return selected;
+}
+
+/**
+ * Функція для генерації неперекривающихся позицій карток
+ * @param {number} containerWidth - Ширина контейнера
+ * @param {number} containerHeight - Висота контейнера
+ * @param {number} cardWidth - Ширина картки
+ * @param {number} cardHeight - Висота картки
+ * @param {number} cardCount - Кількість карток
+ * @returns {Array} Масив об'єктів з координатами {x, y}
+ */
+function generateNonOverlappingPositions(containerWidth, containerHeight, cardWidth, cardHeight, cardCount) {
+    const positions = [];
+    const zoneWidth = containerWidth / cardCount;
+    
+    for (let i = 0; i < cardCount; i++) {
+        let posX, posY;
+        let tries = 0;
+        do {
+            posX = i * zoneWidth + Math.random() * (zoneWidth - cardWidth);
+            posY = Math.random() * (containerHeight - cardHeight);
+            tries++;
+        } while (positions.some(p => Math.hypot(p.x - posX, p.y - posY) < cardWidth * 0.8) && tries < 50);
+        positions.push({ x: posX, y: posY });
+    }
+    return positions;
+}
+
+/**
  * Gradient preloader with text animation
  * Виправлено для повного відображення тексту на мобільних пристроях
  */
@@ -77,7 +161,7 @@ function initGradientPreloader() {
     preloader.innerHTML = `
         <div class="preloader-gradient"></div>
         <div class="preloader-text-container">
-            <div class="preloader-animated-text">Метафоричні карти серії "Коріння та Крила"</div>
+            <div class="preloader-animated-text">Запрошуємо Вас до презентації серії карт<br>"Коріння та Крила"</div>
         </div>
     `;
     
@@ -362,8 +446,7 @@ function initOptimizedImageLoading() {
 
 /**
  * Optimized falling cards animation
- * Вдосконалено анімацію падаючих карток: центрування на мобільних, 
- * нахил 5-20 градусів, швидше на 20%, лише 1-2 картки одночасно
+ * Оновлена версія з унікальними зображеннями та розподілом карток без перекриття
  * @param {boolean} forceStart - Force animation to start immediately
  */
 function initOptimizedFallingCards(forceStart = false) {
@@ -394,27 +477,6 @@ function initOptimizedFallingCards(forceStart = false) {
     // Clear container
     fallingCardsContainer.innerHTML = '';
     
-    // Card image URLs - using all 17 images for card variety
-    const cardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
-    ];
-    
     // Check if mobile device
     const isMobile = window.innerWidth < 768;
     
@@ -437,7 +499,7 @@ function initOptimizedFallingCards(forceStart = false) {
             height: calc(100% + 1000px) !important;
             pointer-events: none;
             z-index: 5;
-            overflow: visible !important;
+            overflow: hidden !important;
         }
         
         .falling-card {
@@ -462,7 +524,7 @@ function initOptimizedFallingCards(forceStart = false) {
         }
         
         .falling-card.animated {
-            animation: falling var(--data-falling-duration, 14s) forwards var(--data-falling-delay, 0s) linear;
+            animation: falling var(--data-falling-duration, 8s) forwards var(--data-falling-delay, 0s) linear;
         }
         
         /* Оновлені ключові кадри для анімації - на 20% швидше */
@@ -518,7 +580,7 @@ function initOptimizedFallingCards(forceStart = false) {
     `;
     document.head.appendChild(style);
     
-    // Переконаємося, що секції та батьківські елементи не обрізають контент
+    // Переконаємося, що секції та батьківські елементи не обрізують контент
     if (fallingCardsSection) {
         let parent = fallingCardsSection.parentElement;
         while (parent && parent !== document.body) {
@@ -534,73 +596,97 @@ function initOptimizedFallingCards(forceStart = false) {
     let animationActive = forceStart;
     let animationInterval;
     let mobileCardCount = 0; // Track number of cards currently falling on mobile
-    const maxMobileCards = 3; // Maximum number of cards for mobile
+    const maxMobileCards = 1; // Maximum number of cards for mobile
+    const minDesktopCards = 3; // Minimum number of cards for desktop
+    let activeCards = 0; // Кількість активних карток
     
-    // Function to create falling cards
+    // Function to create falling cards with non-overlapping positions
     function createFallingCard() {
+        // Clean up completed cards
+        fallingCardsContainer.querySelectorAll('.falling-card.completed').forEach(card => {
+            card.remove();
+            activeCards--;
+        });
+        
         // On mobile, limit number of cards
         if (isMobile && mobileCardCount >= maxMobileCards) {
             return; // Skip creating a new card until others finish
         }
         
-        // Clean up completed cards
-        fallingCardsContainer.querySelectorAll('.falling-card.completed').forEach(card => {
-            card.remove();
-        });
+        // Check if we already have enough cards
+        const currentCards = fallingCardsContainer.querySelectorAll('.falling-card:not(.completed)').length;
+        if (!isMobile && currentCards >= minDesktopCards) {
+            return; // We already have enough cards
+        }
+        
+        // Get unique image for falling card
+        const imageUrl = getUniqueImage('falling');
         
         // Create new card
-        const cardIndex = Math.floor(Math.random() * cardImages.length);
-        const imageUrl = cardImages[cardIndex];
-        
         const card = document.createElement('div');
         card.className = 'falling-card';
         
-        // Position distribution
-        let leftPosition;
+        // Position distribution based on device type
         if (isMobile) {
-            leftPosition = 50; // Center on mobile
-            mobileCardCount++; // Increment counter for mobile
-        } else {
-            leftPosition = 15 + Math.random() * 70; // 15% to 85% width on desktop
-        }
-        
-        // Random tilt angle 5-20 degrees (positive or negative)
-        let rotateAngle;
-        if (isMobile) {
-            rotateAngle = Math.random() > 0.5 ? 
+            // Center on mobile
+            card.style.left = '50%';
+            mobileCardCount++;
+            
+            // Random tilt angle 5-20 degrees (positive or negative)
+            const rotateAngle = Math.random() > 0.5 ? 
                 5 + Math.random() * 15 : // 5 to 20 degrees
                 -(5 + Math.random() * 15); // -5 to -20 degrees
+            
+            // Set CSS variables for animation
+            card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
+            card.style.setProperty('--data-falling-delay', '0s'); // Instant start on mobile
+            card.style.setProperty('--data-falling-duration', '8s'); // 20% faster animation
+            card.style.setProperty('--data-card-size', '300px');
+            
+            // Set initial position
+            card.style.width = '300px';
+            card.style.top = '-300px';
         } else {
-            rotateAngle = -5 + Math.random() * 10; // -5 to 5 degrees for desktop
+            // For desktop, use non-overlapping positions
+            const containerWidth = fallingCardsContainer.offsetWidth;
+            const cardWidth = 420 + Math.random() * 40;
+            const cardHeight = cardWidth * 1.5; // Based on 2:3 aspect ratio
+            
+            // Generate positions for multiple cards
+            const cardCount = Math.min(5, minDesktopCards - currentCards);
+            const positions = generateNonOverlappingPositions(
+                containerWidth, 
+                fallingCardsContainer.offsetHeight * 0.5, 
+                cardWidth, 
+                cardHeight, 
+                cardCount
+            );
+            
+            if (positions.length > 0) {
+                const position = positions[0];
+                
+                // Random tilt angle -5 to 5 degrees
+                const rotateAngle = -5 + Math.random() * 10;
+                
+                // Delayed start on desktop
+                const fallingDelay = Math.random() * 3;
+                
+                // Set CSS variables for animation
+                card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
+                card.style.setProperty('--data-falling-delay', fallingDelay + 's');
+                card.style.setProperty('--data-falling-duration', '8s');
+                card.style.setProperty('--data-card-size', cardWidth + 'px');
+                
+                // Set initial position
+                card.style.left = position.x + 'px';
+                card.style.width = cardWidth + 'px';
+                card.style.top = '-' + cardHeight + 'px';
+            }
         }
         
-        // Instant start on mobile, delayed on desktop
-        const fallingDelay = isMobile ? 0 : (3 + Math.random() * 3);
-        
-        // 20% faster animation (original was 17.5s)
-        const fallingDuration = 8; 
-        
-        // Card size
-        const cardSize = isMobile ? 300 : 420 + Math.random() * 40;
-        
-        // Set CSS variables for animation
-        card.style.setProperty('--data-rotate-angle', rotateAngle + 'deg');
-        card.style.setProperty('--data-falling-delay', fallingDelay + 's');
-        card.style.setProperty('--data-falling-duration', fallingDuration + 's');
-        card.style.setProperty('--data-card-size', cardSize + 'px');
-        
-        // Set initial position
-        card.style.left = leftPosition + '%';
-        card.style.width = cardSize + 'px';
-        card.style.top = '-' + cardSize + 'px';
+        // Set common properties
         card.style.aspectRatio = '2/3';
         card.style.height = 'auto';
-        
-        // Make sure mobile cards are fully visible
-        if (isMobile) {
-            card.style.overflow = 'visible';
-            card.style.zIndex = '100';
-        }
         
         // Add image
         const img = document.createElement('img');
@@ -611,6 +697,7 @@ function initOptimizedFallingCards(forceStart = false) {
         
         // Add to container
         fallingCardsContainer.appendChild(card);
+        activeCards++;
         
         // Activate animation
         setTimeout(() => {
@@ -624,18 +711,45 @@ function initOptimizedFallingCards(forceStart = false) {
                 if (isMobile) {
                     mobileCardCount--;
                 }
-            }, fallingDuration * 1000);
+                
+                // Check if we need to add more cards to maintain minimum
+                if (!isMobile && activeCards < minDesktopCards) {
+                    createFallingCard();
+                }
+            }, parseInt(card.style.getPropertyValue('--data-falling-duration')) * 1000);
         }, 100);
+    }
+    
+    // Function to ensure minimum number of falling cards
+    function ensureMinimumCards() {
+        if (isMobile) return; // Skip on mobile
+        
+        const currentCards = fallingCardsContainer.querySelectorAll('.falling-card:not(.completed)').length;
+        const cardsNeeded = minDesktopCards - currentCards;
+        
+        for (let i = 0; i < cardsNeeded; i++) {
+            setTimeout(() => createFallingCard(), i * 300);
+        }
     }
     
     // Start animation if forced or section is visible
     if (forceStart) {
-        // Create initial card
-        createFallingCard();
+        // Create initial cards
+        if (isMobile) {
+            createFallingCard(); // Just one card on mobile
+        } else {
+            // Create multiple cards for desktop
+            for (let i = 0; i < minDesktopCards; i++) {
+                setTimeout(() => createFallingCard(), i * 300);
+            }
+        }
         
         // Different intervals for mobile and desktop
-        const interval = isMobile ? 5000 : 8000; // Faster interval on mobile (4s instead of 9s)
-        animationInterval = setInterval(createFallingCard, interval);
+        const interval = isMobile ? 4000 : 8000;
+        animationInterval = setInterval(() => {
+            createFallingCard();
+            ensureMinimumCards();
+        }, interval);
         animationActive = true;
     } else {
         // Use IntersectionObserver to start animation when section enters viewport
@@ -646,11 +760,22 @@ function initOptimizedFallingCards(forceStart = false) {
                         // Start animation if not already running
                         if (!animationActive) {
                             animationActive = true;
-                            createFallingCard();
+                            
+                            if (isMobile) {
+                                createFallingCard(); // Just one card on mobile
+                            } else {
+                                // Create multiple cards for desktop
+                                for (let i = 0; i < minDesktopCards; i++) {
+                                    setTimeout(() => createFallingCard(), i * 300);
+                                }
+                            }
                             
                             // Different intervals for mobile and desktop
                             const interval = isMobile ? 4000 : 8000;
-                            animationInterval = setInterval(createFallingCard, interval);
+                            animationInterval = setInterval(() => {
+                                createFallingCard();
+                                ensureMinimumCards();
+                            }, interval);
                         }
                     }
                 });
@@ -665,9 +790,20 @@ function initOptimizedFallingCards(forceStart = false) {
         } else {
             // Fallback for older browsers
             animationActive = true;
-            createFallingCard();
-            const interval = isMobile ? 5000 : 8000;
-            animationInterval = setInterval(createFallingCard, interval);
+            
+            if (isMobile) {
+                createFallingCard();
+            } else {
+                for (let i = 0; i < minDesktopCards; i++) {
+                    setTimeout(() => createFallingCard(), i * 300);
+                }
+            }
+            
+            const interval = isMobile ? 4000 : 8000;
+            animationInterval = setInterval(() => {
+                createFallingCard();
+                ensureMinimumCards();
+            }, interval);
         }
     }
     
@@ -678,9 +814,44 @@ function initOptimizedFallingCards(forceStart = false) {
         } else if (animationActive) {
             clearInterval(animationInterval);
             const interval = isMobile ? 4000 : 8000;
-            animationInterval = setInterval(createFallingCard, interval);
+            animationInterval = setInterval(() => {
+                createFallingCard();
+                ensureMinimumCards();
+            }, interval);
         }
     });
+    
+    // Update positions on window resize
+    window.addEventListener('resize', debounce(() => {
+        // Check if mobile device status changed
+        const wasMobile = isMobile;
+        const newIsMobile = window.innerWidth < 768;
+        
+        // If device type changed, restart animation
+        if (wasMobile !== newIsMobile && animationActive) {
+            // Clear existing cards
+            fallingCardsContainer.innerHTML = '';
+            mobileCardCount = 0;
+            activeCards = 0;
+            
+            // Restart animation
+            clearInterval(animationInterval);
+            
+            if (newIsMobile) {
+                createFallingCard();
+            } else {
+                for (let i = 0; i < minDesktopCards; i++) {
+                    setTimeout(() => createFallingCard(), i * 300);
+                }
+            }
+            
+            const interval = newIsMobile ? 4000 : 8000;
+            animationInterval = setInterval(() => {
+                createFallingCard();
+                if (!newIsMobile) ensureMinimumCards();
+            }, interval);
+        }
+    }, 300));
     
     // Clean up on page unload
     window.addEventListener('beforeunload', () => {
@@ -689,223 +860,333 @@ function initOptimizedFallingCards(forceStart = false) {
 }
 
 /**
- * Initialize improved carousel with continuous rotation
- * Виправлено перекриття карток у каруселі
+ * Initialize improved carousel with 3-card layout and auto-rotation
+ * Центральна картка чітка, бокові заблюрені
  */
 function initImprovedCarousel() {
-    const carousel = document.querySelector('.carousel-3d, .smooth-carousel');
+    const carousel = document.querySelector('.carousel-3d, .improved-carousel');
     if (!carousel) return;
     
-    // Add smooth-carousel class for consistent identification
-    carousel.classList.add('smooth-carousel');
+    // Додаємо клас improved-carousel для уніфікованої ідентифікації
+    carousel.classList.add('improved-carousel');
     
-    // Get or create container for cards
-    let cardsContainer = carousel.querySelector('.carousel-cards-container');
-    if (!cardsContainer) {
-        cardsContainer = document.createElement('div');
-        cardsContainer.className = 'carousel-cards-container';
-        
-        // Move all cards to container
-        const cards = Array.from(carousel.querySelectorAll('.carousel-card'));
-        cards.forEach(card => cardsContainer.appendChild(card));
-        
-        // Add container to page
-        carousel.prepend(cardsContainer);
+    // Отримуємо всі картки в каруселі
+    const cards = Array.from(carousel.querySelectorAll('.carousel-card'));
+    if (cards.length < 3) {
+        console.warn('Для правильної роботи каруселі потрібно щонайменше 3 картки');
+        return;
     }
     
-    // Get cards in carousel
-    let cards = Array.from(carousel.querySelectorAll('.carousel-card'));
-    
-    // Adjust card count to optimal number (8-10) to prevent overlapping
-    const isMobile = window.innerWidth < 768;
-    const optimalCount = isMobile ? 6 : 8;
-    
-    if (cards.length > optimalCount + 2) {
-        // Too many cards - remove excess
-        for (let i = optimalCount; i < cards.length; i++) {
-            cards[i].remove();
-        }
-        cards = cards.slice(0, optimalCount);
-    } else if (cards.length < optimalCount) {
-        // Too few cards - duplicate some
-        const initialCount = cards.length;
-        for (let i = 0; i < optimalCount - initialCount; i++) {
-            const sourceCard = cards[i % initialCount];
-            const clonedCard = sourceCard.cloneNode(true);
-            cardsContainer.appendChild(clonedCard);
-        }
-        cards = Array.from(carousel.querySelectorAll('.carousel-card'));
-    }
-    
-    // Remove any existing navigation buttons
-    const prevButton = carousel.querySelector('.carousel-prev');
-    const nextButton = carousel.querySelector('.carousel-next');
-    const controlsContainer = carousel.querySelector('.carousel-controls');
-    
-    if (prevButton) prevButton.remove();
-    if (nextButton) nextButton.remove();
-    if (controlsContainer) controlsContainer.remove();
-    
-    // Additional check for navigation buttons elsewhere
-    document.querySelectorAll('.carousel-prev, .carousel-next').forEach(button => {
-        if (button.closest('.carousel-3d, .smooth-carousel')) {
-            button.remove();
-        }
-    });
-    
-    // Add carousel styles with improved spacing
+    // Додаємо стилі для 3D каруселі з більшою висотою
     const style = document.createElement('style');
     style.textContent = `
-        .smooth-carousel {
+        .improved-carousel {
             position: relative;
             width: 100%;
-            height: 540px;
+            height: 540px; /* Висота встановлена на 540px */
             margin: 50px auto;
-            perspective: 1400px;
+            perspective: 1500px;
             overflow: visible;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
-        .carousel-cards-container {
-            position: absolute;
+        .improved-carousel .carousel-cards-container {
+            position: relative;
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
-            animation: carousel-rotate 36s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
-        .carousel-card {
+        .improved-carousel .carousel-card {
             position: absolute;
-            width: 300px;
-            height: 450px;
-            top: 50%;
-            left: 50%;
-            transform-origin: center center;
-            transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            backface-visibility: hidden;
+            width: 320px;
+            height: 480px;
+            transition: all 0.8s ease;
+            border-radius: 15px;
+            overflow: visible;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             aspect-ratio: 2/3;
+            opacity: 0;
+            transform-origin: center;
+            backface-visibility: hidden;
+            pointer-events: none;
         }
         
-        .carousel-card img {
+        .improved-carousel .carousel-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
         }
         
-        @keyframes carousel-rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+        .improved-carousel .carousel-card.active {
+            opacity: 1;
+            transform: translateX(0) scale(1.1) rotateY(0deg);
+            z-index: 10;
+            filter: blur(0) brightness(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
         }
         
-        /* Mobile carousel optimization - full card visibility */
-        @media (max-width: 767px) {
-            .smooth-carousel {
-                height: 600px;
-                overflow: visible;
-                margin: 60px auto;
+        .improved-carousel .carousel-card.prev {
+            opacity: 0.85;
+            transform: translateX(-65%) scale(0.85) rotateY(25deg);
+            z-index: 5;
+            filter: blur(2px) brightness(0.9);
+            box-shadow: -5px 10px 25px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .improved-carousel .carousel-card.next {
+            opacity: 0.85;
+            transform: translateX(65%) scale(0.85) rotateY(-25deg);
+            z-index: 5;
+            filter: blur(2px) brightness(0.9);
+            box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .improved-carousel .carousel-card.far-prev {
+            opacity: 0.4;
+            transform: translateX(-130%) scale(0.6) rotateY(35deg);
+            z-index: 1;
+            filter: blur(3px) brightness(0.7);
+        }
+        
+        .improved-carousel .carousel-card.far-next {
+            opacity: 0.4;
+            transform: translateX(130%) scale(0.6) rotateY(-35deg);
+            z-index: 1;
+            filter: blur(3px) brightness(0.7);
+        }
+        
+        .improved-carousel .carousel-card.hidden {
+            opacity: 0;
+            transform: translateX(0) scale(0.3);
+            z-index: 0;
+        }
+        
+        /* Оптимізація для мобільних пристроїв */
+        @media (max-width: 992px) {
+            .improved-carousel {
+                height: 460px;
+                margin: 30px auto;
             }
             
-            .carousel-cards-container {
-                animation: carousel-rotate 36s linear infinite;
-                transform: scale(0.85);
+            .improved-carousel .carousel-card {
+                width: 260px;
+                height: 390px;
             }
             
-            .carousel-card {
-                width: 280px;
-                height: 420px;
-                border-radius: 12px;
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-                opacity: 1 !important;
-                filter: none !important;
+            .improved-carousel .carousel-card.prev {
+                transform: translateX(-55%) scale(0.8) rotateY(20deg);
+            }
+            
+            .improved-carousel .carousel-card.next {
+                transform: translateX(55%) scale(0.8) rotateY(-20deg);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .improved-carousel {
+                height: 400px;
+                margin: 20px auto;
+            }
+            
+            .improved-carousel .carousel-card {
+                width: 220px;
+                height: 330px;
+            }
+            
+            .improved-carousel .carousel-card.prev {
+                transform: translateX(-50%) scale(0.75) rotateY(15deg);
+            }
+            
+            .improved-carousel .carousel-card.next {
+                transform: translateX(50%) scale(0.75) rotateY(-15deg);
             }
         }
     `;
     document.head.appendChild(style);
     
-    // Set up the carousel
-    setupCarousel(carousel, cards);
-    
-    // Export update function for external use
-    window.updateCarouselGlobal = function() {
-        setupCarousel(carousel, cards);
-    };
-    
-    // Set initialization flag
-    carousel.dataset.initialized = 'true';
-}
-
-/**
- * Set up carousel with circular card arrangement
- */
-function setupCarousel(carousel, cards) {
-    const cardsContainer = carousel.querySelector('.carousel-cards-container');
-    const isMobile = window.innerWidth < 768;
-    
-    // Adjust radius for better spacing - prevents overlapping
-    const radius = isMobile ? 380 : 550; 
-    const totalCards = cards.length;
-    const angleStep = (2 * Math.PI) / totalCards;
-    
-    // Position cards in a circle with increased spacing
-    cards.forEach((card, index) => {
-        // Calculate position
-        const angle = angleStep * index;
-        const x = radius * Math.sin(angle);
-        const z = radius * Math.cos(angle);
+    // Створюємо контейнер для карток, якщо його ще немає
+    let cardsContainer = carousel.querySelector('.carousel-cards-container');
+    if (!cardsContainer) {
+        cardsContainer = document.createElement('div');
+        cardsContainer.className = 'carousel-cards-container';
         
-        // Position card in 3D space
-        card.style.transform = `translate(-50%, -50%) translateX(${x}px) translateZ(${z}px) rotateY(${-angle * 180 / Math.PI}deg)`;
-        
-        // Ensure consistent size
-        card.style.width = isMobile ? '280px' : '300px';
-        card.style.height = isMobile ? '420px' : '450px';
-        card.style.aspectRatio = '2/3';
-        
-        // Set transition delay for smooth animation
-        card.style.transitionDelay = `${index * 0.05}s`;
-        
-        // Update image styles
-        const img = card.querySelector('img');
-        if (img) {
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-        }
-    });
-    
-    // Dynamic update for card styles based on position
-    function updateCardStyles() {
-        cards.forEach((card, index) => {
-            const angle = (angleStep * index) + getCurrentRotation();
-            const z = radius * Math.cos(angle);
+        // Переміщаємо всі картки в контейнер
+        cards.forEach(card => {
+            // Додавання карток у трекінгові масиви для уникнення дублювання
+            const cardImage = card.querySelector('img');
+            if (cardImage && cardImage.src) {
+                usedImagesCarousel.push(cardImage.src);
+            }
             
-            // Apply blur to back-facing cards only on desktop
-            if (z < 0 && !isMobile) {
-                card.style.opacity = '0.5';
-                card.style.filter = 'blur(3px)';
-                card.classList.add('back-facing');
+            card.remove();
+            cardsContainer.appendChild(card);
+        });
+        
+        carousel.appendChild(cardsContainer);
+    }
+    
+    // Поточний індекс активної картки
+    let activeIndex = 0;
+    
+    // Функція для оновлення каруселі на основі activeIndex
+    function setupCarousel() {
+        cards.forEach((card, index) => {
+            // Спочатку видаляємо всі класи
+            card.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next', 'hidden');
+            
+            // Визначаємо позицію картки відносно активної
+            const diff = (index - activeIndex + cards.length) % cards.length;
+            
+            if (diff === 0) {
+                // Активна картка (по центру)
+                card.classList.add('active');
+            } else if (diff === cards.length - 1 || diff === -1) {
+                // Попередня картка (зліва)
+                card.classList.add('prev');
+            } else if (diff === 1) {
+                // Наступна картка (справа)
+                card.classList.add('next');
+            } else if (diff === cards.length - 2 || diff === -2) {
+                // Дальня попередня картка
+                card.classList.add('far-prev');
+            } else if (diff === 2) {
+                // Дальня наступна картка
+                card.classList.add('far-next');
             } else {
-                card.style.opacity = '1';
-                card.style.filter = 'none';
-                card.classList.remove('back-facing');
+                // Приховані картки
+                card.classList.add('hidden');
             }
         });
     }
     
-    // Get current rotation angle of container
-    function getCurrentRotation() {
-        const style = window.getComputedStyle(cardsContainer);
-        const matrix = new DOMMatrix(style.transform);
-        return Math.atan2(matrix.m32, matrix.m33);
+    // Ініціалізуємо карусель
+    setupCarousel();
+    
+    // Налаштовуємо автопрокрутку
+    let autoplayInterval;
+    const interval = parseInt(carousel.dataset.interval) || 4000;
+    
+    function startAutoplay() {
+        autoplayInterval = setInterval(() => {
+            activeIndex = (activeIndex + 1) % cards.length;
+            setupCarousel();
+        }, interval);
     }
     
-    // Update styles periodically
-    const styleUpdateInterval = setInterval(updateCardStyles, 100);
+    function stopAutoplay() {
+        if (autoplayInterval) {
+            clearInterval(autoplayInterval);
+        }
+    }
     
-    // Store interval ID for cleanup
-    carousel.dataset.intervalId = styleUpdateInterval;
+    // Запускаємо автопрокрутку
+    startAutoplay();
+    
+    // Зупиняємо автопрокрутку при наведенні курсору, якщо це увімкнено
+    carousel.addEventListener('mouseenter', () => {
+        if (carousel.dataset.pauseOnHover === 'true') {
+            stopAutoplay();
+        }
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+        if (carousel.dataset.pauseOnHover === 'true') {
+            startAutoplay();
+        }
+    });
+    
+    // При зміні видимості вкладки
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopAutoplay();
+        } else {
+            startAutoplay();
+        }
+    });
+    
+    // Додаємо кнопки навігації
+    //const navPrev = document.createElement('button');
+    //navPrev.className = 'carousel-nav carousel-nav-prev';
+    //navPrev.innerHTML = '&lt;';
+    //navPrev.addEventListener('click', () => {
+        //activeIndex = (activeIndex - 1 + cards.length) % cards.length;
+        //setupCarousel();
+        //stopAutoplay();
+      //  startAutoplay();
+    //});
+    
+    //const navNext = document.createElement('button');
+    //navNext.className = 'carousel-nav carousel-nav-next';
+    //navNext.innerHTML = '&gt;';
+    //navNext.addEventListener('click', () => {
+      //  activeIndex = (activeIndex + 1) % cards.length;
+        //setupCarousel();
+        //stopAutoplay();
+        //startAutoplay();
+    //});
+    
+    carousel.parentNode.appendChild(navPrev);
+    carousel.parentNode.appendChild(navNext);
+    
+    // Обробка подій перетягування (свайпів) для мобільних
+    let startX, moveX, initialX;
+    let isDragging = false;
+    
+    function handleTouchStart(e) {
+        startX = e.touches[0].clientX;
+        initialX = cardsContainer.getBoundingClientRect().left;
+        isDragging = true;
+        stopAutoplay();
+    }
+    
+    function handleTouchMove(e) {
+        if (!isDragging) return;
+        moveX = e.touches[0].clientX;
+        const diffX = moveX - startX;
+        // Обмежений рух для запобігання різким стрибкам
+        const maxDiff = 100;
+        const clampedDiff = Math.max(-maxDiff, Math.min(maxDiff, diffX));
+        cardsContainer.style.transform = `translateX(${clampedDiff}px)`;
+    }
+    
+    function handleTouchEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        if ((moveX - startX) < -50) {
+            // Свайп вліво - наступна картка
+            activeIndex = (activeIndex + 1) % cards.length;
+        } else if ((moveX - startX) > 50) {
+            // Свайп вправо - попередня картка
+            activeIndex = (activeIndex - 1 + cards.length) % cards.length;
+        }
+        
+        setupCarousel();
+        cardsContainer.style.transform = '';
+        startAutoplay();
+    }
+    
+    // Додаємо обробники для свайпів на мобільних
+    cardsContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+    cardsContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+    cardsContainer.addEventListener('touchend', handleTouchEnd);
+    
+    // Експортуємо функцію оновлення для зовнішнього використання
+    window.updateCarouselGlobal = setupCarousel;
+    
+    // Очищаємо ресурси при закритті сторінки
+    window.addEventListener('beforeunload', () => {
+        stopAutoplay();
+    });
 }
 
 /**
@@ -1039,14 +1320,13 @@ function initDeckDrawButton() {
         const randomIndex = Math.floor(Math.random() * cards.length);
         const selectedCard = cards[randomIndex];
         
-        // Also randomly select an image from all available cards
-        const randomImageIndex = Math.floor(Math.random() * allCardImages.length);
-        const randomImage = allCardImages[randomImageIndex];
+        // Get a unique image for this card
+        const uniqueImage = getUniqueImage('deck');
         
         // Update card image if different from current
         const cardImage = selectedCard.querySelector('img');
-        if (cardImage && cardImage.src !== randomImage) {
-            cardImage.src = randomImage;
+        if (cardImage && cardImage.src !== uniqueImage) {
+            cardImage.src = uniqueImage;
         }
         
         // Activate selected card
@@ -2479,6 +2759,13 @@ function initCardGrid() {
         
         // Ensure 2:3 aspect ratio
         card.style.aspectRatio = '2/3';
+        
+        // Add to tracking for unique images
+        const cardImage = card.querySelector('img');
+        if (cardImage && cardImage.src) {
+            // Add to tracking list to prevent duplicates
+            usedImagesCarousel.push(cardImage.src);
+        }
     });
     
     // Add 3D effect ONLY for desktop
@@ -3597,7 +3884,7 @@ function initVanillaTilt() {
 
 /**
  * Initialize animated card deck
- * Додано всі картки з масиву для можливості витягування випадкової карти
+ * Оновлена версія з унікальними зображеннями та повним відображенням карток
  */
 function initAnimatedCardDeck() {
     // Find or create section for card deck
@@ -3638,6 +3925,9 @@ function initAnimatedCardDeck() {
         .card-deck-section {
             padding: 60px 0;
             text-align: center;
+            overflow: visible !important;
+            position: relative;
+            z-index: 1;
         }
         
         .card-deck-container {
@@ -3646,6 +3936,7 @@ function initAnimatedCardDeck() {
             height: 450px;
             margin: 40px auto;
             perspective: 1000px;
+            overflow: visible !important;
         }
         
         .deck-card {
@@ -3663,13 +3954,15 @@ function initAnimatedCardDeck() {
             cursor: pointer;
             transform-origin: center center;
             aspect-ratio: 2/3;
+            background-color: #fff;
         }
         
         .deck-card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 15px;
+            background-color: #fff;
         }
         
         .deck-card.active {
@@ -3691,28 +3984,17 @@ function initAnimatedCardDeck() {
     `;
     document.head.appendChild(style);
     
-    // Include all available card images from the script for variety
-    const cardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
-    ];
+    // Make sure section and parent elements don't crop content
+    let parent = deckSection.parentElement;
+    while (parent && parent !== document.body) {
+        const computedStyle = window.getComputedStyle(parent);
+        if (computedStyle.overflow === 'hidden') {
+            parent.style.overflow = 'visible';
+        }
+        parent = parent.parentElement;
+    }
     
-    // Create 6 cards for deck display (more cards will be available for random draw)
+    // Create 6 cards for deck display
     for (let i = 0; i < 6; i++) {
         const card = document.createElement('div');
         card.className = 'deck-card';
@@ -3728,9 +4010,12 @@ function initAnimatedCardDeck() {
         card.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
         card.style.zIndex = zIndex;
         
+        // Get unique image for this card
+        const uniqueImage = getUniqueImage('deck');
+        
         // Create image for card
         const img = document.createElement('img');
-        img.src = cardImages[i % cardImages.length];
+        img.src = uniqueImage;
         img.alt = 'Metaphorical card ' + (i + 1);
         img.loading = 'lazy';
         card.appendChild(img);
@@ -3779,7 +4064,26 @@ function initAnimatedCardDeck() {
     }
     
     // Store all card images for button to randomly select from
-    deckContainer.dataset.allCardImages = JSON.stringify(cardImages);
+    const allCardImages = [
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
+    ];
+    deckContainer.dataset.allCardImages = JSON.stringify(allCardImages);
     
     // Add button for drawing card
     if (!deckSection.querySelector('.draw-button')) {
@@ -3813,6 +4117,7 @@ function hideLogoImage() {
 
 /**
  * Adjust card sizes in grid to match images while maintaining 2:3 aspect ratio
+ * Змінено objectFit з 'cover' на 'contain' для повного відображення карток
  */
 function adjustCardSizeToImages() {
     const gridCards = document.querySelectorAll('.grid-card');
@@ -3834,10 +4139,11 @@ function adjustCardSizeToImages() {
     });
     
     function adjustCardImage(card, image) {
-        // Ensure image fits completely
+        // Ensure image fits completely without cropping
         image.style.width = '100%';
         image.style.height = '100%';
-        image.style.objectFit = 'cover'; // Cover entire card area
+        image.style.objectFit = 'contain'; // Changed from cover to contain
+        image.style.backgroundColor = '#fff'; // Optional background for visible card edges
     }
 }
 
