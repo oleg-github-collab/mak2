@@ -161,7 +161,7 @@ function initGradientPreloader() {
     preloader.innerHTML = `
         <div class="preloader-gradient"></div>
         <div class="preloader-text-container">
-            <div class="preloader-animated-text">Запрошуємо Вас до презентації серії карт<br>"Коріння та Крила"</div>
+            <div class="preloader-animated-text">Ви завітали до презентації серії карт<br>"Коріння та Крила"</div>
         </div>
     `;
     
