@@ -403,6 +403,34 @@
      padding: 10px;
    }
  }
+ /* 1. Розтягнути контейнер колоди на всю ширину та вмикнути флекс-режим */
+ .card-deck-container {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+/* 2. Переконатись, що сама .card-deck теж по центру */
+.card-deck {
+  margin: 0 auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+/* 3. Якщо є wrapper (.container) навколо — теж центруємо його */
+.card-deck-section .container,
+.cards-deck .container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
  
  /* ===== Custom Cursor - Підвищена якість ===== */
  .cursor-container {
@@ -3165,7 +3193,7 @@
   overflow: visible !important;
 }
 
-/* 2. Прибирання “білих” полів у кожній картці */
+/* 2. Прибирання "білих" полів у кожній картці */
 .carousel-card,
 .stack-card,
 .grid-card,
@@ -3409,4 +3437,147 @@
     width: calc(var(--card-width) * 0.8) !important;
     height: calc(var(--card-height) * 0.8) !important;
   }
+
+  @media (max-width: 768px) {
+    .deck-section {
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 450px;
+    }
+    
+    .deck-section .card-container {
+        position: relative !important;
+        width: 85vw !important;
+        height: 85vw !important;
+        max-width: 350px !important;
+        max-height: 350px !important;
+        margin: 0 auto !important;
+        transform: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+    
+    .deck-section .card {
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute !important;
+        transform-origin: center !important;
+    }
+    
+    .deck-section .card img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
 }
+
+  /* Додаємо центрування колоди на мобільних */
+  .card-deck-container {
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  
+  .card-deck-section .container,
+  .cards-deck .container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .card-deck, 
+  .drawn-card-container {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 auto 40px auto !important;
+  }
+  
+  .draw-button {
+    margin: 20px auto !important;
+    display: block !important;
+  }
+}
+@media (max-width: 768px) {
+  /* 1) Контейнер над кнопкою: 90vw (але не більше 300px), співвідношення 2:3 */
+  .card-deck-section .card-deck-container {
+    width: 90vw !important;
+    max-width: 300px !important;
+    aspect-ratio: 2 / 3 !important;
+    margin: 0 auto var(--space-md) !important;
+    position: relative !important;
+    overflow: visible !important;
+    perspective: 1000px !important;
+  }
+  @media (max-width: 768px) {
+    /* Контейнер без заокруглень і без обрізання, щоб стек карток був видимим */
+    .card-deck-section .card-deck-container {
+      border-radius: 0 !important;
+      overflow: visible !important;
+    }
+  
+    /* Кожна витягнута картка має свої заокруглені кути */
+    .card-deck-section .deck-card {
+      border-radius: var(--radius-md) !important; /* або напиши 8px */
+      overflow: hidden !important;
+    }
+  
+    /* І зображення всередині наслідує округлення */
+    .card-deck-section .deck-card img {
+      border-radius: inherit !important;
+    }
+  }
+  
+
+  /* 2) Кожна карта — займає весь контейнер, без padding/margin */
+  .card-deck-section .deck-card {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* 3) Зображення в картці — full display без обрізання */
+  .card-deck-section .deck-card img {
+    display: block !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: transparent !important;
+  }
+
+  /* 4) Кнопка точно по центру під контейнером */
+  .card-deck-section .draw-button {
+    display: block !important;
+    margin: var(--space-md) auto 0 !important;
+    position: relative !important;
+    z-index: var(--z-high) !important;
+  }
+}
+/* ==== Надійне скруглення кутів саме карток у секції Deck ==== */
+.card-deck-section .card-deck-container .deck-card {
+  /* clip-path працює навіть коли overflow у контейнера видимий */
+  clip-path: inset(0 round var(--radius-md));
+  /* переконаємося, що фон і зображення не визирають за межі */  
+  background-clip: padding-box !important;
+}
+
+.card-deck-section .card-deck-container .deck-card img {
+  /* наслідує радіус батька і підтягуєся повністю */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: inherit !important;
+  display: block !important;
+}
+
