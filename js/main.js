@@ -73,27 +73,105 @@ document.addEventListener('DOMContentLoaded', function() {
  * @returns {string} URL зображення, яке не використовується в інших секціях
  */
 function getUniqueImage(currentSection) {
-    // Масив усіх доступних зображень
-    const cardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
+    // Масив зображень для колоди карт (deck)
+    const deckImages = [
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219223/Compressed%20site%20pics/wmqbegjwkyxdclaa7l4r.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745222422/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_42_n7qnn6.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219229/Compressed%20site%20pics/xebwyhkvlshko8mlyazn.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221960/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_28_vwvevp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
         'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219247/Compressed%20site%20pics/lmcrxx7o21ykdw7drm3p.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221960/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_27_mmtnee.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg'
     ];
     
+    // Масив усіх доступних зображень для інших секцій
+    const cardImages = [
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535690/mmtdm8ky4ab0ol9yutqr.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535695/qt4k2ipi2jhc9mmwzxis.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535699/zcpbltaflvwaquvd0kju.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535702/ub9ylmdcigbc5e82fesi.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535704/r3nzu5v02euvqeq1rmgf.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535708/ofoaejquc9zuamosvgo9.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535713/ht1bnprywburf4pkvxpy.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535717/p4zp9n68duiabbsc9d1t.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535722/x8jvlkkviu5cy1l13nci.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535725/b6sgcufua3trsuemuljl.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535729/o8p00xqbnixgksezsol1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535732/svx7xjtve5zf1dkkipef.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535737/rjroyaj62uzqdq5cosnj.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535742/cbjmdhhdwmmstwuffm4l.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535747/b39g0zv8y7orbyzctyoo.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535752/ptg8w4jowdcmfljaukdg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535758/rpomlgcs2fjyx6ofvctf.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535762/dszdv8le6ozabxkct0o8.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535767/gospmnmzdec8azehzz3k.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535770/v9qa5bup4dlfqvtwunob.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535774/aahyb7999ueovz9ee20h.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535776/azhweqfnnbfnuhkqmefy.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535782/kky6ulllscu4vpbntcbr.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535788/l6barr7k6fymtpfv89uk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535793/gi5dznfqj4wmwgql4vsb.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535796/esmvelmjts31fvjbjv07.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535799/cqb2y5kfai15fczrbfiy.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535802/bgg3zbi1tya3ulkhambv.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535808/hgbwalcmihucndkwkwmp.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535811/gd7rrqanoxtdv8bxl279.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535816/vvgl47pos8etxalpoxo8.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535819/blvif4pbzuquujvvywnk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535825/s8qogt2nk0l2cj9wo0jg.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535828/tdcuqjraki8tfaogokcj.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535832/ymu2dpujrvowhrlnbbzf.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535835/bgrhzcnztxbn4cco8j0q.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535841/jbi0jjdszt7gc8k26wlr.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535845/dhtjtso6nvc0qnxobvov.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535852/vjldxxai3uyhinhgifri.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535856/vjyoe8gclo0rx32tl2vu.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535860/n1w550wvauam6ldnmvnk.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535868/ous8ji6yspy9jqooyyjy.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535872/pjyyzmxl5qkog3fqbdsl.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535875/k1exyxun7e1dvkatzr97.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535879/tvvr9qi4vl27yqc2iw4y.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535882/egoyllyyytpaxho0uvov.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535887/sxpva2nwwopdfuykkg83.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535889/sa8lp78s4uwfysodqj3t.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535891/yx9odf0ylt4d1kwbsu2i.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535894/zexgajiullzotnlsadie.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535896/kgpsgogd0qbi8ubpq1ve.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535899/oiuhcnj1yxm10lylzkxc.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535903/uaxdkonmzrno2npnj0lw.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535907/ozjbkvbulpoallgbs7tf.jpg'
+    ];
+    
+    // Якщо секція - це колода карт (deck), повертаємо жорстко задані зображення
+    if (currentSection === 'deck') {
+        // Якщо всі зображення колоди вже використані, скидаємо відстеження
+        if (usedImagesDeck.length >= deckImages.length) {
+            usedImagesDeck.length = 0;
+        }
+        
+        // Вибираємо зображення, яке ще не використовувалось
+        let availableImages = deckImages.filter(img => !usedImagesDeck.includes(img));
+        
+        // Якщо немає доступних, використовуємо перше
+        if (availableImages.length === 0) {
+            availableImages = [deckImages[0]];
+        }
+        
+        // Вибираємо випадкове зображення з доступних
+        const selectedImage = availableImages[Math.floor(Math.random() * availableImages.length)];
+        
+        // Додаємо зображення до використаних
+        usedImagesDeck.push(selectedImage);
+        
+        return selectedImage;
+    }
+    
+    // Для інших секцій використовуємо загальний пул зображень
     // Створюємо множину всіх зображень, які вже використовуються в інших секціях
     const excluded = new Set([
         ...usedImagesDeck,
@@ -113,7 +191,6 @@ function getUniqueImage(currentSection) {
     const selected = available[Math.floor(Math.random() * available.length)];
     
     // Додаємо зображення до відповідного списку використаних
-    if (currentSection === 'deck') usedImagesDeck.push(selected);
     if (currentSection === 'falling') usedImagesFalling.push(selected);
     if (currentSection === 'carousel') usedImagesCarousel.push(selected);
     
@@ -1270,34 +1347,28 @@ function initDeckDrawButton() {
             activeCard.style.boxShadow = '';
         });
         
-        // Get all available card images
-        let allCardImages;
-        try {
-            allCardImages = JSON.parse(deckContainer.dataset.allCardImages || '[]');
-        } catch(e) {
-            // Use falling cards images as fallback
-            allCardImages = [
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
-                'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg'
-            ];
-        }
+        // Вибір зображень для колоди карт
+        const deckImages = [
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535690/mmtdm8ky4ab0ol9yutqr.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535695/qt4k2ipi2jhc9mmwzxis.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535699/zcpbltaflvwaquvd0kju.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535702/ub9ylmdcigbc5e82fesi.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535704/r3nzu5v02euvqeq1rmgf.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535708/ofoaejquc9zuamosvgo9.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535713/ht1bnprywburf4pkvxpy.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535717/p4zp9n68duiabbsc9d1t.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535722/x8jvlkkviu5cy1l13nci.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535725/b6sgcufua3trsuemuljl.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535729/o8p00xqbnixgksezsol1.jpg',
+            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535732/svx7xjtve5zf1dkkipef.jpg'
+        ];
         
         // Randomly select a card
         const randomIndex = Math.floor(Math.random() * cards.length);
         const selectedCard = cards[randomIndex];
         
-        // Get a unique image for this card
-        const uniqueImage = getUniqueImage('deck');
+        // Вибираємо випадкове зображення з жорстко заданих для колоди
+        const uniqueImage = deckImages[Math.floor(Math.random() * deckImages.length)];
         
         // Update card image if different from current
         const cardImage = selectedCard.querySelector('img');
@@ -3995,6 +4066,22 @@ function initAnimatedCardDeck() {
         parent = parent.parentElement;
     }
     
+    // Набір зображень для колоди карт
+    const deckImages = [
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535690/mmtdm8ky4ab0ol9yutqr.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535695/qt4k2ipi2jhc9mmwzxis.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535699/zcpbltaflvwaquvd0kju.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535702/ub9ylmdcigbc5e82fesi.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535704/r3nzu5v02euvqeq1rmgf.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535708/ofoaejquc9zuamosvgo9.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535713/ht1bnprywburf4pkvxpy.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535717/p4zp9n68duiabbsc9d1t.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535722/x8jvlkkviu5cy1l13nci.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535725/b6sgcufua3trsuemuljl.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535729/o8p00xqbnixgksezsol1.jpg',
+        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745535732/svx7xjtve5zf1dkkipef.jpg'
+    ];
+    
     // Create 6 cards for deck display
     for (let i = 0; i < 6; i++) {
         const card = document.createElement('div');
@@ -4013,8 +4100,8 @@ function initAnimatedCardDeck() {
         card.style.visibility = 'visible';
         card.style.display = 'block';
         
-        // Get unique image for this card
-        const uniqueImage = getUniqueImage('deck');
+        // Вибираємо випадкове зображення з заданого масиву для колоди
+        const uniqueImage = deckImages[Math.floor(Math.random() * deckImages.length)];
         
         // Create image for card
         const img = document.createElement('img');
@@ -4067,26 +4154,7 @@ function initAnimatedCardDeck() {
     }
     
     // Store all card images for button to randomly select from
-    const allCardImages = [
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219306/Compressed%20site%20pics/btoxxhzsgbwcnzrbamag.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219258/Compressed%20site%20pics/sns7ocmyvxsx9gte52vo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219250/Compressed%20site%20pics/rjnyaupx9gfwu4podpzo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219320/Compressed%20site%20pics/t8marn9clu3ehuzatyfk.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219262/Compressed%20site%20pics/zkqvyf7glqdqhziwwgqt.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219233/Compressed%20site%20pics/dpjc6iogel95ldtbtkxc.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219213/Compressed%20site%20pics/n6lfpftn1nqnalkemsds.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221183/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_38_xtbphb.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221961/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_30_fo1kdm.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219311/Compressed%20site%20pics/xrhcyzdbbabzvh4vgbb1.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219238/Compressed%20site%20pics/kyptvy0o3qiso1j9pzeo.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745221966/%D0%9A%D0%BE%D0%BF%D0%B8%D1%8F_46_okjhs2.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219290/Compressed%20site%20pics/xylzyc7ye3owyphg8z8o.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219271/Compressed%20site%20pics/ijcdgfrmc0o8tqdapljg.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219227/Compressed%20site%20pics/oou51kionalyybwtimdp.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219243/Compressed%20site%20pics/uhctkxnbevlysapslquw.jpg',
-        'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745219280/Compressed%20site%20pics/ja4mtfnt3r8z631i16jl.jpg'
-    ];
-    deckContainer.dataset.allCardImages = JSON.stringify(allCardImages);
+    deckContainer.dataset.allCardImages = JSON.stringify(deckImages);
     
     // Add button for drawing card
     if (!deckSection.querySelector('.draw-button')) {
@@ -4158,8 +4226,8 @@ function adjustCardSizeToImages() {
         // Ensure image fits completely without cropping
         image.style.width = '100%';
         image.style.height = '100%';
-        image.style.objectFit = 'contain'; // Changed from cover to contain
-        image.style.backgroundColor = '#fff'; // Optional background for visible card edges
+        image.style.objectFit = 'cover'; // Changed from cover to contain
+        image.style.backgroundColor = 'transparent'; // Optional background for visible card edges
     }
 }
 
