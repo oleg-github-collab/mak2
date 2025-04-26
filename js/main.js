@@ -3136,7 +3136,7 @@ function initContactForm() {
             // Add a fallback method message
             const fallbackMessage = document.createElement('div');
             fallbackMessage.className = 'fallback-message';
-            fallbackMessage.innerHTML = `Якщо проблема повторюється, будь ласка, надішліть повідомлення на електронну пошту <a href="mailto:contact@rootsandwings.com">contact@rootsandwings.com</a>`;
+            fallbackMessage.innerHTML = `Якщо проблема повторюється, будь ласка, надішліть повідомлення на електронну пошту <a href="mailto:rootswings25@gmail.com">rootswings25@gmail.com</a>`;
             
             const existingFallback = contactForm.querySelector('.fallback-message');
             if (existingFallback) {
@@ -3375,7 +3375,7 @@ function initLegalButtons() {
                 <h4>Cookies</h4>
                 <p>Наш сайт може використовувати файли cookie для поліпшення вашого досвіду. Ви можете налаштувати свій браузер для відмови від файлів cookie.</p>
                 <h4>Контактна інформація</h4>
-                <p>Якщо у вас є питання щодо цієї політики конфіденційності, будь ласка, зв'яжіться з нами за електронною адресою: contact@rootsandwings.com</p>
+                <p>Якщо у вас є питання щодо цієї політики конфіденційності, будь ласка, зв'яжіться з нами за електронною адресою: rootswings25@gmail.com</p>
             `
         },
         {
@@ -3395,7 +3395,7 @@ function initLegalButtons() {
                 <h4>Зміни умов</h4>
                 <p>Ми можемо оновлювати ці умови використання в будь-який час. Продовжуючи використовувати сайт після таких змін, ви погоджуєтеся з оновленими умовами.</p>
                 <h4>Контактна інформація</h4>
-                <p>Якщо у вас виникли питання щодо цих умов використання, будь ласка, зв'яжіться з нами за електронною адресою: contact@rootsandwings.com</p>
+                <p>Якщо у вас виникли питання щодо цих умов використання, будь ласка, зв'яжіться з нами за електронною адресою: rootswings25@gmail.com</p>
             `
         },
         {
@@ -3423,7 +3423,7 @@ function initLegalButtons() {
                 <h4>Управління файлами cookie</h4>
                 <p>Ви можете налаштувати свій браузер для відмови від всіх або деяких файлів cookie або для сповіщення при їх встановленні.</p>
                 <h4>Контактна інформація</h4>
-                <p>Якщо у вас є питання щодо нашої політики використання файлів cookie, будь ласка, зв'яжіться з нами за електронною адресою: contact@rootsandwings.com</p>
+                <p>Якщо у вас є питання щодо нашої політики використання файлів cookie, будь ласка, зв'яжіться з нами за електронною адресою: rootswings25@gmail.com</p>
             `
         }
     ];
