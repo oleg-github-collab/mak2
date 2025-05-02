@@ -3580,4 +3580,418 @@
   border-radius: inherit !important;
   display: block !important;
 }
+/* Стилі для кнопки "Приклад застосування" */  
+.example-button-container {  
+  text-align: center;  
+  padding: var(--space-xl) 0;  
+  position: relative;  
+  z-index: 5;  
+}  
+  
+.example-button {  
+  background-color: var(--color-accent);  
+  color: var(--color-white);  
+  border: none;  
+  padding: var(--space-md) var(--space-xl);  
+  border-radius: var(--radius-md);  
+  font-weight: var(--weight-semibold);  
+  cursor: pointer;  
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;  
+  box-shadow: var(--shadow-md);  
+  font-size: var(--text-md);  
+  position: relative;  
+  overflow: hidden;  
+}  
+  
+.example-button:hover {  
+  background-color: var(--color-accent-light);  
+  transform: translateY(-5px);  
+  box-shadow: var(--shadow-lg);  
+}  
+  
+.example-button::before {  
+  content: '';  
+  position: absolute;  
+  top: 0;  
+  left: -100%;  
+  width: 100%;  
+  height: 100%;  
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);  
+  transition: left 0.7s ease;  
+}  
+  
+.example-button:hover::before {  
+  left: 100%;  
+}  
+  
+.example-button.bounce {  
+  animation: bounce 2s ease infinite;  
+}  
+  
+@keyframes bounce {  
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}  
+  40% {transform: translateY(-10px);}  
+  60% {transform: translateY(-5px);}  
+}  
+  
+/* Модальне вікно */  
+.example-modal {  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  width: 100%;  
+  height: 100%;  
+  background-color: rgba(0, 0, 0, 0.85);  
+  backdrop-filter: blur(5px);  
+  z-index: var(--z-extreme);  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  opacity: 0;  
+  visibility: hidden;  
+  transition: opacity 0.5s ease, visibility 0.5s ease;  
+}  
+  
+.example-modal.active {  
+  opacity: 1;  
+  visibility: visible;  
+}  
+  
+.modal-content {  
+  background-color: var(--bg-dark);  
+  border-radius: var(--radius-lg);  
+  width: 90%;  
+  max-width: 800px;  
+  max-height: 90vh;  
+  overflow-y: auto;  
+  padding: var(--space-xl);  
+  position: relative;  
+  box-shadow: var(--shadow-xl);  
+  transform: scale(0.9);  
+  opacity: 0;  
+  transition: transform 0.5s ease, opacity 0.5s ease;  
+}  
+  
+.example-modal.active .modal-content {  
+  transform: scale(1);  
+  opacity: 1;  
+  transition-delay: 0.2s;  
+}  
+  
+.close-modal {  
+  position: absolute;  
+  top: var(--space-md);  
+  right: var(--space-md);  
+  background-color: transparent;  
+  color: var(--color-white);  
+  border: none;  
+  font-size: 24px;  
+  cursor: pointer;  
+  transition: color 0.3s ease;  
+  z-index: 5;  
+}  
+  
+.close-modal:hover {  
+  color: var(--color-accent);  
+}  
+  
+/* Стилі для слайдів в модальному вікні */  
+.modal-slides {  
+  position: relative;  
+}  
+  
+.slide {  
+  display: none;  
+  opacity: 0;  
+  transform: translateY(20px);  
+  transition: opacity 0.5s ease, transform 0.5s ease;  
+}  
+  
+.slide.active {  
+  display: block;  
+  opacity: 1;  
+  transform: translateY(0);  
+}  
+  
+.slide-title {  
+  color: var(--color-white);  
+  font-size: var(--text-2xl);  
+  margin-bottom: var(--space-lg);  
+  text-align: center;  
+  position: relative;  
+}  
+  
+.slide-title::after {  
+  content: '';  
+  position: absolute;  
+  bottom: -10px;  
+  left: 50%;  
+  transform: translateX(-50%);  
+  width: 60px;  
+  height: 3px;  
+  background-color: var(--color-accent);  
+}  
+  
+.slide-description {  
+  color: var(--color-text-lighter);  
+  font-size: var(--text-md);  
+  line-height: 1.7;  
+  margin-bottom: var(--space-xl);  
+  text-align: center;  
+}  
+  
+/* Контейнер для демонстрації карток */  
+.cards-demo {  
+  position: relative;  
+  height: 350px;  
+  margin: var(--space-xl) 0;  
+  perspective: 1000px;  
+}  
+  
+.deck-demo {  
+  position: absolute;  
+  left: 50%;  
+  top: 0;  
+  transform: translateX(-50%);  
+  width: 220px;  
+  height: 330px;  
+  transform-style: preserve-3d;  
+  perspective: 1000px;  
+}  
+  
+.deck-card {  
+  position: absolute;  
+  width: 100%;  
+  height: 100%;  
+  border-radius: var(--radius-md);  
+  box-shadow: var(--shadow-lg);  
+  backface-visibility: hidden;  
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);  
+  background-color: var(--bg-dark);  
+  border: 1px solid rgba(255, 255, 255, 0.1);  
+  overflow: hidden;  
+}  
+  
+.deck-card img {  
+  width: 100%;  
+  height: 100%;  
+  object-fit: cover;  
+  border-radius: var(--radius-md);  
+}  
+  
+.selected-cards {  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  gap: var(--space-md);  
+  margin-top: var(--space-xl);  
+  min-height: 200px;  
+}  
+  
+.selected-card {  
+  width: 140px;  
+  height: 210px;  
+  border-radius: var(--radius-md);  
+  box-shadow: var(--shadow-lg);  
+  overflow: hidden;  
+  transform: rotateY(180deg);  
+  opacity: 0;  
+  transition: transform 0.8s ease, opacity 0.8s ease;  
+}  
+  
+.selected-card.visible {  
+  transform: rotateY(0);  
+  opacity: 1;  
+}  
+  
+.selected-card:nth-child(1).visible {  
+  transition-delay: 0.3s;  
+}  
+  
+.selected-card:nth-child(2).visible {  
+  transition-delay: 0.6s;  
+}  
+  
+.selected-card:nth-child(3).visible {  
+  transition-delay: 0.9s;  
+}  
+  
+.selected-card img {  
+  width: 100%;  
+  height: 100%;  
+  object-fit: cover;  
+}  
+  
+/* Стилі для кнопок навігації */  
+.slide-navigation {  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  gap: var(--space-md);  
+  margin-top: var(--space-xl);  
+}  
+  
+.slide-nav-button {  
+  background-color: var(--color-accent);  
+  color: var(--color-white);  
+  border: none;  
+  padding: var(--space-sm) var(--space-lg);  
+  border-radius: var(--radius-md);  
+  font-weight: var(--weight-medium);  
+  cursor: pointer;  
+  transition: background-color 0.3s ease, transform 0.3s ease;  
+}  
+  
+.slide-nav-button:hover {  
+  background-color: var(--color-accent-light);  
+  transform: translateY(-3px);  
+}  
+  
+.slide-nav-button:disabled {  
+  background-color: var(--color-dark-gray);  
+  cursor: not-allowed;  
+  transform: none;  
+}  
+  
+.slide-nav-button.return {  
+  animation: pulse 2s infinite;  
+}  
+  
+@keyframes pulse {  
+  0% {  
+    box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.6);  
+  }  
+  70% {  
+    box-shadow: 0 0 0 10px rgba(230, 126, 34, 0);  
+  }  
+  100% {  
+    box-shadow: 0 0 0 0 rgba(230, 126, 34, 0);  
+  }  
+}  
+  
+/* Анімація для фінального повідомлення */  
+.thank-you-message {  
+  text-align: center;  
+  opacity: 0;  
+  transform: scale(0.9);  
+  transition: opacity 0.8s ease, transform 0.8s ease;  
+}  
+  
+.thank-you-message.visible {  
+  opacity: 1;  
+  transform: scale(1);  
+}  
+  
+/* Адаптивність */  
+@media (max-width: 768px) {  
+  .modal-content {  
+    padding: var(--space-lg);  
+  }  
+    
+  .slide-title {  
+    font-size: var(--text-xl);  
+  }  
+    
+  .slide-description {  
+    font-size: var(--text-base);  
+  }  
+    
+  .cards-demo {  
+    height: 300px;  
+  }  
+    
+  .deck-demo {  
+    width: 180px;  
+    height: 270px;  
+  }  
+    
+  .selected-cards {  
+    flex-direction: column;  
+    min-height: 300px;  
+  }  
+    
+  .selected-card {  
+    margin-bottom: var(--space-sm);  
+  }  
+}  
+  
+@media (max-width: 576px) {  
+  .example-button {  
+    padding: var(--space-sm) var(--space-lg);  
+    font-size: var(--text-sm);  
+  }  
+    
+  .deck-demo {  
+    width: 160px;  
+    height: 240px;  
+  }  
+    
+  .selected-card {  
+    width: 120px;  
+    height: 180px;  
+  }  
+    
+  .slide-navigation {  
+    flex-direction: column;  
+    gap: var(--space-sm);  
+  }  
+    
+  .slide-nav-button {  
+    width: 100%;  
+  }  
+}  
 
+/* Забезпечення видимості кастомного курсора поверх модального вікна */
+.cursor-container,
+.cursor-dot,
+.cursor-outline,
+.cursor-text {
+  z-index: 10000 !important;
+  pointer-events: none !important;
+}
+
+.example-modal,
+.example-modal * {
+  cursor: none !important;
+}
+
+/* Прибрати стандартний курсор навіть при hover на елементах модального вікна */
+.example-modal button:hover,
+.example-modal .close-modal:hover,
+.example-modal .slide-nav-button:hover,
+.example-modal .deck-card:hover {
+  cursor: none !important;
+}
+/* Виправлення мобільного меню */
+@media (max-width: 768px) {
+  /* Збільшуємо z-index мобільного меню */
+  .mobile-menu {
+    z-index: 9999 !important;
+  }
+  
+  /* Забезпечуємо видимість кнопки та правильні стилі */
+  .mobile-menu-toggle {
+    display: flex !important;
+    z-index: 10000 !important;
+    position: relative !important;
+  }
+  
+  /* Забезпечуємо, щоб відкрите меню завжди було видимим */
+  .mobile-menu.open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+  }
+  
+  /* Видимість меню, коли воно відкрите */
+  .mobile-menu-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Корегуємо стилі для nav-items */
+  .mobile-nav-item {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
