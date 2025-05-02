@@ -4059,7 +4059,39 @@
   user-select: none !important;
 }
 
-/* Анімація стрибка кнопки */
+/* Статичний фон секції з кнопкою */
+.example-button-container {  
+  text-align: center;  
+  padding: var(--space-xl) 0;  
+  background-color: var(--bg-dark); /* Фон як у сусідніх секцій */
+  position: relative;  
+  z-index: 5;
+}
+
+/* Анімація ТІЛЬКИ для кнопки, НЕ для контейнера */
+.example-button {  
+  display: inline-block;
+  background-color: var(--color-accent);  
+  color: var(--color-white);  
+  border: none;  
+  padding: var(--space-md) var(--space-xl);  
+  border-radius: var(--radius-md);  
+  font-weight: var(--weight-semibold);  
+  cursor: pointer;
+  box-shadow: var(--shadow-md);  
+  font-size: var(--text-md);
+  position: relative;
+  z-index: 6;
+  animation: buttonJump 2s ease-in-out infinite;
+}
+
+/* Окреме правило для контейнера, щоб заборонити анімацію */
+.example-button-container,
+[data-target="example-modal"] {
+  animation: none !important;
+  transform: none !important;
+}
+
 @keyframes buttonJump {
   0%, 100% {
     transform: translateY(0);
