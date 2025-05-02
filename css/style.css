@@ -3995,3 +3995,76 @@
     transform: translateY(0) !important;
   }
 }
+/* Повністю приховуємо мобільне меню - залишаємо як є */
+@media (max-width: 768px) {
+  .mobile-menu,
+  .mobile-menu-toggle,
+  .mobile-menu-container,
+  #mobilemenu,
+  .mobile-nav-item {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Приховуємо кнопку відкриття меню */
+  .hamburger,
+  .hamburger-menu,
+  .menu-toggle,
+  .toggle-button,
+  [class*="menu-toggle"],
+  [class*="hamburger"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  /* Забезпечуємо, щоб заголовок залишався на місці */
+  header, .header {
+    position: relative !important;
+  }
+}
+
+/* Виправлення кнопки "Приклад застосування" */
+.example-button,
+.example-button-container,
+[data-target="example-modal"] {
+  cursor: pointer !important;
+  position: relative !important;
+  z-index: 100 !important;
+  animation: buttonJump 2s infinite !important; /* Додаємо анімацію стрибка */
+}
+
+/* Створення невидимої області кліку навколо кнопки */
+.example-button::before,
+[data-target="example-modal"]::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -15px !important;
+  left: -15px !important;
+  right: -15px !important;
+  bottom: -15px !important;
+  z-index: -1 !important;
+}
+
+/* Додаткове посилення */
+.example-button,
+[data-target="example-modal"] {
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  touch-action: manipulation !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Анімація стрибка кнопки */
+@keyframes buttonJump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
