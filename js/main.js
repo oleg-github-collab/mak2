@@ -11,133 +11,6 @@ const usedImagesCarousel = [];
 // Global variable for carousel update function
 let updateCarouselGlobal;
 
-// Єдина точка ініціалізації обробників подій для кнопок
-document.addEventListener('DOMContentLoaded', () => {
-    // Єдиний делегований обробник для всіх кнопок
-    document.body.addEventListener('click', e => {
-        // Обробка кнопок витягування карт
-        const drawButton = e.target.closest('.draw-button');
-        if (drawButton) {
-            handleDrawCardClick.call(drawButton, e);
-            return;
-        }
-
-        // Обробка кнопки прикладу
-        const exampleButton = e.target.closest('#openExampleModal');
-        if (exampleButton) {
-            handleExampleButtonClick.call(exampleButton, e);
-            return;
-        }
-
-        // Обробка кнопок модальних вікон
-        const modalButton = e.target.closest('.modal-trigger, .modal-close, [data-modal]');
-        if (modalButton) {
-            handleModalButtonClick.call(modalButton, e);
-            return;
-        }
-    });
-
-    // Обробник кліку для кнопки витягування карт
-    function handleDrawCardClick(e) {
-        const deckContainer = this.closest('.card-deck-section')?.querySelector('.card-deck-container') || 
-                              document.querySelector('.card-deck-container');
-        
-        if (!deckContainer) return;
-        
-        // Get all cards in deck
-        const cards = deckContainer.querySelectorAll('.deck-card');
-        if (!cards.length) return;
-        
-        // Reset all active cards
-        document.querySelectorAll('.deck-card.active').forEach(activeCard => {
-            const idx = parseInt(activeCard.dataset.index);
-            const rX = -15 + Math.random() * 30;
-            const rY = -15 + Math.random() * 30;
-            const rR = -15 + Math.random() * 30;
-            
-            activeCard.classList.remove('active');
-            activeCard.style.transform = `translate(${rX}px, ${rY}px) rotate(${rR}deg)`;
-            activeCard.style.zIndex = idx;
-            activeCard.style.boxShadow = '';
-        });
-        
-        // Вибір зображень для колоди карт
-        const deckImages = [
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600681/i9n7r9hsuh2pyyettj4j.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600682/setmj5edlqzrw111wtxz.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600684/xulr8shwulwvutqttjpf.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600686/z0gzhthffzz0mq8ulgyq.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600687/xsprk2uwmypkcc1hkl2f.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600703/hgkmrbvhftcldykixrlp.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600721/fzxqt1rrvsvsipilocpe.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600749/uxln9ecoyl5m12xvdzx4.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600748/qoyhr1zarnmpa3mtvcip.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600740/l9cfb034n04igxdlh0ov.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600747/vw8b1yi6y0fnh4lune14.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600743/t3gzt4cnil4ykislbknp.jpg',
-            'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600738/nf7de1pek9fslrwp4n5o.jpg'
-        ];
-        
-        // Randomly select a card
-        const randomIndex = Math.floor(Math.random() * cards.length);
-        const selectedCard = cards[randomIndex];
-        
-        // Вибираємо випадкове зображення з жорстко заданих для колоди
-        const uniqueImage = deckImages[Math.floor(Math.random() * deckImages.length)];
-        
-        // Update card image if different from current
-        const cardImage = selectedCard.querySelector('img');
-        if (cardImage && cardImage.src !== uniqueImage) {
-            cardImage.src = uniqueImage;
-        }
-        
-        // Activate selected card
-        selectedCard.classList.add('active');
-        selectedCard.style.transform = 'translate(0, -50px) rotate(0deg) scale(1.1)';
-        selectedCard.style.zIndex = 20;
-        selectedCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
-        
-        // Add button animation for feedback
-        this.classList.add('clicked');
-        setTimeout(() => {
-            this.classList.remove('clicked');
-        }, 300);
-    }
-
-    // Обробник кліку для кнопки прикладу
-    function handleExampleButtonClick(e) {
-        if (typeof openDemoModal === 'function') {
-            openDemoModal();
-        } else {
-            const exampleModal = document.getElementById('exampleModal');
-            if (exampleModal) {
-                exampleModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-    }
-
-    // Обробник кліку для кнопок модальних вікон
-    function handleModalButtonClick(e) {
-        const modalId = this.dataset.modal;
-        if (modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'flex';
-                modal.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        } else if (this.classList.contains('modal-close')) {
-            const modal = this.closest('.modal');
-            if (modal) {
-                modal.classList.remove('active');
-                modal.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-    }
-});
-
 // Wait for DOM to load before initializing scripts
 document.addEventListener('DOMContentLoaded', function() {
     // Fix for mobile devices with scroll delay
@@ -184,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initLegalButtons();
         optimizeTextBlocks();
         initSocialPlaceholders();
-        initExampleDemo(); // Initialize the example demo
         
         // Initialize optimized image loading
         initOptimizedImageLoading();
@@ -192,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error loading external libraries:', error);
         // Initialize basic functionality even if libraries fail to load
         initBasicFunctionality();
-        initExampleDemo(); // Initialize example demo even if libraries fail
     });
 });
 
@@ -1456,15 +1327,30 @@ function initSocialPlaceholders() {
  * Initialize deck draw button functionality
  */
 function initDeckDrawButton() {
-    const drawButtons = document.querySelectorAll('.draw-button');
+    const drawButton = document.querySelector('.draw-button');
+    const deckContainer = document.querySelector('.card-deck-container');
     
-    drawButtons.forEach(drawButton => {
-        const deckContainer = drawButton.closest('.card-deck-section')?.querySelector('.card-deck-container') || 
-                              document.querySelector('.card-deck-container');
+    if (!drawButton || !deckContainer) return;
+    
+    drawButton.addEventListener('click', function() {
+        // Get all cards in deck
+        const cards = deckContainer.querySelectorAll('.deck-card');
+        if (!cards.length) return;
         
-        if (!drawButton || !deckContainer) return;
+        // Reset all active cards
+        document.querySelectorAll('.deck-card.active').forEach(activeCard => {
+            const idx = parseInt(activeCard.dataset.index);
+            const rX = -15 + Math.random() * 30;
+            const rY = -15 + Math.random() * 30;
+            const rR = -15 + Math.random() * 30;
+            
+            activeCard.classList.remove('active');
+            activeCard.style.transform = `translate(${rX}px, ${rY}px) rotate(${rR}deg)`;
+            activeCard.style.zIndex = idx;
+            activeCard.style.boxShadow = '';
+        });
         
-        // Набір зображень для колоди карт
+        // Вибір зображень для колоди карт
         const deckImages = [
             'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600681/i9n7r9hsuh2pyyettj4j.jpg',
             'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600682/setmj5edlqzrw111wtxz.jpg',
@@ -1479,10 +1365,33 @@ function initDeckDrawButton() {
             'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600747/vw8b1yi6y0fnh4lune14.jpg',
             'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600743/t3gzt4cnil4ykislbknp.jpg',
             'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600738/nf7de1pek9fslrwp4n5o.jpg'
-        ];
+          ];
+          
         
-        // Store all card images for button to randomly select from
-        deckContainer.dataset.allCardImages = JSON.stringify(deckImages);
+        // Randomly select a card
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        const selectedCard = cards[randomIndex];
+        
+        // Вибираємо випадкове зображення з жорстко заданих для колоди
+        const uniqueImage = deckImages[Math.floor(Math.random() * deckImages.length)];
+        
+        // Update card image if different from current
+        const cardImage = selectedCard.querySelector('img');
+        if (cardImage && cardImage.src !== uniqueImage) {
+            cardImage.src = uniqueImage;
+        }
+        
+        // Activate selected card
+        selectedCard.classList.add('active');
+        selectedCard.style.transform = 'translate(0, -50px) rotate(0deg) scale(1.1)';
+        selectedCard.style.zIndex = 20;
+        selectedCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+        
+        // Add button animation for feedback
+        this.classList.add('clicked');
+        setTimeout(() => {
+            this.classList.remove('clicked');
+        }, 300);
     });
     
     // Add styles for button animation
@@ -3729,6 +3638,35 @@ function initLegalButtons() {
         `;
         document.head.appendChild(style);
     }
+    
+    // Add handlers for legal document buttons
+    document.querySelectorAll('.modal-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function() {
+            const modalId = this.dataset.modal;
+            if (modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                    modal.classList.add('open');
+                    modal.setAttribute('aria-hidden', 'false');
+                }
+            }
+        });
+    });
+    
+    // Add handlers for closing modal windows
+    document.querySelectorAll('.modal-close').forEach(close => {
+        close.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        });
+    });
 }
 
 /**
@@ -3804,6 +3742,23 @@ function initModals() {
         
         // Set initialization flag
         modal.dataset.initialized = 'true';
+    });
+    
+    // Add handlers for triggers
+    modalTriggers.forEach(trigger => {
+        // Skip if trigger already initialized
+        if (trigger.dataset.initialized === 'true') return;
+        
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalId = this.dataset.modal;
+            if (modalId) {
+                openModal(modalId);
+            }
+        });
+        
+        // Set initialization flag
+        trigger.dataset.initialized = 'true';
     });
     
     // Function to open modal
@@ -4279,226 +4234,6 @@ function adjustCardSizeToImages() {
         image.style.objectFit = 'cover'; // Changed from cover to contain
         image.style.backgroundColor = 'transparent'; // Optional background for visible card edges
     }
-}
-
-/**
- * Function to initialize the example demonstration modal
- */
-function initExampleDemo() {  
-  // Елементи для взаємодії  
-  const openExampleButton = document.getElementById('openExampleModal');  
-  const exampleModal = document.getElementById('exampleModal');  
-  const closeModal = document.getElementById('closeModal');  
-  const returnToSite = document.getElementById('returnToSite');  
-    
-  // Слайди та кнопки навігації  
-  const slide1 = document.getElementById('slide1');  
-  const slide2 = document.getElementById('slide2');  
-  const slide3 = document.getElementById('slide3');  
-  const slide4 = document.getElementById('slide4');  
-  const slide5 = document.getElementById('slide5');  
-    
-  const nextSlide1 = document.getElementById('nextSlide1');  
-  const nextSlide2 = document.getElementById('nextSlide2');  
-  const nextSlide3 = document.getElementById('nextSlide3');  
-  const nextSlide4 = document.getElementById('nextSlide4');  
-    
-  const deckDemo = document.getElementById('deckDemo');  
-  const selectedCardsContainer = document.getElementById('selectedCardsContainer');  
-  const thankYouMessage = document.getElementById('thankYouMessage');  
-    
-  // Масив URL зображень карток (замініть на реальні URL)  
-  const cardImages = [  
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600681/i9n7r9hsuh2pyyettj4j.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600682/setmj5edlqzrw111wtxz.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600683/ckjmvjpwmqs0fijtdfnd.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600684/xulr8shwulwvutqttjpf.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600685/aivdmsixkujkivcmlcsa.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600686/z0gzhthffzz0mq8ulgyq.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600687/xsprk2uwmypkcc1hkl2f.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600688/lfgq2atikgu70ofz1z04.jpg',
-    'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600689/pk8tdsmnynq7iwy6y6yi.jpg', 
-  ];  
-    
-  // Функція для створення колоди карток  
-  function createDeck() {  
-    if (!deckDemo) return;
-    
-    deckDemo.innerHTML = '';  
-      
-    // Створення 9 карток в колоді  
-    for (let i = 0; i < 9; i++) {  
-      const card = document.createElement('div');  
-      card.className = 'deck-card';  
-      card.style.zIndex = 9 - i;  
-      card.style.transform = `translateZ(${-i * 2}px)`;  
-        
-      const img = document.createElement('img');  
-      img.src = cardImages[i];  
-      img.alt = `Картка ${i + 1}`;  
-        
-      card.appendChild(img);  
-      deckDemo.appendChild(card);  
-    }  
-  }  
-    
-  // Функція для анімації витягування карток  
-  function drawCards() {  
-    if (!selectedCardsContainer) return;
-    
-    // Очищаємо контейнер для обраних карток  
-    selectedCardsContainer.innerHTML = '';  
-      
-    // Вибираємо 3 випадкові картки з колоди  
-    const selectedIndices = [];  
-    while (selectedIndices.length < 3) {  
-      const randomIndex = Math.floor(Math.random() * 9);  
-      if (!selectedIndices.includes(randomIndex)) {  
-        selectedIndices.push(randomIndex);  
-      }  
-    }  
-      
-    // Створюємо елементи для обраних карток  
-    for (let i = 0; i < 3; i++) {  
-      const card = document.createElement('div');  
-      card.className = 'selected-card';  
-        
-      const img = document.createElement('img');  
-      img.src = cardImages[selectedIndices[i]];  
-      img.alt = `Обрана картка ${i + 1}`;  
-        
-      card.appendChild(img);  
-      selectedCardsContainer.appendChild(card);  
-    }  
-  }  
-    
-  // Функція для показу обраних карток з анімацією  
-  function revealSelectedCards() {  
-    const selectedCards = document.querySelectorAll('.selected-card');  
-      
-    setTimeout(() => {  
-      selectedCards.forEach(card => {  
-        card.classList.add('visible');  
-      });  
-    }, 300);  
-  }  
-    
-  // Функція для показу подяки  
-  function showThankYou() {  
-    if (!thankYouMessage) return;
-    
-    setTimeout(() => {  
-      thankYouMessage.classList.add('visible');  
-    }, 300);  
-  }  
-    
-  // Функція для очищення активних слайдів  
-  function clearActiveSlides() {  
-    const slides = document.querySelectorAll('.slide');  
-    slides.forEach(slide => {  
-      slide.classList.remove('active');  
-    });  
-  }  
-    
-  // Функція для відкриття модального вікна  
-  function openDemoModal() {  
-    if (!exampleModal) return;
-    
-    exampleModal.classList.add('active');  
-    document.body.style.overflow = 'hidden'; // Заборона прокрутки основної сторінки  
-      
-    // Скидаємо стан презентації  
-    clearActiveSlides();  
-    if (slide1) slide1.classList.add('active');  
-      
-    // Створюємо колоду карток  
-    createDeck();  
-      
-    // Видаляємо класи видимості з елементів  
-    const selectedCards = document.querySelectorAll('.selected-card');  
-    selectedCards.forEach(card => {  
-      card.classList.remove('visible');  
-    });  
-      
-    if (thankYouMessage) thankYouMessage.classList.remove('visible');  
-  }  
-    
-  // Функція для закриття модального вікна  
-  function closeDemoModal() {  
-    if (!exampleModal) return;
-    
-    exampleModal.classList.remove('active');  
-    document.body.style.overflow = ''; // Відновлення прокрутки основної сторінки  
-  }  
-
-  // Expose functions to global scope
-  window.openDemoModal = openDemoModal;
-  window.closeDemoModal = closeDemoModal;
-  window.createDeck = createDeck;
-  window.drawCards = drawCards;
-  window.revealSelectedCards = revealSelectedCards;
-  window.showThankYou = showThankYou;
-  window.clearActiveSlides = clearActiveSlides;
-    
-  // Обробники подій для кнопок навігації в слайдах
-  if (nextSlide1) {
-    nextSlide1.addEventListener('click', () => {  
-      clearActiveSlides();  
-      if (slide2) slide2.classList.add('active');  
-      drawCards();  
-      revealSelectedCards();  
-    });  
-  }
-    
-  if (nextSlide2) {
-    nextSlide2.addEventListener('click', () => {  
-      clearActiveSlides();  
-      if (slide3) slide3.classList.add('active');  
-    });  
-  }
-    
-  if (nextSlide3) {
-    nextSlide3.addEventListener('click', () => {  
-      clearActiveSlides();  
-      if (slide4) slide4.classList.add('active');  
-    });  
-  }
-    
-  if (nextSlide4) {
-    nextSlide4.addEventListener('click', () => {  
-      clearActiveSlides();  
-      if (slide5) slide5.classList.add('active');  
-      showThankYou();  
-    });  
-  }
-    
-  // Обробники закриття модального вікна
-  if (closeModal) {
-    closeModal.addEventListener('click', closeDemoModal);  
-  }
-  
-  if (returnToSite) {
-    returnToSite.addEventListener('click', closeDemoModal);  
-  }
-    
-  // Закриття модального вікна при кліку поза його вмістом  
-  if (exampleModal) {
-    exampleModal.addEventListener('click', (e) => {  
-      if (e.target === exampleModal) {  
-        closeDemoModal();  
-      }  
-    });  
-  }
-    
-  // Закриття модального вікна при натисканні клавіші Escape  
-  document.addEventListener('keydown', (e) => {  
-    if (e.key === 'Escape' && exampleModal && exampleModal.classList.contains('active')) {  
-      closeDemoModal();  
-    }  
-  });  
-    
-  // Ініціалізація колоди при завантаженні сторінки  
-  createDeck();  
 }
 
 // Initialize event listeners for window
