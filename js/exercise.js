@@ -1,6 +1,6 @@
 // js/exercise.js
 (() => {
-    // ---- Всі URL карт (deckImages + cardImages із вашого коду) ----
+    // ---- Всі URL карт (deckImages + cardImages) ----
     const cardImages = [
       // Deck images
       'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600681/i9n7r9hsuh2pyyettj4j.jpg',
@@ -61,7 +61,7 @@
       'https://res.cloudinary.com/djdc6wcpg/image/upload/v1745600746/at6yuwanlntwhaihznlw.jpg'
     ];
   
-    // ---- Створення DOM елементів модалки ----
+    // ---- Створення DOM-елементів модалки ----
     const body = document.body;
     const popup = document.createElement('div');
     popup.id = 'family-exercise-popup';
@@ -72,52 +72,52 @@
           <!-- Слайд 1 -->
           <div class="slide" data-slide="1">
             <h2>Вправа «Коріння та крила»</h2>
-            <p>Згадайте одну сильну родинну історію, що надихає вас сьогодні.</p>
+            <p>Цей символічний шлях допоможе зануритися в родинні історії та знайти внутрішню силу. Робота з метафоричними картами корисна не лише для тих, хто пережив вимушену міграцію.</p>
             <div class="card-random" id="slide1-card"></div>
             <button id="start-exercise" class="btn bounce">Почати</button>
           </div>
           <!-- Слайд 1.5 – пояснення -->
           <div class="slide" data-slide="1.5">
             <h2>Про що ця вправа?</h2>
-            <p>Ми обираємо образи з карт, щоб символічно відобразити якості, що допомогли вашому роду вижити.</p>
+            <p>Ми оберемо образи з карт, щоб символічно відобразити якості та навички, які допомагають вам чи допомгли вашим пращурам пережити складні часи.</p>
             <button id="to-2" class="btn">Далі</button>
           </div>
           <!-- Слайд 2 -->
           <div class="slide" data-slide="2">
             <h2>Оберіть 3 карти</h2>
-            <p>Кожна — символ якості чи навички вашої родини.</p>
+            <p>Три ключові образи стануть опорами вашого розуміння внутрішніх ресурсів.</p>
             <div class="cards-grid" id="slide2-grid"></div>
             <button id="to-3" class="btn" disabled>Підтвердити</button>
           </div>
           <!-- Слайд 2.5 – пояснення -->
           <div class="slide" data-slide="2.5">
             <h2>Чому саме 3?</h2>
-            <p>Три опори — стійкість, витримка та креативність. Уявіть, як ці якості працюють у вашій історії.</p>
+            <p>Три карти – це стійкість духу, адаптивність та креативність. Подумайте, як ці якості проявлялися в житті вашої родини та вашому власному досвіді.</p>
             <button id="to-3b" class="btn">Далі</button>
           </div>
           <!-- Слайд 3 -->
           <div class="slide" data-slide="3">
-            <h2>Подумайте над образами</h2>
-            <p>Уявіть, чому саме ці карти резонують із історією вашого роду.</p>
+            <h2>Зануртеся у образи</h2>
+            <p>Подумайте, чому саме ці картинки резонують із вашою історією. Як вони віддзеркалюють стійкість та надію під час змін?</p>
             <div class="selected-cards" id="slide3-cards"></div>
             <button id="to-4" class="btn">Далі</button>
           </div>
           <!-- Слайд 3.5 – пояснення -->
           <div class="slide" data-slide="3.5">
-            <h2>Як працює символ?</h2>
-            <p>Символи активують емоції та спогади. Дайте їм працювати в уяві.</p>
+            <h2>Сила символів</h2>
+            <p>Символи відкривають доступ до глибоких відчуттів та спогадів. Дозвольте їм надихнути вас і спрямувати вашу рефлексію.</p>
             <button id="to-4b" class="btn">Далі</button>
           </div>
           <!-- Слайд 4 -->
           <div class="slide" data-slide="4">
-            <h2>Розкажіть історію</h2>
-            <p>Програйте в уяві родинний досвід через ці образи.</p>
+            <h2>Розкажіть свою історію</h2>
+            <p>Опрацюйте свій досвід через ці образи: уявіть події, емоції та життєві уроки, які вони втілюють.</p>
             <button id="to-5" class="btn">Завершити</button>
           </div>
           <!-- Слайд 5 -->
           <div class="slide" data-slide="5">
             <h2>Дякуємо!</h2>
-            <p>Цей символічний шлях — лише приклад вправи для саморозвитку. 💚</p>
+            <p>Це лише 1 приклад вправи для саморозвитку та психологічного опрацювання теми. Використовуйте його для подальшої підтримки й натхнення. 💚</p>
             <button id="exercise-close" class="btn">Закрити</button>
           </div>
         </div>
@@ -125,14 +125,35 @@
     `;
     body.appendChild(popup);
   
-    // ---- Змінні та функції навігації ----
+    // ---- Змінні та утиліти ----
     let selected2 = [];
+    const isMobile = () => window.matchMedia('(max-width:768px)').matches;
+  
     const showSlide = num => {
       popup.querySelectorAll('.slide').forEach(sl => {
         sl.classList.toggle('active', sl.dataset.slide === num.toString());
       });
+      // анімація тексту та карт для ПК
+      if (!isMobile()) {
+        const current = popup.querySelector('.slide.active');
+        gsap.from(current.querySelectorAll('h2, p, img, .btn'), {
+          opacity: 0, y: 20, stagger: 0.1, duration: 0.6, ease: 'power2.out'
+        });
+      }
     };
+  
     const closeAll = () => popup.classList.remove('open');
+  
+    // ---- Початкові анімації кнопки відкриття ----
+    const openBtn = document.querySelector('#open-exercise');
+    if (openBtn) {
+      gsap.to(openBtn, {
+        y: -10, duration: 0.8, ease: 'sine.inOut',
+        yoyo: true, repeat: -1
+      });
+      openBtn.addEventListener('mouseenter', () => gsap.to(openBtn, { scale:1.1, duration:0.2 }));
+      openBtn.addEventListener('mouseleave', () => gsap.to(openBtn, { scale:1, duration:0.2 }));
+    }
   
     // ---- Slide 1: рандомна карта ----
     const rndImg = cardImages[Math.floor(Math.random() * cardImages.length)];
@@ -140,13 +161,12 @@
   
     // ---- Slide 2: рендер сітки унікальних карт ----
     function renderGrid() {
-      const isMobile = window.matchMedia('(max-width:768px)').matches;
-      const count = isMobile ? 8 : 9;
-      const copy = [...cardImages];
+      const count = isMobile() ? 8 : 9;
+      const pool = cardImages.slice(); // копія
       const picks = [];
-      for (let i = 0; i < count; i++) {
-        const idx = Math.floor(Math.random() * copy.length);
-        picks.push(copy.splice(idx, 1)[0]);
+      while (picks.length < count && pool.length) {
+        const idx = Math.floor(Math.random() * pool.length);
+        picks.push(pool.splice(idx,1)[0]);
       }
       const grid = document.getElementById('slide2-grid');
       grid.innerHTML = picks.map(u => `<img src="${u}" data-url="${u}">`).join('');
@@ -168,22 +188,28 @@
           }
         };
       });
+      if (!isMobile()) {
+        gsap.from(grid.children, {
+          opacity:0, scale:0.8, stagger:0.1, duration:0.5, ease:'back.out(1.7)'
+        });
+      }
     }
   
     // ---- Обробники кнопок переходу ----
     popup.querySelector('#start-exercise').onclick = () => showSlide(1.5);
     popup.querySelector('#to-2').onclick = () => {
-      showSlide(2);
       selected2 = [];
+      showSlide(2);
       renderGrid();
     };
     popup.querySelector('#to-3').onclick = () => showSlide(2.5);
     popup.querySelector('#to-3b').onclick = () => {
       showSlide(3);
+      // показ обраних карт
       document.getElementById('slide3-cards').innerHTML =
         selected2.map(u => `<img src="${u}">`).join('');
     };
-    popup.querySelector('#to-4').onclick = () => showSlide(4);
+    popup.querySelector('#to-4').onclick =
     popup.querySelector('#to-4b').onclick = () => showSlide(4);
     popup.querySelector('#to-5').onclick = () => showSlide(5);
   
@@ -194,13 +220,13 @@
       if (e.target === popup) closeAll();
     });
   
-    // ---- Відкриття по кнопці у вашій секції #open-exercise ----
-    document.querySelector('#open-exercise')?.addEventListener('click', () => {
+    // ---- Відкриття по кнопці ----
+    openBtn?.addEventListener('click', () => {
       popup.classList.add('open');
       showSlide(1);
     });
   
-    // ---- Старт ----
+    // ---- Ініціалізація ----
     showSlide(1);
   })();
   
