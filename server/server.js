@@ -16,6 +16,13 @@ const logger = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Log environment info on startup
+console.log('🚀 Starting Roots & Wings Server...');
+console.log(`📌 PORT from env: ${process.env.PORT}`);
+console.log(`📌 Using PORT: ${PORT}`);
+console.log(`📌 NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+console.log(`📌 __dirname: ${__dirname}`);
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: false, // Disable for LiqPay iframe
