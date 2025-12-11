@@ -5,16 +5,27 @@
 const nodemailer = require('nodemailer');
 const logger = require('./logger');
 
-// Create reusable transporter
-const transporter = nodemailer.createTransporter({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_SECURE === 'true',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
+// Create reusable transporter (only if email credentials are provided)
+let transporter = null;
+
+if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    try {
+        transporter = nodemailer.createTransporter({
+            host: process.env.EMAIL_HOST,
+            port: parseInt(process.env.EMAIL_PORT) || 587,
+            secure: process.env.EMAIL_SECURE === 'true',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        logger.info('✅ Email transporter initialized');
+    } catch (error) {
+        logger.warn('⚠️ Email transporter initialization failed:', error.message);
     }
-});
+} else {
+    logger.warn('⚠️ Email configuration not found - email notifications disabled');
+}
 
 /**
  * Send order notification to admin
@@ -87,12 +98,18 @@ async function sendOrderNotification(orderData) {
         `
     };
 
+    // Skip email if transporter not configured
+    if (!transporter) {
+        logger.warn(`Email notification skipped for order #${orderData.orderId} - transporter not configured`);
+        return false;
+    }
+
     try {
         await transporter.sendMail(mailOptions);
-        logger.info(`Order notification sent for order #${orderData.orderId}`);
+        logger.info(`📧 Order notification sent for order #${orderData.orderId}`);
         return true;
     } catch (error) {
-        logger.error('Error sending order notification:', error);
+        logger.error('❌ Error sending order notification:', error.message);
         return false;
     }
 }

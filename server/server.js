@@ -59,12 +59,21 @@ app.use(express.static(path.join(__dirname, '..')));
 // API routes
 app.use('/api/payment', paymentRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({
+// Health check endpoint (required by Railway)
+app.get('/health', (req, res) => {
+    res.status(200).json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV
+        environment: process.env.NODE_ENV || 'production'
+    });
+});
+
+// Alternative health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'production'
     });
 });
 
@@ -100,7 +109,7 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info(`✅ Server running on port ${PORT}`);
     logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     logger.info(`🔗 Site URL: ${process.env.SITE_URL || 'http://localhost:' + PORT}`);
@@ -109,6 +118,14 @@ app.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        logger.info('HTTP server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    logger.info('SIGINT signal received: closing HTTP server');
     server.close(() => {
         logger.info('HTTP server closed');
         process.exit(0);

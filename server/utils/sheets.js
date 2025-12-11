@@ -13,6 +13,12 @@ let auth = null;
  * Initialize Google Sheets API with service account
  */
 async function initSheetsAPI() {
+    // Skip if credentials not provided
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY || !process.env.GOOGLE_SHEET_ID) {
+        logger.warn('⚠️ Google Sheets credentials not found - sheets integration disabled');
+        return false;
+    }
+
     try {
         // Parse service account credentials from environment variable
         const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
@@ -23,10 +29,10 @@ async function initSheetsAPI() {
         });
 
         sheets = google.sheets({ version: 'v4', auth });
-        logger.info('Google Sheets API initialized successfully');
+        logger.info('✅ Google Sheets API initialized successfully');
         return true;
     } catch (error) {
-        logger.error('Error initializing Google Sheets API:', error);
+        logger.error('❌ Error initializing Google Sheets API:', error.message);
         return false;
     }
 }
@@ -40,7 +46,8 @@ async function addOrderToSheet(orderData) {
         if (!sheets) {
             const initialized = await initSheetsAPI();
             if (!initialized) {
-                throw new Error('Failed to initialize Google Sheets API');
+                logger.warn(`Order #${orderData.orderId} not saved to Google Sheets - API not initialized`);
+                return false;
             }
         }
 
@@ -71,12 +78,12 @@ async function addOrderToSheet(orderData) {
         };
 
         const response = await sheets.spreadsheets.values.append(request);
-        logger.info(`Order ${orderData.orderId} added to Google Sheets`);
+        logger.info(`📊 Order #${orderData.orderId} added to Google Sheets`);
         return response.data;
 
     } catch (error) {
-        logger.error('Error adding order to Google Sheets:', error);
-        throw error;
+        logger.error('❌ Error adding order to Google Sheets:', error.message);
+        return false;
     }
 }
 
