@@ -130,12 +130,49 @@ app.get('/error', (req, res) => {
 
 // Serve main index page
 app.get('/', (req, res) => {
+    const fs = require('fs');
     const filePath = path.join(publicDir, 'index.html');
-    logger.info(`📄 Serving index.html from: ${filePath}`);
+
+    logger.info(`📄 Attempting to serve index.html`);
+    logger.info(`   publicDir: ${publicDir}`);
+    logger.info(`   filePath: ${filePath}`);
+    logger.info(`   __dirname: ${__dirname}`);
+    logger.info(`   NODE_ENV: ${process.env.NODE_ENV}`);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+        logger.error(`❌ File not found: ${filePath}`);
+
+        // Try to list directory contents
+        const publicExists = fs.existsSync(publicDir);
+        logger.error(`   public/ exists: ${publicExists}`);
+
+        if (publicExists) {
+            try {
+                const files = fs.readdirSync(publicDir);
+                logger.error(`   public/ contents: ${JSON.stringify(files)}`);
+            } catch (e) {
+                logger.error(`   Cannot read public/: ${e.message}`);
+            }
+        }
+
+        // Return helpful error page
+        return res.status(500).send(`
+            <h1>File Not Found</h1>
+            <p>Looking for: <code>${filePath}</code></p>
+            <p>Public dir: <code>${publicDir}</code></p>
+            <p>__dirname: <code>${__dirname}</code></p>
+            <p>NODE_ENV: <code>${process.env.NODE_ENV || 'not set'}</code></p>
+            <p>Public exists: <code>${publicExists}</code></p>
+            <hr>
+            <p><a href="/api/debug/files">Check debug info</a></p>
+        `);
+    }
+
     res.sendFile(filePath, (err) => {
         if (err) {
             logger.error(`❌ Error serving index.html:`, err.message);
-            res.status(500).send('Error loading page');
+            res.status(500).send(`Error: ${err.message}`);
         }
     });
 });
