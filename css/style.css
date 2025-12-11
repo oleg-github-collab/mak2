@@ -3580,3 +3580,564 @@
   border-radius: inherit !important;
   display: block !important;
 }
+
+/* ============================================================
+   Секція передзамовлення (Preorder Section)
+   ============================================================ */
+.preorder-section {
+  background: var(--bg-light);
+  padding: var(--space-huge) 0;
+}
+
+.preorder-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xxl);
+  align-items: start;
+}
+
+.preorder-info h3 {
+  font-family: var(--font-secondary);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+}
+
+.preorder-description {
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--color-text-light);
+  margin-bottom: var(--space-lg);
+}
+
+.preorder-features {
+  margin-bottom: var(--space-xl);
+}
+
+.preorder-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.preorder-feature i {
+  color: var(--color-success);
+  font-size: var(--text-lg);
+}
+
+.price-block {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--color-white);
+}
+
+.old-price {
+  font-size: var(--text-lg);
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-bottom: var(--space-sm);
+}
+
+.new-price {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-sm);
+}
+
+.price-note {
+  font-size: var(--text-sm);
+  opacity: 0.9;
+}
+
+.preorder-form {
+  background: var(--color-white);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.preorder-form h3 {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.preorder-form .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.preorder-form label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.preorder-form input,
+.preorder-form textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 2px solid var(--color-light-gray);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  transition: border-color var(--transition-medium);
+}
+
+.preorder-form input:focus,
+.preorder-form textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.preorder-form input[type="number"] {
+  max-width: 120px;
+}
+
+.total-price {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+  text-align: center;
+  margin: var(--space-lg) 0;
+  padding: var(--space-md);
+  background: var(--color-off-white);
+  border-radius: var(--radius-md);
+}
+
+.total-price span {
+  color: var(--color-accent);
+  font-size: var(--text-2xl);
+}
+
+.btn-preorder {
+  width: 100%;
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.btn-preorder:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.payment-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+}
+
+.payment-info i {
+  color: var(--color-success);
+}
+
+.preorder-success-message,
+.preorder-error-message {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-md);
+  text-align: center;
+  font-weight: var(--weight-medium);
+}
+
+.preorder-success-message {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.preorder-error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+/* Адаптивний дизайн для секції передзамовлення */
+@media (max-width: 992px) {
+  .preorder-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .preorder-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .preorder-info h3 {
+    font-size: var(--text-xl);
+  }
+
+  .preorder-description {
+    font-size: var(--text-base);
+  }
+
+  .new-price {
+    font-size: var(--text-3xl);
+  }
+
+  .preorder-form {
+    padding: var(--space-lg);
+  }
+
+  .preorder-form h3 {
+    font-size: var(--text-lg);
+  }
+
+  .total-price {
+    font-size: var(--text-lg);
+  }
+
+  .total-price span {
+    font-size: var(--text-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .preorder-feature {
+    font-size: var(--text-sm);
+  }
+
+  .price-block {
+    padding: var(--space-md);
+  }
+
+  .new-price {
+    font-size: var(--text-2xl);
+  }
+
+  .preorder-form {
+    padding: var(--space-md);
+  }
+
+  .btn-preorder {
+    padding: var(--space-md);
+    font-size: var(--text-base);
+  }
+}
+
+/* ============================================================
+   Додаткові покращення мобільної адаптації
+   ============================================================ */
+
+/* Покращення читабельності на малих екранах */
+@media (max-width: 768px) {
+  /* Зменшення шрифтів заголовків для мобільних */
+  .hero-title {
+    font-size: var(--text-2xl) !important;
+    line-height: 1.3 !important;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lg) !important;
+  }
+
+  .section-title {
+    font-size: var(--text-xl) !important;
+  }
+
+  /* Покращення відступів секцій */
+  .section {
+    padding: var(--space-xl) 0 !important;
+  }
+
+  /* Оптимізація карток */
+  .feature-card,
+  .target-card {
+    padding: var(--space-lg) !important;
+  }
+
+  .feature-card h3,
+  .target-card h3 {
+    font-size: var(--text-md) !important;
+  }
+
+  .feature-card p,
+  .target-card p {
+    font-size: var(--text-sm) !important;
+  }
+
+  /* Покращення форм */
+  .contact-form,
+  .preorder-form {
+    padding: var(--space-lg) !important;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px !important; /* Запобігання автомасштабуванню в iOS */
+  }
+
+  /* Покращення кнопок */
+  .btn {
+    padding: var(--space-md) var(--space-lg) !important;
+    font-size: var(--text-base) !important;
+    min-height: 48px; /* Мінімальна висота для зручного натискання */
+  }
+
+  /* Покращення навігації */
+  .nav-list,
+  .mobile-nav-list {
+    gap: var(--space-sm) !important;
+  }
+
+  /* Покращення місії */
+  .mission-text {
+    font-size: var(--text-base) !important;
+    line-height: 1.6 !important;
+  }
+}
+
+/* Покращення для дуже малих екранів */
+@media (max-width: 480px) {
+  /* Контейнер */
+  .container {
+    padding: 0 var(--space-md) !important;
+  }
+
+  /* Заголовки */
+  .hero-title {
+    font-size: var(--text-xl) !important;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-md) !important;
+  }
+
+  .section-title {
+    font-size: var(--text-lg) !important;
+  }
+
+  /* Текст */
+  body {
+    font-size: 14px !important;
+  }
+
+  /* Карточки авторів */
+  .author-card {
+    padding: var(--space-md) !important;
+  }
+
+  .author-photo {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  /* Секції */
+  .section {
+    padding: var(--space-lg) 0 !important;
+  }
+
+  /* Відступи між елементами */
+  .hero-buttons {
+    flex-direction: column !important;
+    gap: var(--space-md) !important;
+  }
+
+  .hero-buttons .btn {
+    width: 100% !important;
+  }
+}
+
+/* Покращення продуктивності через оптимізацію анімацій */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Оптимізація для landscape орієнтації на мобільних */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto !important;
+    padding: var(--space-xl) 0 !important;
+  }
+
+  .hero-content {
+    min-height: auto !important;
+  }
+
+  .preloader {
+    padding: var(--space-xl) !important;
+  }
+}
+
+/* Покращення доступності для touch екранів */
+@media (hover: none) and (pointer: coarse) {
+  /* Збільшення зони натискання */
+  a,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* Видалення hover ефектів */
+  .btn:hover,
+  .nav-link:hover,
+  .feature-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Оптимізація зображень для retina дисплеїв */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Покращення швидкодії через hardware acceleration */
+.carousel-3d,
+.falling-card,
+.grid-card,
+.deck-card {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Гарантія відображення зображень */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lazy loading зображень без блокування відображення */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+/* Link button for inline modal triggers in forms */
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  transition: color var(--transition-fast);
+}
+
+.link-button:hover {
+  color: var(--color-accent-darker);
+  text-decoration: none;
+}
+
+.link-button:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Hero section - new features list and CTA */
+.hero-features-list {
+  margin: var(--space-lg) 0;
+}
+
+.hero-feature {
+  font-size: var(--text-base);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-sm);
+  line-height: 1.6;
+}
+
+.hero-cta-text {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent);
+  margin-bottom: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+/* Improved checkbox styles for preorder form */
+.form-group label[style*="display: flex"] {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.form-group input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+.form-group label span {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Enhanced checkbox group styles */
+.checkbox-group {
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px;
+  cursor: pointer;
+  padding: var(--space-md);
+  background: var(--color-light-gray);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.checkbox-label:hover {
+  background: rgba(230, 126, 34, 0.05);
+  border-color: rgba(230, 126, 34, 0.3);
+}
+
+.checkbox-label input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+.checkbox-label span {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.checkbox-label .link-button {
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
+}
