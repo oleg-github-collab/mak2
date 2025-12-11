@@ -1,0 +1,281 @@
+/* ===================================================
+   Exercise Modal Styles — css/exercise.css corrected
+   =================================================== */
+
+/* Фон модалки */
+#family-exercise-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 1rem;
+    cursor: none; /* сховаємо стандартний курсор */
+}
+#family-exercise-popup.open {
+    display: flex;
+}
+
+/* Контейнер модалки */
+.exercise-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 90vw;
+    max-width: 1200px;
+    height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2rem;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-30px);
+    opacity: 0;
+    transition: all 0.5s ease;
+    cursor: none;
+}
+#family-exercise-popup.open .exercise-modal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Кнопка закриття */
+.exercise-modal .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2.2rem;
+    color: #333;
+    cursor: pointer;
+    z-index: 2;
+    transition: color 0.2s;
+}
+.exercise-modal .modal-close:hover {
+    color: #e67e22;
+}
+
+/* Слайди */
+.slides {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.slides .slide {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    text-align: center;
+}
+.slides .slide.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Заголовки та тексти */
+.exercise-modal h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+.exercise-modal p {
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+}
+
+/* Загальний стиль карт */
+.exercise-modal .slide img {
+    width: 280px;
+    max-width: 80%;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 1.5rem auto;
+}
+.exercise-modal .slide img:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+}
+
+/* Слайд 1 — одна велика рандом-карта */
+#slide1-card {
+    display: flex;
+    justify-content: center;
+}
+#slide1-card img {
+    width: 320px;
+}
+
+/* Слайд 2 — сітка карт */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem auto;
+    max-width: 900px;
+}
+.cards-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cards-grid img:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+}
+.cards-grid img.selected {
+    outline: 4px solid #e67e22;
+    box-shadow: 0 12px 24px rgba(230,126,34,0.5);
+}
+
+/* Слайд 3 — вибрані карти */
+.selected-cards {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+.selected-cards img {
+    width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.selected-cards img:hover {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+}
+
+/* Слайд 4 — ілюстрація над поясненням */
+.slide-4-illustration {
+    margin: 1rem auto;
+}
+.slide-4-illustration img {
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.slide-4-illustration img:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* Кнопки */
+.exercise-modal .btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.9rem 2.2rem;
+    background: #e67e22;
+    color: #fff;
+    font-size: 1.15rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.exercise-modal .btn:hover:not(:disabled) {
+    box-shadow: 0 10px 30px rgba(230,126,34,0.4);
+    transform: translateY(-4px);
+}
+.exercise-modal .btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+.exercise-modal .btn.bounce {
+    animation: bounce 0.35s ease;
+}
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50%    { transform: translateY(-10px); }
+}
+
+/* Курсор: показуємо на ПК */
+.cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 12000;
+    display: none;
+}
+body:not(.mobile) .cursor-container {
+    display: block;
+}
+.cursor-dot, .cursor-outline {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+}
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #e67e22;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e67e22;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Медіа-запити для мобільних */
+@media (max-width: 768px) {
+    .exercise-modal {
+        width: 95vw;
+        height: 95vh;
+        padding: 1.5rem;
+    }
+    .exercise-modal h2 {
+        font-size: 1.8rem;
+    }
+    .exercise-modal p {
+        font-size: 1rem;
+    }
+    .exercise-modal .slide img {
+        width: 200px;
+    }
+    .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+    }
+    .cards-grid img.selected {
+        outline-width: 3px;
+    }
+
+    /* Нове для слайду 3 на мобільних: зробити горизонтальний скрол */
+    .selected-cards {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    .selected-cards img {
+        flex: 0 0 auto;
+        width: 140px;
+        margin-right: 1rem;
+    }
+
+    .cursor-container {
+        display: none; /* ховаємо кастомний курсор на мобільних */
+    }
+}

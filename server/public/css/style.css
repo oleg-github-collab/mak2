@@ -1,0 +1,4143 @@
+/*  Гамарджоба вечір в хату
+ * Основний CSS файл для сайту Roots & Wings
+ * Метафоричні асоціативні карти
+ */
+
+ @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Raleway:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&family=Montserrat:wght@300;400;500;600;700&display=swap&subset=cyrillic,cyrillic-ext');
+
+ :root {
+   /* Основні кольори */
+   --color-primary: #2c3e50;
+   --color-secondary: #34495e;
+   --color-accent: #e67e22;
+   --color-accent-light: #f39c12;
+   --color-accent-darker: #d35400;
+   --color-text: #333333;
+   --color-text-light: #666666;
+   --color-text-lighter: #999999;
+   --color-white: #ffffff;
+   --color-off-white: #f9f9f9;
+   --color-light-gray: #eeeeee;
+   --color-medium-gray: #dddddd;
+   --color-dark-gray: #aaaaaa;
+   --color-black: #000000;
+   --color-error: #e74c3c;
+   --color-success: #2ecc71;
+ 
+   /* Фонові кольори */
+   --bg-light: #ffffff;
+   --bg-dark: #1c2833;
+   --bg-darker: #0f1923;
+   --bg-gradient-1: linear-gradient(135deg, #2c3e50, #34495e);
+   --bg-gradient-2: linear-gradient(135deg, #e67e22, #f39c12);
+ 
+   /* Тіні */
+   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+   --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.2);
+ 
+   /* Заокруглення */
+   --radius-sm: 4px;
+   --radius-md: 8px;
+   --radius-lg: 12px;
+   --radius-xl: 20px;
+   --radius-full: 9999px;
+ 
+   /* Відступи */
+   --space-xs: 4px;
+   --space-sm: 8px;
+   --space-md: 16px;
+   --space-lg: 24px;
+   --space-xl: 32px;
+   --space-xxl: 48px;
+   --space-huge: 64px;
+ 
+   /* Шрифти */
+   --font-primary: 'Montserrat', 'Raleway', sans-serif;
+   --font-secondary: 'Playfair Display', serif;
+   --font-mono: 'Roboto Mono', monospace;
+ 
+   /* Розміри шрифтів */
+   --text-xs: 0.75rem;
+   --text-sm: 0.875rem;
+   --text-base: 1rem;
+   --text-md: 1.125rem;
+   --text-lg: 1.25rem;
+   --text-xl: 1.5rem;
+   --text-2xl: 1.875rem;
+   --text-3xl: 2.25rem;
+   --text-4xl: 3rem;
+   --text-5xl: 3.75rem;
+ 
+   /* Товщина шрифтів */
+   --weight-light: 300;
+   --weight-regular: 400;
+   --weight-medium: 500;
+   --weight-semibold: 600;
+   --weight-bold: 700;
+ 
+   /* Розміри контейнерів */
+   --container-sm: 640px;
+   --container-md: 768px;
+   --container-lg: 1024px;
+   --container-xl: 1280px;
+ 
+   /* Z-індекси */
+   --z-negative: -1;
+   --z-normal: 0;
+   --z-low: 10;
+   --z-med: 50;
+   --z-high: 100;
+   --z-extreme: 1000;
+ 
+   /* Переходи */
+   --transition-fast: 0.2s ease;
+   --transition-medium: 0.3s ease;
+   --transition-slow: 0.5s ease;
+ 
+   /* Розміри хедера */
+   --header-height: 80px;
+   --header-height-scrolled: 60px;
+ 
+   /* Розміри карт для консистентності */
+   --card-width: 280px;
+   --card-height: 420px;
+ }
+ 
+ /* ===== Reset ===== */
+ *,
+ *::before,
+ *::after {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+ }
+ 
+ html {
+   font-size: 16px;
+   scroll-behavior: smooth;
+   width: 100%;
+   overflow-x: hidden;
+   max-width: 100vw;
+ }
+ 
+ body {
+   font-family: var(--font-primary);
+   font-size: var(--text-base);
+   line-height: 1.6;
+   color: var(--color-text);
+   background-color: var(--bg-light);
+   overflow-x: hidden;
+   position: relative;
+   min-height: 100vh;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   width: 100%;
+   max-width: 100vw;
+ }
+ 
+ body.modal-open {
+   overflow: hidden;
+ }
+ 
+ h1, h2, h3, h4, h5, h6 {
+   font-family: var(--font-secondary);
+   font-weight: var(--weight-bold);
+   line-height: 1.3;
+   margin-bottom: var(--space-md);
+   color: var(--color-primary);
+ }
+ 
+ h1 {
+   font-size: var(--text-4xl);
+ }
+ 
+ h2 {
+   font-size: var(--text-3xl);
+ }
+ 
+ h3 {
+   font-size: var(--text-2xl);
+ }
+ 
+ h4 {
+   font-size: var(--text-xl);
+ }
+ 
+ h5 {
+   font-size: var(--text-lg);
+ }
+ 
+ h6 {
+   font-size: var(--text-md);
+ }
+ 
+ p {
+   margin-bottom: var(--space-md);
+ }
+ 
+ a {
+   color: var(--color-accent);
+   text-decoration: none;
+   transition: color var(--transition-fast);
+ }
+ 
+ a:hover {
+   color: var(--color-accent-light);
+ }
+ 
+ ul, ol {
+   list-style-position: inside;
+   margin-bottom: var(--space-md);
+ }
+ 
+ ul.no-underline,
+ ol.no-underline {
+   list-style: none;
+   padding-left: 0;
+ }
+ 
+ img, svg, video {
+   display: block;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+ }
+ 
+ button, input, select, textarea {
+   font-family: inherit;
+   font-size: inherit;
+   color: inherit;
+ }
+ 
+ button {
+   background: none;
+   border: none;
+   cursor: pointer;
+ }
+ 
+ /* ===== Utilities ===== */
+ .container {
+   width: 100%;
+   max-width: var(--container-xl);
+   margin-left: auto;
+   margin-right: auto;
+   padding-left: var(--space-xl);
+   padding-right: var(--space-xl);
+   overflow: visible !important;
+   box-sizing: border-box;
+ }
+ 
+ .section {
+   padding: var(--space-xxl) 0;
+   position: relative;
+   overflow: visible;
+   width: 100%;
+ }
+ 
+ .dark-section {
+   background-color: var(--bg-dark);
+   color: var(--color-white);
+ }
+ 
+ .dark-section h1,
+ .dark-section h2,
+ .dark-section h3,
+ .dark-section h4,
+ .dark-section h5,
+ .dark-section h6 {
+   color: var(--color-white);
+ }
+ 
+ .section-header {
+   text-align: center;
+   margin-bottom: var(--space-xxl);
+ }
+ 
+ .section-title {
+   position: relative;
+   display: inline-block;
+   margin-bottom: var(--space-md);
+ }
+ 
+ .section-title .accent {
+   color: var(--color-accent);
+ }
+ 
+ .section-line {
+   width: 60px;
+   height: 3px;
+   background-color: var(--color-accent);
+   margin: 0 auto;
+ }
+ 
+ .dark-section .section-line {
+   background-color: var(--color-accent-light);
+ }
+ 
+ .hidden {
+   display: none !important;
+ }
+ 
+ /* ===== Вдосконалений прелоадер з індикатором прогресу ===== */
+ .preloader {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: var(--bg-light);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: var(--z-extreme);
+   transition: opacity var(--transition-slow), visibility var(--transition-slow);
+   cursor: none;
+ }
+ 
+ .preloader.hidden {
+   opacity: 0;
+   visibility: hidden;
+   pointer-events: none;
+ }
+ 
+ .preloader-content {
+   text-align: center;
+   width: 300px;
+   max-width: 90%;
+ }
+ 
+ .preloader-text {
+   width: 90%;
+   max-width: 600px;
+   margin: 0 auto;
+   font-size: var(--text-base);
+   line-height: 1.5;
+   padding: 0 10px;
+ }
+ 
+ .loader {
+   width: 50px;
+   height: 50px;
+   border: 3px solid var(--color-light-gray);
+   border-radius: 50%;
+   border-top-color: var(--color-accent);
+   animation: loader-spin 1s linear infinite;
+   margin: 0 auto var(--space-md);
+ }
+ 
+ /* Вдосконалений індикатор прогресу для прелоадера */
+ .progress-container {
+   width: 100%;
+   height: 8px;
+   background-color: var(--color-light-gray);
+   border-radius: var(--radius-full);
+   margin-top: var(--space-md);
+   overflow: hidden;
+   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .progress-bar {
+   height: 100%;
+   width: 0;
+   background: linear-gradient(to right, var(--color-accent-darker), var(--color-accent-light));
+   transition: width 0.5s ease;
+   border-radius: var(--radius-full);
+   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+   background-size: 200% 100%;
+   animation: progress-gradient 2s linear infinite;
+ }
+ 
+ .progress-text {
+   margin-top: var(--space-sm);
+   font-size: var(--text-sm);
+   color: var(--color-accent);
+   font-weight: var(--weight-medium);
+   display: none;
+ }
+ 
+ @keyframes progress-gradient {
+   0% { background-position: 0% 0; }
+   100% { background-position: 200% 0; }
+ }
+ 
+ @keyframes loader-spin {
+   to { transform: rotate(360deg); }
+ }
+ 
+ .loading-text {
+   font-size: var(--text-md);
+   font-weight: var(--weight-medium);
+   color: var(--color-accent);
+   letter-spacing: 2px;
+   margin-bottom: var(--space-md);
+   animation: loading-pulse 1.5s ease-in-out infinite;
+ }
+ 
+ @keyframes loading-pulse {
+   0%, 100% { opacity: 1; }
+   50% { opacity: 0.5; }
+ }
+ 
+ /* Покращене відображення тексту прелоадера на мобільних */
+ @media (max-width: 768px) {
+   .preloader-text {
+     font-size: 14px;
+     line-height: 1.6;
+     padding: 0 15px;
+     width: 100%;
+     max-width: 100%;
+     margin: 0 auto;
+   }
+ 
+   .loading-text {
+     font-size: var(--text-base);
+     margin-bottom: 15px;
+   }
+ 
+   .preloader-content {
+     width: 90%;
+     max-width: 300px;
+     padding: 10px;
+   }
+ }
+ /* 1. Розтягнути контейнер колоди на всю ширину та вмикнути флекс-режим */
+ .card-deck-container {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+/* 2. Переконатись, що сама .card-deck теж по центру */
+.card-deck {
+  margin: 0 auto !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+/* 3. Якщо є wrapper (.container) навколо — теж центруємо його */
+.card-deck-section .container,
+.cards-deck .container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+ 
+ /* ===== Custom Cursor - Підвищена якість ===== */
+ .cursor-container {
+   position: fixed;
+   top: 0;
+   left: 0;
+   pointer-events: none;
+   z-index: var(--z-extreme);
+ }
+ 
+ .cursor-dot {
+   position: fixed;
+   width: 8px;
+   height: 8px;
+   background-color: var(--color-accent);
+   border-radius: var(--radius-full);
+   transform: translate(-50%, -50%);
+   transition: width var(--transition-fast), height var(--transition-fast), background-color var(--transition-fast);
+   z-index: var(--z-high);
+   will-change: transform;
+   box-shadow: 0 0 10px var(--color-accent), 0 0 5px var(--color-accent);
+ }
+ 
+ .cursor-outline {
+   position: fixed;
+   width: 40px;
+   height: 40px;
+   border: 2px solid var(--color-accent);
+   border-radius: var(--radius-full);
+   transform: translate(-50%, -50%);
+   transition: width var(--transition-medium), height var(--transition-medium), transform var(--transition-medium);
+   z-index: var(--z-med);
+   will-change: transform;
+   box-shadow: 0 0 15px rgba(230, 126, 34, 0.3);
+ }
+ 
+ .cursor-text {
+   position: fixed;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   font-size: var(--text-xs);
+   padding: var(--space-xs) var(--space-sm);
+   border-radius: var(--radius-md);
+   transform: translate(-50%, -50%) translateY(-30px) scale(0);
+   opacity: 0;
+   pointer-events: none;
+   transition: transform var(--transition-fast), opacity var(--transition-fast);
+   z-index: var(--z-high);
+   text-align: center;
+   white-space: nowrap;
+   will-change: transform, opacity;
+   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+ }
+ 
+ .cursor-hover {
+   width: 24px;
+   height: 24px;
+   background-color: transparent;
+ }
+ 
+ .cursor-click {
+   transform: translate(-50%, -50%) scale(0.8);
+ }
+ 
+ .cursor-text-visible .cursor-text {
+   transform: translate(-50%, -50%) translateY(-30px) scale(1);
+   opacity: 1;
+ }
+ 
+ /* Оптимізоване відключення користувацького курсора на мобільних пристроях */
+ @media (hover: hover) and (pointer: fine) {
+   body.cursor-enabled {
+     cursor: none;
+   }
+ 
+   body.cursor-enabled a,
+   body.cursor-enabled button,
+   body.cursor-enabled .card,
+   body.cursor-enabled .interactive,
+   body.cursor-enabled input,
+   body.cursor-enabled textarea,
+   body.cursor-enabled .cursor-hover-trigger,
+   body.cursor-enabled .preloader {
+     cursor: none;
+   }
+ }
+ 
+ @media (hover: none), (pointer: coarse) {
+   .cursor-container {
+     display: none !important;
+   }
+ }
+ 
+ /* ===== Header ===== */
+ .header {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: var(--header-height);
+   background-color: rgba(255, 255, 255, 0.95);
+   backdrop-filter: blur(5px);
+   -webkit-backdrop-filter: blur(5px);
+   z-index: var(--z-high);
+   transition: height var(--transition-medium), box-shadow var(--transition-medium);
+   will-change: height, box-shadow;
+ }
+ 
+ .header.scrolled {
+   height: var(--header-height-scrolled);
+   box-shadow: var(--shadow-md);
+ }
+ 
+ .header-wrapper {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   height: 100%;
+   max-width: 100%;
+   width: 100%;
+ }
+ 
+ .logo {
+   position: relative;
+   display: flex;
+   align-items: center;
+ }
+ 
+ .logo-link {
+   font-family: var(--font-secondary);
+   font-size: var(--text-xl);
+   font-weight: var(--weight-bold);
+   color: var(--color-primary);
+   transition: color var(--transition-fast);
+   display: flex;
+   align-items: center;
+   gap: var(--space-sm);
+   text-decoration: none;
+ }
+ 
+ .logo-link:hover {
+   color: var(--color-accent);
+ }
+ 
+ .logo-text {
+   font-family: var(--font-secondary);
+   font-weight: var(--weight-bold);
+ }
+ 
+ /* Desktop Navigation */
+ .desktop-nav {
+   display: none;
+ }
+ 
+ @media (min-width: 769px) {
+   .desktop-nav {
+     display: block;
+   }
+ }
+ 
+ .nav-list {
+   display: flex;
+   align-items: center;
+   list-style: none;
+   margin: 0;
+ }
+ 
+ .nav-item {
+   margin-left: var(--space-lg);
+ }
+ 
+ .nav-link {
+   position: relative;
+   font-weight: var(--weight-medium);
+   color: var(--color-text);
+   padding: var(--space-xs) var(--space-xs);
+   transition: color var(--transition-fast);
+   overflow: hidden;
+   text-decoration: none;
+ }
+ 
+ .nav-link:hover {
+   color: var(--color-accent);
+ }
+ 
+ /* Mobile Menu Toggle */
+ .mobile-menu-toggle {
+   display: none;
+   flex-direction: column;
+   justify-content: space-between;
+   width: 28px;
+   height: 20px;
+   cursor: pointer;
+   z-index: var(--z-high);
+ }
+ 
+ @media (max-width: 768px) {
+   .mobile-menu-toggle {
+     display: flex;
+   }
+ }
+ 
+ .toggle-line {
+   display: block;
+   width: 100%;
+   height: 2px;
+   background-color: var(--color-primary);
+   transition: transform var(--transition-medium), opacity var(--transition-fast);
+ }
+ 
+ .mobile-menu.open .mobile-menu-toggle .toggle-line:nth-child(1) {
+   transform: translateY(9px) rotate(45deg);
+ }
+ 
+ .mobile-menu.open .mobile-menu-toggle .toggle-line:nth-child(2) {
+   opacity: 0;
+ }
+ 
+ .mobile-menu.open .mobile-menu-toggle .toggle-line:nth-child(3) {
+   transform: translateY(-9px) rotate(-45deg);
+ }
+ 
+ /* Mobile Menu */
+ .mobile-menu {
+   position: fixed;
+   top: 0;
+   right: 0;
+   width: 100%;
+   height: 100vh;
+   background-color: rgba(44, 62, 80, 0.98);
+   z-index: var(--z-high);
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity var(--transition-medium), visibility var(--transition-medium);
+ }
+ 
+ .mobile-menu.open {
+   opacity: 1;
+   visibility: visible;
+ }
+ 
+ .mobile-menu-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100%;
+   padding: var(--space-xl);
+   text-align: center;
+ }
+ 
+ .mobile-menu-close {
+   position: absolute;
+   top: 20px;
+   right: 20px;
+   font-size: 30px;
+   color: var(--color-white);
+   z-index: var(--z-high);
+ }
+ 
+ .mobile-nav-list {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   flex-direction: column;
+   gap: var(--space-xl);
+ }
+ 
+ .mobile-nav-item {
+   opacity: 0;
+   transform: translateY(20px);
+   transition: opacity var(--transition-medium), transform var(--transition-medium);
+ }
+ 
+ .mobile-menu.open .mobile-nav-item {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .mobile-menu.open .mobile-nav-item:nth-child(1) { transition-delay: 0.1s; }
+ .mobile-menu.open .mobile-nav-item:nth-child(2) { transition-delay: 0.2s; }
+ .mobile-menu.open .mobile-nav-item:nth-child(3) { transition-delay: 0.3s; }
+ .mobile-menu.open .mobile-nav-item:nth-child(4) { transition-delay: 0.4s; }
+ .mobile-menu.open .mobile-nav-item:nth-child(5) { transition-delay: 0.5s; }
+ 
+ .mobile-nav-link {
+   font-family: var(--font-secondary);
+   font-size: var(--text-2xl);
+   font-weight: var(--weight-bold);
+   color: var(--color-white);
+   transition: color var(--transition-fast);
+   text-decoration: none;
+ }
+ 
+ .mobile-nav-link:hover {
+   color: var(--color-accent);
+ }
+ 
+ /* ===== Hero Section ===== */
+ .hero-section {
+   padding-top: calc(var(--header-height) + var(--space-xxl));
+   padding-bottom: var(--space-xxl);
+   min-height: 100vh;
+   display: flex;
+   align-items: center;
+   position: relative;
+ }
+ 
+ .hero-content {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+ }
+ 
+ .hero-text {
+   flex: 1;
+   max-width: 600px;
+ }
+ 
+ .hero-title {
+   font-size: var(--text-5xl);
+   margin-bottom: var(--space-md);
+   opacity: 0;
+   transform: translateY(30px);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+ }
+ 
+ .hero-title.revealed {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .hero-subtitle {
+   font-size: var(--text-xl);
+   color: var(--color-accent);
+   margin-bottom: var(--space-lg);
+   opacity: 0;
+   transform: translateY(30px);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+   transition-delay: 0.2s;
+ }
+ 
+ .hero-subtitle.revealed {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .hero-description {
+   font-size: var(--text-md);
+   color: var(--color-text-light);
+   margin-bottom: var(--space-xl);
+   opacity: 0;
+   transform: translateY(30px);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+   transition-delay: 0.4s;
+ }
+ 
+ .hero-description.revealed {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .hero-buttons {
+   display: flex;
+   align-items: center;
+   opacity: 0;
+   transform: translateY(30px);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+   transition-delay: 0.6s;
+ }
+ 
+ .hero-buttons.revealed {
+   opacity: 1;
+   transform: translateY(0);
+ }
+ 
+ .hero-buttons .btn:not(:last-child) {
+   margin-right: var(--space-md);
+ }
+ 
+ .hero-image {
+   flex: 1;
+   max-width: 500px;
+   position: relative;
+   transform: translateX(50px);
+   opacity: 0;
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+   transition-delay: 0.8s;
+ }
+ 
+ .hero-image.revealed {
+   opacity: 1;
+   transform: translateX(0);
+ }
+ 
+ .rounded-image {
+   border-radius: var(--radius-lg);
+   overflow: hidden;
+ }
+ 
+ .image-container {
+   position: relative;
+   overflow: hidden;
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-xl);
+ }
+ 
+ /* Видалені плаваючі картки для десктопу згідно вимог */
+ 
+ /* Ховаємо плаваючі елементи на мобільних */
+ @media (max-width: 768px) {
+   .floating-card, .hero-particles {
+     display: none !important;
+   }
+ }
+ 
+ .scroll-indicator {
+   position: absolute;
+   bottom: var(--space-lg);
+   left: 50%;
+   transform: translateX(-50%);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   color: var(--color-text-light);
+   font-size: var(--text-sm);
+   opacity: 0.7;
+   transition: opacity var(--transition-fast);
+   cursor: pointer;
+ }
+ 
+ .scroll-indicator:hover {
+   opacity: 1;
+ }
+ 
+ .scroll-icon {
+   width: 24px;
+   height: 40px;
+   border: 2px solid currentColor;
+   border-radius: var(--radius-full);
+   margin-bottom: var(--space-sm);
+   position: relative;
+ }
+ 
+ .scroll-dot {
+   position: absolute;
+   top: 6px;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 6px;
+   height: 6px;
+   background-color: currentColor;
+   border-radius: var(--radius-full);
+   animation: scrollAnimation 2s infinite;
+ }
+ 
+ /* Видалений рух елементів у секції Hero для мобільних */
+ .hero-particles {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   z-index: -1;
+ }
+ 
+ @media (max-width: 768px) {
+   .hero-shape-1, .hero-shape-2 {
+     display: none !important;
+   }
+ }
+ 
+ /* ===== Cards Spread Section - ВИДАЛЕНА ===== */
+ .cards-spread {
+   display: none !important;
+ }
+ 
+ /* ===== About Section ===== */
+ .about-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .about-content {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+ 
+ .product-card {
+   display: flex;
+   max-width: 1000px;
+   background-color: var(--color-white);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-lg);
+   overflow: hidden;
+ }
+ 
+ .card-image {
+   flex: 1;
+   min-width: 400px;
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .rounded-corners {
+   border-radius: var(--radius-lg);
+   overflow: hidden;
+ }
+ 
+ .card-image img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   transition: transform var(--transition-medium);
+   will-change: transform;
+ }
+ 
+ .product-card:hover .card-image img {
+   transform: scale(1.05);
+ }
+ 
+ .image-overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+ }
+ 
+ .card-content {
+   flex: 1;
+   padding: var(--space-xl);
+ }
+ 
+ .card-content h3 {
+   font-size: var(--text-2xl);
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .feature-list {
+   margin-top: var(--space-lg);
+ }
+ 
+ .feature-item {
+   display: flex;
+   align-items: flex-start;
+   margin-bottom: var(--space-md);
+ }
+ 
+ .feature-item .icon {
+   width: 24px;
+   height: 24px;
+   min-width: 24px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   margin-right: var(--space-md);
+   font-size: var(--text-sm);
+ }
+ 
+ .feature-item p {
+   margin-bottom: 0;
+ }
+ 
+ .section-shape-1 {
+   position: absolute;
+   bottom: -150px;
+   right: -100px;
+   width: 300px;
+   height: 300px;
+   background-color: rgba(230, 126, 34, 0.05);
+   border-radius: 50%;
+   z-index: -1;
+ }
+ 
+ /* ===== Cards Carousel Section - Оновлена карусель без пустих зон ===== */
+ .cards-carousel {
+   padding: var(--space-xxl) 0;
+   background-color: var(--bg-dark);
+   color: var(--color-white);
+   overflow: visible !important;
+ }
+ 
+ .carousel-container {
+   position: relative;
+   width: 100%;
+   margin: 0 auto;
+   overflow: visible !important;
+   height: auto !important;
+ }
+ 
+ .circular-carousel {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   overflow: visible !important;
+ }
+ 
+ .carousel-track {
+   position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
+   height: auto;
+   transition: transform 1s ease;
+   overflow: visible !important;
+ }
+ 
+ .carousel-card {
+   position: relative;
+   width: var(--card-width);
+   height: var(--card-height);
+   border-radius: var(--radius-md);
+   overflow: hidden;
+   box-shadow: var(--shadow-lg);
+   transform-origin: center;
+   transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+   margin: 0;
+   padding: 0;
+   opacity: 0.7;
+   filter: blur(2px) brightness(0.7);
+ }
+ 
+ .carousel-card.active {
+   opacity: 1;
+   filter: blur(0) brightness(1);
+   transform: scale(1.05);
+   z-index: 2;
+ }
+ 
+ .carousel-card.prev,
+ .carousel-card.next {
+   opacity: 0.8;
+   filter: blur(1px) brightness(0.8);
+   z-index: 1;
+ }
+ 
+ .carousel-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: var(--radius-md);
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .carousel-slide {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
+   height: 100%;
+ }
+ 
+ /* Стилі для Carousel 3D */
+ .carousel-3d, .improved-carousel {
+   position: relative;
+   width: 100%;
+   height: 540px;
+   margin: 0 auto;
+   perspective: 1500px;
+   overflow: visible !important;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+ 
+ .carousel-3d .carousel-cards-container,
+ .improved-carousel .carousel-cards-container {
+   position: relative;
+   width: 100%;
+   height: 100%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   overflow: visible !important;
+ }
+ 
+ .carousel-3d .carousel-card,
+ .improved-carousel .carousel-card {
+   position: absolute;
+   width: 320px;
+   height: 480px;
+   transition: all 0.8s ease;
+   border-radius: 15px;
+   overflow: hidden;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+   aspect-ratio: 2/3;
+   opacity: 0;
+   backface-visibility: hidden;
+   pointer-events: none;
+   z-index: 1;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .carousel-3d .carousel-card img,
+ .improved-carousel .carousel-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 15px;
+   display: block;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .carousel-3d .carousel-card.active,
+ .improved-carousel .carousel-card.active {
+   opacity: 1;
+   transform: translateX(0) scale(1.1) rotateY(0deg);
+   z-index: 10;
+   filter: blur(0) brightness(1.05);
+   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+   pointer-events: auto;
+ }
+ 
+ .carousel-3d .carousel-card.prev,
+ .improved-carousel .carousel-card.prev {
+   opacity: 0.85;
+   transform: translateX(-65%) scale(0.85) rotateY(25deg);
+   z-index: 5;
+   filter: blur(2px) brightness(0.9);
+   box-shadow: -5px 10px 25px rgba(0, 0, 0, 0.2);
+   pointer-events: none;
+ }
+ 
+ .carousel-3d .carousel-card.next,
+ .improved-carousel .carousel-card.next {
+   opacity: 0.85;
+   transform: translateX(65%) scale(0.85) rotateY(-25deg);
+   z-index: 5;
+   filter: blur(2px) brightness(0.9);
+   box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.2);
+   pointer-events: none;
+ }
+ 
+ .carousel-3d .carousel-card.far-prev,
+ .improved-carousel .carousel-card.far-prev {
+   opacity: 0.4;
+   transform: translateX(-130%) scale(0.6) rotateY(35deg);
+   z-index: 1;
+   filter: blur(3px) brightness(0.7);
+ }
+ 
+ .carousel-3d .carousel-card.far-next,
+ .improved-carousel .carousel-card.far-next {
+   opacity: 0.4;
+   transform: translateX(130%) scale(0.6) rotateY(-35deg);
+   z-index: 1;
+   filter: blur(3px) brightness(0.7);
+ }
+ 
+ .carousel-3d .carousel-card.hidden,
+ .improved-carousel .carousel-card.hidden {
+   opacity: 0;
+   transform: translateX(0) scale(0.3);
+   z-index: 0;
+ }
+ 
+ @media (max-width: 1200px) {
+   .carousel-container {
+     height: auto;
+   }
+ }
+ 
+ @media (max-width: 992px) {
+   .carousel-container {
+     height: auto;
+   }
+ 
+   .carousel-3d,
+   .improved-carousel {
+     height: 430px;
+     margin: 30px auto;
+   }
+ 
+   .carousel-3d .carousel-card,
+   .improved-carousel .carousel-card {
+     width: 260px;
+     height: 390px;
+   }
+ 
+   .carousel-3d .carousel-card.prev,
+   .improved-carousel .carousel-card.prev {
+     transform: translateX(-55%) scale(0.8) rotateY(20deg);
+   }
+ 
+   .carousel-3d .carousel-card.next,
+   .improved-carousel .carousel-card.next {
+     transform: translateX(55%) scale(0.8) rotateY(-20deg);
+   }
+ 
+   .carousel-card {
+     width: calc(var(--card-width) * 0.9);
+     height: calc(var(--card-height) * 0.9);
+   }
+ }
+ 
+ @media (max-width: 768px) {
+   .carousel-container {
+     height: auto;
+   }
+ 
+   .carousel-3d,
+   .improved-carousel {
+     height: 365px;
+     margin: 20px auto;
+   }
+ 
+   .carousel-3d .carousel-card,
+   .improved-carousel .carousel-card {
+     width: 220px;
+     height: 330px;
+   }
+ 
+   .carousel-3d .carousel-card.prev,
+   .improved-carousel .carousel-card.prev {
+     transform: translateX(-50%) scale(0.75) rotateY(15deg);
+   }
+ 
+   .carousel-3d .carousel-card.next,
+   .improved-carousel .carousel-card.next {
+     transform: translateX(50%) scale(0.75) rotateY(-15deg);
+   }
+ 
+   .carousel-card {
+     width: calc(var(--card-width) * 0.8);
+     height: calc(var(--card-height) * 0.8);
+   }
+ }
+ 
+ @media (max-width: 576px) {
+   .carousel-container {
+     height: auto;
+   }
+ 
+   .carousel-card {
+     width: calc(var(--card-width) * 0.7);
+     height: calc(var(--card-height) * 0.7);
+   }
+ }
+ 
+ /* ===== Features Section ===== */
+ .features-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .features-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   gap: var(--space-xl);
+ }
+ 
+ .feature-card {
+   background-color: rgba(255, 255, 255, 0.05);
+   border-radius: var(--radius-md);
+   padding: var(--space-xl);
+   box-shadow: var(--shadow-md);
+   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+   position: relative;
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   text-align: center;
+   z-index: 1;
+   opacity: 0;
+   transform: translateY(30px);
+ }
+ 
+ .feature-card.revealed {
+   opacity: 1;
+   transform: translateY(0);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+ }
+ 
+ .feature-card:nth-child(1).revealed { transition-delay: calc(var(--data-delay, 0) * 1s); }
+ .feature-card:nth-child(2).revealed { transition-delay: calc(var(--data-delay, 0) * 1s + 0.1s); }
+ .feature-card:nth-child(3).revealed { transition-delay: calc(var(--data-delay, 0) * 1s + 0.2s); }
+ .feature-card:nth-child(4).revealed { transition-delay: calc(var(--data-delay, 0) * 1s + 0.3s); }
+ .feature-card:nth-child(5).revealed { transition-delay: calc(var(--data-delay, 0) * 1s + 0.4s); }
+ .feature-card:nth-child(6).revealed { transition-delay: calc(var(--data-delay, 0) * 1s + 0.5s); }
+ 
+ .feature-card::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), transparent);
+   opacity: 0;
+   transition: opacity var(--transition-medium);
+   z-index: -1;
+ }
+ 
+ .feature-card:hover {
+   transform: translateY(-5px);
+   box-shadow: var(--shadow-lg);
+ }
+ 
+ .feature-card:hover::before {
+   opacity: 1;
+ }
+ 
+ .feature-icon {
+   width: 70px;
+   height: 70px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   margin-bottom: var(--space-lg);
+   font-size: var(--text-2xl);
+   transition: transform var(--transition-medium), background-color var(--transition-medium);
+ }
+ 
+ .feature-card:hover .feature-icon {
+   transform: scale(1.1);
+   background-color: var(--color-accent-light);
+ }
+ 
+ .feature-card h3 {
+   color: var(--color-white);
+   margin-bottom: var(--space-md);
+   font-size: var(--text-xl);
+ }
+ 
+ .feature-card p {
+   color: var(--color-text-lighter);
+   margin-bottom: 0;
+ }
+ 
+ .section-shape-2 {
+   position: absolute;
+   top: -150px;
+   left: -100px;
+   width: 400px;
+   height: 400px;
+   background-color: rgba(230, 126, 34, 0.05);
+   border-radius: 50%;
+   z-index: 0;
+ }
+ 
+ /* ===== Contents Section ===== */
+ .contents-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .contents-grid {
+   display: flex;
+   align-items: center;
+   gap: var(--space-xxl);
+ }
+ 
+ .content-image {
+   flex: 1;
+   position: relative;
+   border-radius: var(--radius-lg);
+   overflow: hidden;
+   box-shadow: var(--shadow-lg);
+ }
+ 
+ .content-image img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+   transition: transform var(--transition-medium);
+   will-change: transform;
+ }
+ 
+ .contents-grid:hover .content-image img {
+   transform: scale(1.05);
+ }
+ 
+ .image-reveal-overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: var(--color-accent);
+   transform: translateX(-100%);
+   transition: transform var(--transition-slow);
+   will-change: transform;
+ }
+ 
+ .content-image.reveal .image-reveal-overlay {
+   transform: translateX(100%);
+ }
+ 
+ .content-details {
+   flex: 1;
+ }
+ 
+ .content-item {
+   display: flex;
+   align-items: flex-start;
+   margin-bottom: var(--space-lg);
+   opacity: 0;
+   transform: translateX(30px);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+ }
+ 
+ .content-item.revealed {
+   opacity: 1;
+   transform: translateX(0);
+ }
+ 
+ .content-item:nth-child(1).revealed { transition-delay: 0.1s; }
+ .content-item:nth-child(2).revealed { transition-delay: 0.2s; }
+ .content-item:nth-child(3).revealed { transition-delay: 0.3s; }
+ .content-item:nth-child(4).revealed { transition-delay: 0.4s; }
+ 
+ .content-icon {
+   width: 50px;
+   height: 50px;
+   min-width: 50px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   margin-right: var(--space-lg);
+   font-size: var(--text-lg);
+   transition: transform var(--transition-medium), background-color var(--transition-medium);
+ }
+ 
+ .content-item:hover .content-icon {
+   transform: scale(1.1);
+   background-color: var(--color-accent-light);
+ }
+ 
+ .content-text h3 {
+   margin-bottom: var(--space-sm);
+ }
+ 
+ .content-text p {
+   margin-bottom: 0;
+   color: var(--color-text-light);
+ }
+ 
+ /* ===== Cards Grid 3D Section - Оптимізовані однакові розміри карток ===== */
+ .cards-grid-3d {
+   padding: var(--space-xxl) 0;
+   background-color: var(--bg-dark);
+   color: var(--color-white);
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .cards-grid-container {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-template-rows: repeat(3, 1fr);
+   gap: var(--space-md);
+   max-width: 900px;
+   margin: 0 auto;
+   perspective: 1000px;
+   transform-style: preserve-3d;
+ }
+ 
+ /* Оптимізовані стилі для однакових розмірів карток у гріді */
+ .grid-card {
+   position: relative;
+   width: 100%;
+   height: 0;
+   padding-bottom: 150%; /* Фіксована пропорція 2:3 для всіх карток */
+   cursor: pointer;
+   overflow: hidden;
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-md);
+   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+   transform-style: preserve-3d;
+   transform: scale(0.95) translateZ(0);
+   will-change: transform;
+ }
+ 
+ .grid-card-wrapper {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   border-radius: var(--radius-md);
+ }
+ 
+ .grid-card img {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   transition: transform var(--transition-medium);
+   will-change: transform;
+ }
+ 
+ .grid-card:hover {
+   transform: scale(1) translateZ(30px);
+   box-shadow: var(--shadow-lg);
+   z-index: 1;
+ }
+ 
+ .grid-card:hover img {
+   transform: scale(1.1);
+ }
+ 
+ /* Стилі для Tilt.js */
+ .js-tilt-glare {
+   border-radius: var(--radius-md);
+ }
+ 
+ /* ===== Target Section ===== */
+ .target-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .target-content {
+   display: flex;
+   flex-direction: column;
+   gap: var(--space-xl);
+ }
+ 
+ .target-card {
+   display: flex;
+   align-items: flex-start;
+   background-color: rgba(255, 255, 255, 0.05);
+   border-radius: var(--radius-md);
+   padding: var(--space-xl);
+   box-shadow: var(--shadow-md);
+   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+   position: relative;
+   overflow: hidden;
+   z-index: 1;
+   opacity: 0;
+   transform: translateX(-30px);
+ }
+ 
+ .target-card.revealed {
+   opacity: 1;
+   transform: translateX(0);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+ }
+ 
+ .target-card::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), transparent);
+   opacity: 0;
+   transition: opacity var(--transition-medium);
+   z-index: -1;
+ }
+ 
+ .target-card:hover {
+   transform: translateX(5px);
+   box-shadow: var(--shadow-lg);
+ }
+ 
+ .target-card:hover::before {
+   opacity: 1;
+ }
+ 
+ .target-icon {
+   width: 60px;
+   height: 60px;
+   min-width: 60px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   margin-right: var(--space-lg);
+   font-size: var(--text-xl);
+   transition: transform var(--transition-medium), background-color var(--transition-medium);
+ }
+ 
+ .target-card:hover .target-icon {
+   transform: scale(1.1);
+   background-color: var(--color-accent-light);
+ }
+ 
+ .target-text {
+   flex: 1;
+ }
+ 
+ .target-text p {
+   color: var(--color-text-lighter);
+   margin-bottom: 0;
+ }
+ 
+ .target-text strong {
+   color: var(--color-white);
+   font-weight: var(--weight-semibold);
+ }
+ 
+ /* ===== Mission Section ===== */
+ .mission-section {
+   min-height: 70vh;
+   position: relative;
+   overflow: hidden;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+ }
+ 
+ .parallax-bg {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-size: cover;
+   background-position: center;
+   z-index: -1;
+   transform: translateZ(0);
+   will-change: transform;
+ }
+ 
+ .mission-section::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.7);
+   z-index: 0;
+ }
+ 
+ .mission-content {
+   max-width: 800px;
+   padding: var(--space-xxl);
+   text-align: center;
+   color: var(--color-white);
+   position: relative;
+   z-index: 1;
+ }
+ 
+ .mission-title {
+   font-size: var(--text-4xl);
+   color: var(--color-white);
+   margin-bottom: var(--space-xl);
+   position: relative;
+   display: inline-block;
+ }
+ 
+ .mission-title::after {
+   content: "";
+   position: absolute;
+   bottom: -10px;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 100px;
+   height: 3px;
+   background-color: var(--color-accent);
+ }
+ 
+ .mission-text {
+   font-size: var(--text-xl);
+   line-height: 1.8;
+   opacity: 0.9;
+ }
+ 
+ /* ===== Cards Deck Section - ОНОВЛЕНИЙ без білих зон ===== */
+ .cards-deck, .card-deck-section {
+   display: block !important;
+   visibility: visible !important;
+   padding: 60px 0 !important;
+   margin: 0 !important;
+   background-color: var(--bg-dark);
+   color: var(--color-white);
+   position: relative;
+   overflow: visible !important;
+   z-index: 5;
+   min-height: 600px;
+ }
+ 
+ .cards-deck h2, 
+ .card-deck-section h2,
+ .cards-deck .section-title,
+ .card-deck-section .section-title {
+   color: #e67e22 !important;
+   margin-top: 40px;
+ }
+ 
+ .card-deck-container {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 0 !important;
+   margin: 0 auto;
+   gap: 30px;
+   min-height: 500px;
+   overflow: visible !important;
+   position: relative;
+   z-index: 10;
+   background-color: var(--bg-dark);
+ }
+ 
+ .card-deck {
+   position: relative;
+   width: calc(var(--card-width) + 30px);
+   height: calc(var(--card-height) + 30px);
+   border-radius: var(--radius-md);
+   overflow: visible !important;
+   box-shadow: var(--shadow-xl);
+   cursor: pointer;
+   transition: transform var(--transition-medium);
+   transform-style: preserve-3d;
+   z-index: 15;
+   margin: 0 auto 50px auto !important;
+   padding: 0 !important;
+   display: block;
+ }
+ 
+ .card-stack {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   overflow: visible !important;
+   margin: 0 !important;
+   padding: 0 !important;
+ }
+ 
+ .stack-card {
+   position: absolute;
+   width: var(--card-width);
+   height: var(--card-height);
+   border-radius: var(--radius-md);
+   overflow: hidden;
+   box-shadow: var(--shadow-lg);
+   background-color: var(--color-white);
+   background-size: cover;
+   background-position: center;
+   transition: transform 0.3s ease;
+   margin: 0 !important;
+   padding: 0 !important;
+ }
+ 
+ .stack-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .stack-card:nth-child(1) {
+   top: 0;
+   left: 15px;
+   z-index: 4;
+ }
+ 
+ .stack-card:nth-child(2) {
+   top: 5px;
+   left: 10px;
+   transform: rotate(-3deg);
+   z-index: 3;
+ }
+ 
+ .stack-card:nth-child(3) {
+   top: 10px;
+   left: 5px;
+   transform: rotate(-6deg);
+   z-index: 2;
+ }
+ 
+ .stack-card:nth-child(4) {
+   top: 15px;
+   left: 0;
+   transform: rotate(-9deg);
+   z-index: 1;
+ }
+ 
+ .card-deck:hover .stack-card:nth-child(1) {
+   transform: translateY(-5px);
+ }
+ 
+ .card-deck:hover .stack-card:nth-child(2) {
+   transform: rotate(-3deg) translateY(-3px);
+ }
+ 
+ .card-deck:hover .stack-card:nth-child(3) {
+   transform: rotate(-6deg) translateY(-2px);
+ }
+ 
+ .card-deck:hover .stack-card:nth-child(4) {
+   transform: rotate(-9deg) translateY(-1px);
+ }
+ 
+ .card-deck::after {
+   content: "Клікніть, щоб витягнути карту";
+   position: absolute;
+   bottom: -40px;
+   left: 0;
+   width: 100%;
+   text-align: center;
+   color: var(--color-white);
+   font-size: var(--text-sm);
+   opacity: 0;
+   transition: opacity var(--transition-medium);
+ }
+ 
+ .card-deck:hover::after {
+   opacity: 1;
+ }
+ 
+ .drawn-card-container {
+   position: relative;
+   width: var(--card-width);
+   height: var(--card-height);
+   perspective: 1000px;
+   overflow: visible !important;
+   margin: 0 auto 60px auto !important;
+ }
+ 
+ .drawn-card {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   border-radius: var(--radius-md);
+   overflow: hidden;
+   box-shadow: var(--shadow-xl);
+   transform: rotateY(-180deg);
+   animation: cardReveal 0.8s forwards;
+   transform-style: preserve-3d;
+   backface-visibility: hidden;
+ }
+ 
+ .drawn-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: var(--radius-md);
+   display: block;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ @keyframes cardReveal {
+   0% {
+     transform: rotateY(-180deg);
+   }
+   100% {
+     transform: rotateY(0);
+   }
+ }
+ 
+ /* Додаткові стилі для посилення видимості колоди карт */
+ .section.card-deck-section, 
+ .section.cards-deck {
+   visibility: visible !important;
+   display: block !important;
+   opacity: 1 !important;
+   z-index: 5;
+   background-color: var(--bg-dark);
+   color: var(--color-white);
+   padding: 60px 0 !important;
+ }
+ 
+ .section.card-deck-section .container,
+ .section.cards-deck .container {
+   overflow: visible !important;
+   background-color: var(--bg-dark);
+ }
+ 
+ .card-deck-section .section-header,
+ .cards-deck .section-header {
+   margin-bottom: 30px;
+   color: var(--color-white);
+ }
+ 
+ .deck-card {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   border-radius: 15px;
+   overflow: hidden;
+   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+               box-shadow 0.5s ease, 
+               z-index 0s 0.5s;
+   cursor: pointer;
+   transform-origin: center center;
+   aspect-ratio: 2/3;
+   background-color: #fff;
+   z-index: 5;
+ }
+ 
+ .deck-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .draw-button {
+   background-color: var(--color-accent);
+   color: white;
+   border: none;
+   padding: 12px 24px;
+   border-radius: 30px;
+   font-size: 18px;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+   margin: 20px auto;
+   position: relative;
+   z-index: 15;
+   display: block !important;
+   text-align: center;
+ }
+ 
+ .draw-button:hover {
+   background-color: var(--color-accent-light);
+ }
+ 
+ @media (max-width: 768px) {
+   .card-deck {
+     width: calc((var(--card-width) * 0.8) + 30px);
+     height: calc((var(--card-height) * 0.8) + 30px);
+     margin: 0 auto 40px auto !important;
+   }
+ 
+   .stack-card {
+     width: calc(var(--card-width) * 0.8);
+     height: calc(var(--card-height) * 0.8);
+   }
+ 
+   .drawn-card-container, .drawn-card {
+     width: calc(var(--card-width) * 0.8);
+     height: calc(var(--card-height) * 0.8);
+     margin: 0 auto 40px auto !important;
+   }
+ 
+   .section.card-deck-section, 
+   .section.cards-deck {
+     padding: 40px 0 !important;
+   }
+ }
+ 
+ /* ===== Authors Section ===== */
+ .authors-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .authors-grid {
+   display: flex;
+   justify-content: center;
+   gap: var(--space-xxl);
+ }
+ 
+ .author-card {
+   flex: 1;
+   max-width: 350px;
+   background-color: var(--color-white);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-lg);
+   padding-bottom: var(--space-xl);
+   overflow: hidden;
+   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+   opacity: 0;
+   transform: translateY(30px);
+ }
+ 
+ .author-card.revealed {
+   opacity: 1;
+   transform: translateY(0);
+   transition: opacity var(--transition-slow), transform var(--transition-slow);
+ }
+ 
+ .author-card:hover {
+   transform: translateY(-10px);
+   box-shadow: var(--shadow-xl);
+ }
+ 
+ .author-photo {
+   width: 100%;
+   position: relative;
+   overflow: hidden;
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .circular {
+   border-radius: 50%;
+   height: 250px;
+   width: 250px;
+   margin: 0 auto;
+   margin-top: var(--space-lg);
+   overflow: hidden;
+   box-shadow: var(--shadow-md);
+ }
+ 
+ .circular img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+ }
+ 
+ .author-photo img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   transition: transform var(--transition-medium);
+   will-change: transform;
+ }
+ 
+ .author-card:hover .author-photo img {
+   transform: scale(1.05);
+ }
+ 
+ .author-photo-overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+ }
+ 
+ .author-name {
+   font-size: var(--text-xl);
+   text-align: center;
+   margin-bottom: var(--space-xs);
+   padding: 0 var(--space-lg);
+ }
+ 
+ .author-title {
+   color: var(--color-accent);
+   font-weight: var(--weight-medium);
+   text-align: center;
+   margin-bottom: var(--space-md);
+ }
+ 
+ .author-bio {
+   font-size: var(--text-sm);
+   color: var(--color-text-light);
+   text-align: center;
+   margin-bottom: var(--space-lg);
+   padding: 0 var(--space-xl);
+ }
+ 
+ .social-links {
+   display: flex;
+   justify-content: center;
+   gap: var(--space-md);
+ }
+ 
+ .social-link {
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-light-gray);
+   color: var(--color-text);
+   border-radius: var(--radius-full);
+   transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+ }
+ 
+ .social-link:hover {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   transform: translateY(-3px);
+ }
+ 
+ /* ===== Contact Section ===== */
+ .contact-section {
+   position: relative;
+   overflow: hidden;
+ }
+ 
+ .contact-content {
+   display: flex;
+   gap: var(--space-xxl);
+ }
+ 
+ .contact-info {
+   flex: 1;
+ }
+ 
+ .contact-text {
+   font-size: var(--text-lg);
+   color: var(--color-text-lighter);
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .email-link {
+   display: inline-block;
+   font-size: var(--text-xl);
+   font-weight: var(--weight-medium);
+   color: var(--color-accent);
+   margin-bottom: var(--space-xl);
+   transition: color var(--transition-fast), transform var(--transition-fast);
+ }
+ 
+ .email-link:hover {
+   color: var(--color-accent-light);
+   transform: translateX(5px);
+ }
+ 
+ .contact-methods {
+   margin-top: var(--space-xl);
+ }
+ 
+ .contact-method {
+   display: flex;
+   align-items: flex-start;
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .method-icon {
+   width: 50px;
+   height: 50px;
+   min-width: 50px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   margin-right: var(--space-lg);
+   font-size: var(--text-lg);
+ }
+ 
+ .method-details h3 {
+   color: var(--color-white);
+   font-size: var(--text-lg);
+   margin-bottom: var(--space-xs);
+ }
+ 
+ .method-details p {
+   color: var(--color-text-lighter);
+   margin-bottom: 0;
+ }
+ 
+ /* Покращена контактна форма */
+ .contact-form {
+   flex: 1;
+   background-color: rgba(255, 255, 255, 0.05);
+   padding: var(--space-xl);
+   border-radius: var(--radius-lg);
+ }
+ 
+ .form-group {
+   margin-bottom: var(--space-lg);
+   position: relative;
+ }
+ 
+ .form-group label {
+   display: block;
+   font-size: var(--text-sm);
+   font-weight: var(--weight-medium);
+   color: var(--color-text-lighter);
+   margin-bottom: var(--space-sm);
+ }
+ 
+ .form-group input,
+ .form-group textarea {
+   width: 100%;
+   background-color: rgba(255, 255, 255, 0.05);
+   border: none;
+   border-bottom: 1px solid var(--color-text-lighter);
+   padding: var(--space-sm) var(--space-sm);
+   color: var(--color-white);
+   transition: border-color var(--transition-fast), background-color var(--transition-fast);
+   border-radius: var(--radius-sm);
+ }
+ 
+ .form-group input:focus,
+ .form-group textarea:focus {
+   outline: none;
+   border-color: var(--color-accent);
+   background-color: rgba(230, 126, 34, 0.05);
+ }
+ 
+ .form-group textarea {
+   min-height: 100px;
+   resize: vertical;
+ }
+ 
+ .input-line {
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   width: 0;
+   height: 2px;
+   background-color: var(--color-accent);
+   transition: width var(--transition-medium);
+ }
+ 
+ .form-group input:focus ~ .input-line,
+ .form-group textarea:focus ~ .input-line {
+   width: 100%;
+ }
+ 
+ .success-message {
+   margin-top: var(--space-md);
+   padding: var(--space-sm) var(--space-md);
+   background-color: rgba(46, 204, 113, 0.1);
+   color: var(--color-success);
+   border-radius: var(--radius-md);
+   text-align: center;
+   font-weight: var(--weight-medium);
+ }
+ 
+ .error-message {
+   margin-top: var(--space-md);
+   padding: var(--space-sm) var(--space-md);
+   background-color: rgba(231, 76, 60, 0.1);
+   color: var(--color-error);
+   border-radius: var(--radius-md);
+   text-align: center;
+   font-weight: var(--weight-medium);
+   display: none;
+ }
+ 
+ /* Кнопка відправки форми */
+ .btn-submit {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   padding: var(--space-sm) var(--space-xl);
+   border-radius: var(--radius-md);
+   font-weight: var(--weight-medium);
+   cursor: pointer;
+   transition: background-color var(--transition-fast), transform var(--transition-fast);
+   display: inline-block;
+   border: none;
+   box-shadow: var(--shadow-md);
+   width: 100%;
+ }
+ 
+ .btn-submit:hover {
+   background-color: var(--color-accent-light);
+   transform: translateY(-3px);
+ }
+ 
+ .btn-submit:active {
+   transform: translateY(-1px);
+ }
+ 
+ /* ===== Footer ===== */
+ .footer {
+   background-color: var(--bg-darker);
+   color: var(--color-text-lighter);
+   padding: var(--space-xl) 0;
+   position: relative;
+ }
+ 
+ .footer-content {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+   gap: var(--space-xl);
+   margin-bottom: var(--space-xxl);
+ }
+ 
+ .footer-logo h2 {
+   font-family: var(--font-secondary);
+   font-size: var(--text-xl);
+   font-weight: var(--weight-bold);
+   color: var(--color-white);
+   margin-bottom: var(--space-md);
+ }
+ 
+ .footer-logo p {
+   margin-bottom: var(--space-lg);
+   font-size: var(--text-sm);
+   color: var(--color-text-lighter);
+   line-height: 1.7;
+ }
+ 
+ .footer-navigation h3,
+ .footer-legal h3,
+ .footer-social h3 {
+   color: var(--color-white);
+   font-size: var(--text-md);
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .footer-navigation ul {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+ }
+ 
+ .footer-navigation li {
+   margin-bottom: var(--space-sm);
+ }
+ 
+ .footer-navigation a {
+   color: var(--color-text-lighter);
+   font-size: var(--text-sm);
+   transition: color var(--transition-fast), transform var(--transition-fast);
+   display: inline-block;
+   text-decoration: none;
+ }
+ 
+ .footer-navigation a:hover {
+   color: var(--color-accent);
+   transform: translateX(3px);
+ }
+ 
+ .legal-buttons {
+   display: flex;
+   flex-direction: column;
+   gap: var(--space-sm);
+ }
+ 
+ .btn-modal {
+   display: inline-flex;
+   align-items: center;
+   padding: var(--space-sm) var(--space-md);
+   background-color: rgba(255, 255, 255, 0.1);
+   color: var(--color-text-lighter);
+   border-radius: var(--radius-md);
+   font-size: var(--text-sm);
+   transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+   text-align: left;
+ }
+ 
+ .btn-modal i {
+   margin-right: var(--space-sm);
+   color: var(--color-accent);
+ }
+ 
+ .btn-modal:hover {
+   background-color: rgba(230, 126, 34, 0.2);
+   color: var(--color-white);
+   transform: translateX(3px);
+ }
+ 
+ .social-icons {
+   display: flex;
+   gap: var(--space-md);
+ }
+ 
+ .social-icon {
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: rgba(255, 255, 255, 0.1);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   transition: background-color var(--transition-fast), transform var(--transition-fast);
+ }
+ 
+ .social-icon:hover {
+   background-color: var(--color-accent);
+   transform: translateY(-3px);
+ }
+ 
+ .footer-bottom {
+   padding-top: var(--space-lg);
+   border-top: 1px solid rgba(255, 255, 255, 0.1);
+   text-align: center;
+   font-size: var(--text-sm);
+   color: var(--color-text-lighter);
+ }
+ 
+ .back-to-top {
+   position: fixed;
+   bottom: var(--space-lg);
+   right: var(--space-lg);
+   width: 50px;
+   height: 50px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   border-radius: var(--radius-full);
+   box-shadow: var(--shadow-md);
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(20px);
+   transition: opacity var(--transition-medium), visibility var(--transition-medium), transform var(--transition-medium), background-color var(--transition-fast);
+   z-index: var(--z-high);
+ }
+ 
+ .back-to-top.visible {
+   opacity: 1;
+   visibility: visible;
+   transform: translateY(0);
+ }
+ 
+ .back-to-top:hover {
+   background-color: var(--color-accent-light);
+   transform: translateY(-5px);
+ }
+ 
+ /* ===== Modal ===== */
+ .modal {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.8);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: var(--z-extreme);
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity var(--transition-medium), visibility var(--transition-medium);
+   -webkit-backdrop-filter: blur(5px);
+   backdrop-filter: blur(5px);
+ }
+ 
+ .modal.open {
+   opacity: 1;
+   visibility: visible;
+ }
+ 
+ .modal-content {
+   background-color: var(--color-white);
+   max-width: 800px;
+   width: 90%;
+   max-height: 80vh;
+   overflow-y: auto;
+   border-radius: var(--radius-lg);
+   position: relative;
+   transform: translateY(20px);
+   opacity: 0;
+   transition: transform var(--transition-medium), opacity var(--transition-medium);
+   box-shadow: var(--shadow-xl);
+ }
+ 
+ .modal.open .modal-content {
+   transform: translateY(0);
+   opacity: 1;
+   transition-delay: 0.1s;
+ }
+ 
+ .modal-header {
+   padding: var(--space-lg) var(--space-xl);
+   border-bottom: 1px solid var(--color-light-gray);
+   position: relative;
+ }
+ 
+ .modal-header h2 {
+   font-size: var(--text-2xl);
+   margin-bottom: 0;
+   color: var(--color-primary);
+ }
+ 
+ .modal-close {
+   position: absolute;
+   top: var(--space-md);
+   right: var(--space-md);
+   width: 36px;
+   height: 36px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--color-light-gray);
+   color: var(--color-text);
+   border-radius: var(--radius-full);
+   cursor: pointer;
+   transition: background-color var(--transition-fast), color var(--transition-fast);
+   font-size: var(--text-xl);
+ }
+ 
+ .modal-close:hover {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+ }
+ 
+ .modal-body {
+   padding: var(--space-xl);
+   color: var(--color-text);
+ }
+ 
+ .text-container {
+   max-width: 700px;
+   margin: 0 auto;
+ }
+ 
+ .modal-body h4 {
+   font-size: var(--text-lg);
+   margin-top: var(--space-lg);
+   margin-bottom: var(--space-md);
+   color: var(--color-primary);
+ }
+ 
+ .modal-body p {
+   margin-bottom: var(--space-md);
+   line-height: 1.7;
+   color: var(--color-text-light);
+ }
+ 
+ .modal-body ul {
+   margin-bottom: var(--space-md);
+   padding-left: var(--space-lg);
+ }
+ 
+ .modal-body li {
+   margin-bottom: var(--space-sm);
+   color: var(--color-text-light);
+ }
+ 
+ /* ===== Buttons ===== */
+ .btn {
+   display: inline-block;
+   padding: var(--space-md) var(--space-xl);
+   font-weight: var(--weight-semibold);
+   border-radius: var(--radius-md);
+   text-align: center;
+   cursor: pointer;
+   transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+ }
+ 
+ .btn:hover {
+   transform: translateY(-3px);
+ }
+ 
+ .btn:active {
+   transform: translateY(-1px);
+ }
+ 
+ .btn-primary {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+   box-shadow: 0 4px 6px rgba(230, 126, 34, 0.2);
+ }
+ 
+ .btn-primary:hover {
+   background-color: var(--color-accent-light);
+   box-shadow: 0 6px 8px rgba(230, 126, 34, 0.3);
+ }
+ 
+ .btn-outline {
+   background-color: transparent;
+   color: var(--color-accent);
+   border: 2px solid var(--color-accent);
+ }
+ 
+ .btn-outline:hover {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+ }
+ 
+ .btn-accent {
+   background-color: var(--color-accent);
+   color: var(--color-white);
+ }
+ 
+ .btn-accent:hover {
+   background-color: var(--color-accent-light);
+ }
+ 
+ /* ===== Animations ===== */
+ @keyframes scrollAnimation {
+   0% {
+     opacity: 1;
+     transform: translateX(-50%) translateY(0);
+   }
+   50% {
+     opacity: 0.3;
+     transform: translateX(-50%) translateY(15px);
+   }
+   100% {
+     opacity: 1;
+     transform: translateX(-50%) translateY(0);
+   }
+ }
+ 
+ @keyframes float {
+   0% {
+     transform: translateY(0);
+   }
+   50% {
+     transform: translateY(-10px);
+   }
+   100% {
+     transform: translateY(0);
+   }
+ }
+ 
+ @keyframes reveal {
+   0% {
+     transform: translateY(20px);
+     opacity: 0;
+   }
+   100% {
+     transform: translateY(0);
+     opacity: 1;
+   }
+ }
+ 
+ @keyframes rotateCard {
+   0% {
+     transform: rotateY(0deg);
+   }
+   100% {
+     transform: rotateY(180deg);
+   }
+ }
+ 
+ /* ===== Responsive Styles ===== */
+ @media (max-width: 1200px) {
+   .hero-title {
+     font-size: var(--text-4xl);
+   }
+ 
+   .product-card {
+     flex-direction: column;
+   }
+ 
+   .card-image {
+     min-width: 100%;
+     height: 300px;
+   }
+ 
+   .contents-grid {
+     flex-direction: column;
+   }
+ 
+   .content-image {
+     margin-bottom: var(--space-xl);
+   }
+ }
+ 
+ @media (max-width: 992px) {
+   :root {
+     --header-height: 70px;
+     --header-height-scrolled: 60px;
+     --card-width: 240px;
+     --card-height: 360px;
+   }
+ 
+   .hero-content {
+     flex-direction: column;
+     align-items: center;
+   }
+ 
+   .hero-text {
+     max-width: 100%;
+     text-align: center;
+     margin-bottom: var(--space-xxl);
+   }
+ 
+   .hero-title {
+     font-size: var(--text-3xl);
+   }
+ 
+   .hero-image {
+     max-width: 70%;
+   }
+ 
+   .authors-grid {
+     flex-direction: column;
+     align-items: center;
+   }
+ 
+   .author-card {
+     max-width: 70%;
+     margin-bottom: var(--space-xl);
+   }
+ 
+   .contact-content {
+     flex-direction: column;
+   }
+ 
+   .contact-info {
+     margin-bottom: var(--space-xxl);
+   }
+ 
+   .footer-content {
+     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+   }
+ }
+ 
+ @media (max-width: 768px) {
+   :root {
+     --card-width: 200px;
+     --card-height: 300px;
+   }
+ 
+   .container {
+     padding-left: var(--space-lg);
+     padding-right: var(--space-lg);
+   }
+ 
+   .desktop-nav {
+     display: none;
+   }
+ 
+   .mobile-menu-toggle {
+     display: flex;
+   }
+ 
+   /* Поліпшене відображення контенту під хедером на мобільних */
+   .hero-section {
+     padding-top: calc(var(--header-height) + var(--space-xl));
+     text-align: center;
+   }
+ 
+   /* Оптимізована сітка карток для мобільних */
+   .cards-grid-container {
+     grid-template-columns: repeat(2, 1fr);
+   }
+ 
+   .feature-card {
+     padding: var(--space-lg);
+   }
+ 
+   .section-title {
+     font-size: var(--text-2xl);
+   }
+ 
+   .modal-content {
+     width: 95%;
+     padding: var(--space-lg);
+   }
+ 
+   .feature-icon {
+     width: 60px;
+     height: 60px;
+     font-size: var(--text-xl);
+   }
+ 
+   /* Стилі для контактної форми на мобільних */
+   .contact-form {
+     padding: var(--space-lg);
+   }
+ }
+ 
+ @media (max-width: 576px) {
+   :root {
+     --header-height: 60px;
+     --header-height-scrolled: 50px;
+   }
+ 
+   .hero-title {
+     font-size: var(--text-2xl);
+   }
+ 
+   .hero-subtitle {
+     font-size: var(--text-lg);
+   }
+ 
+   .section {
+     padding: var(--space-xl) 0;
+   }
+ 
+   /* Одна картка в ряд для маленьких екранів */
+   .cards-grid-container {
+     grid-template-columns: 1fr;
+   }
+ 
+   .hero-buttons {
+     flex-direction: column;
+     width: 100%;
+   }
+ 
+   .hero-buttons .btn {
+     width: 100%;
+     margin-bottom: var(--space-md);
+   }
+ 
+   .hero-buttons .btn:not(:last-child) {
+     margin-right: 0;
+   }
+ 
+   .author-card {
+     max-width: 90%;
+   }
+ 
+   .footer-content {
+     grid-template-columns: 1fr;
+     text-align: center;
+   }
+ 
+   .legal-buttons {
+     align-items: center;
+   }
+ 
+   .social-icons {
+     justify-content: center;
+   }
+ 
+   .btn-modal {
+     justify-content: center;
+   }
+ 
+   .back-to-top {
+     bottom: var(--space-md);
+     right: var(--space-md);
+     width: 40px;
+     height: 40px;
+   }
+ }
+ 
+ /* ===== Special Typography Optimizations for Ukrainian ===== */
+ html[lang="uk"] body {
+   font-family: 'Montserrat', sans-serif;
+   letter-spacing: 0.01em;
+   word-spacing: 0.05em;
+ }
+ 
+ html[lang="uk"] h1, 
+ html[lang="uk"] h2, 
+ html[lang="uk"] h3, 
+ html[lang="uk"] h4, 
+ html[lang="uk"] h5, 
+ html[lang="uk"] h6 {
+   letter-spacing: 0.02em;
+ }
+ 
+ /* ===== Performance Optimizations ===== */
+ img, video {
+   content-visibility: auto;
+ }
+ 
+ .lazy-section {
+   content-visibility: auto;
+   contain-intrinsic-size: 500px;
+ }
+ 
+ @media (prefers-reduced-motion: reduce) {
+   *,
+   *::before,
+   *::after {
+     animation-duration: 0.01ms !important;
+     animation-iteration-count: 1 !important;
+     transition-duration: 0.01ms !important;
+     scroll-behavior: auto !important;
+   }
+ }
+ 
+ /* ===== Print Styles ===== */
+ @media print {
+   .header, .footer, .mission-section, .cards-deck {
+     display: none;
+   }
+ 
+   .section {
+     padding: 10px 0;
+     page-break-inside: avoid;
+   }
+ 
+   .container {
+     max-width: 100%;
+   }
+ 
+   body {
+     font-size: 12pt;
+     line-height: 1.5;
+     background: white;
+     color: black;
+   }
+ 
+   h1, h2, h3, h4, h5, h6 {
+     page-break-after: avoid;
+     page-break-inside: avoid;
+   }
+ 
+   img {
+     max-width: 100% !important;
+     page-break-inside: avoid;
+   }
+ 
+   .card, .feature-card, .target-card, .content-item {
+     page-break-inside: avoid;
+   }
+ 
+   a {
+     color: black;
+     text-decoration: underline;
+   }
+ 
+   .btn {
+     border: 1px solid black;
+     padding: 5px 10px;
+     text-decoration: none;
+   }
+ }
+ 
+ /* ===== Оптимізовані падаючі картки ===== */
+ section.section.falling-cards {
+   padding: var(--space-xxl) 0;
+   position: relative;
+   min-height: 100vh;
+   overflow: hidden !important;
+   padding-bottom: 600px !important;
+   z-index: 1;
+ }
+ 
+ .falling-cards-container {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100% !important;
+   min-height: 100vh;
+   overflow: visible !important;
+   pointer-events: none;
+   z-index: 10;
+ }
+ 
+ .falling-cards-wrapper {
+   position: relative;
+   z-index: 5;
+   overflow: visible !important;
+ }
+ 
+ .falling-card {
+   position: absolute;
+   width: var(--card-width);
+   height: var(--card-height);
+   border-radius: var(--radius-md);
+   overflow: hidden;
+   box-shadow: var(--shadow-xl);
+   opacity: 0;
+   top: -450px;
+   transform-origin: center center;
+   will-change: transform, opacity;
+   visibility: hidden;
+   z-index: 10 !important;
+ }
+ 
+ .falling-card img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: var(--radius-md);
+   margin: 0;
+   padding: 0;
+   display: block;
+ }
+ 
+ /* Optimized distribution of cards across full screen width on PC */
+ .falling-card:nth-child(3n+1) {
+   --data-x-position: calc(10 + (25 * var(--data-random-offset, 0.5)));
+ }
+ 
+ .falling-card:nth-child(3n+2) {
+   --data-x-position: calc(40 + (20 * var(--data-random-offset, 0.5)));
+ }
+ 
+ .falling-card:nth-child(3n) {
+   --data-x-position: calc(70 + (20 * var(--data-random-offset, 0.5)));
+ }
+ 
+ /* Updated keyframes with random tilt angles */
+ @-webkit-keyframes falling {
+   0% {
+     transform: translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+     opacity: 0;
+   }
+   10%, 85% {
+     opacity: 1;
+   }
+   100% {
+     transform: translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+     opacity: 0;
+   }
+ }
+ @keyframes falling {
+   0% {
+     transform: translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+     opacity: 0;
+   }
+   10%, 85% {
+     opacity: 1;
+   }
+   100% {
+     transform: translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+     opacity: 0;
+   }
+ }
+ 
+ /* Faster animation (20% faster) */
+ .falling-card.animated {
+   -webkit-animation: falling var(--data-falling-duration, 6.4s) linear var(--data-falling-delay, 0s) forwards;
+           animation: falling var(--data-falling-duration, 6.4s) linear var(--data-falling-delay, 0s) forwards;
+   visibility: visible !important;
+ }
+ 
+ /* Mobile optimization - show one card at a time properly centered */
+ @media (max-width: 768px) {
+   .falling-card {
+     left: 50% !important; /* Force center card */
+     transform: translateX(-50%); /* Ensure proper centering */
+   }
+ 
+   /* Show only one card at a time on mobile with sequential timing */
+   .falling-card:not(:first-child) {
+     animation-delay: calc(var(--data-index) * 6.4s) !important;
+   }
+ 
+   /* Keyframes specifically for mobile with proper centering transform */
+   @-webkit-keyframes falling {
+     0% {
+       transform: translateX(-50%) translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+       opacity: 0;
+     }
+     10%, 85% {
+       opacity: 1;
+     }
+     100% {
+       transform: translateX(-50%) translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+       opacity: 0;
+     }
+   }
+   @keyframes falling {
+     0% {
+       transform: translateX(-50%) translateY(-300px) rotate(var(--data-rotate-start, 0deg));
+       opacity: 0;
+     }
+     10%, 85% {
+       opacity: 1;
+     }
+     100% {
+       transform: translateX(-50%) translateY(100vh) rotate(var(--data-rotate-end, 0deg));
+       opacity: 0;
+     }
+   }
+ }
+ 
+ /* Ensure sections after falling cards don't overlay */
+ .falling-cards + section {
+   position: relative;
+   z-index: 1;
+ }
+ 
+ /* Загальні стилі для всіх карток */
+ .card {
+   background: transparent !important;
+   padding: 0 !important;
+   margin: 0 !important;
+   display: flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   overflow: hidden !important;
+ }
+ 
+ .card img {
+   width: 100% !important;
+   height: 100% !important;
+   object-fit: cover !important;
+   display: block !important;
+   margin: 0 !important;
+   padding: 0 !important;
+ }
+ 
+ /* Стилі для каруселі */
+ .carousel-container {
+   background: transparent !important;
+   padding: 0 !important;
+   width: 100% !important;
+   overflow: hidden !important;
+ }
+ 
+ .carousel-slide {
+   width: 100% !important;
+   display: flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   background: transparent !important;
+ }
+ 
+ /* Стилі для колоди карт */
+ .card-container {
+   display: flex !important;
+   flex-wrap: wrap !important;
+   justify-content: center !important;
+   gap: 20px !important;
+   margin: 0 !important;
+   padding: 0 !important;
+   background: transparent !important;
+ }
+ 
+ /* Стилі для grid секції */
+ .grid-section .card-grid {
+   display: grid !important;
+   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+   gap: 20px !important;
+   width: 100% !important;
+   background: transparent !important;
+ }
+ 
+ /* Глобальні виправлення для горизонтального прокручування на мобільних пристроях */
+ @media (max-width: 768px) {
+   html, body {
+     overflow-x: hidden;
+     width: 100%;
+     position: relative;
+     max-width: 100vw;
+   }
+ 
+   .container {
+     padding-left: 15px;
+     padding-right: 15px;
+     width: 100%;
+     max-width: 100%;
+     box-sizing: border-box;
+     overflow: hidden;
+   }
+ 
+   section, main, header, footer, .header-wrapper {
+     width: 100%;
+     max-width: 100vw;
+     overflow-x: hidden;
+     box-sizing: border-box;
+   }
+ 
+   img, video, iframe {
+     max-width: 100%;
+     height: auto;
+   }
+ }
+ /* 1. Повне видалення фону й відступів у контейнерах карток */
+.cards-carousel .carousel-container,
+.cards-carousel .carousel-track,
+.carousel-slide,
+.falling-cards-container,
+.falling-cards-wrapper,
+.cards-grid-container,
+.card-deck-container,
+.drawn-card-container {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 auto;
+  overflow: visible !important;
+}
+
+/* 2. Прибирання "білих" полів у кожній картці */
+.carousel-card,
+.stack-card,
+.grid-card,
+.deck-card,
+.falling-card {
+  background: transparent auto;
+  padding: 0 auto;
+  margin: 0 auto;
+  box-shadow: none !important; /* якщо потрібно прибрати тіні */
+}
+
+/* 3. Забезпечити, щоб зображення займали весь простір картки */
+.carousel-card img,
+.stack-card img,
+.grid-card img,
+.deck-card img,
+.falling-card img,
+.drawn-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* 5. Перекрити глобальні .card-класи, щоб не втручалися зайві відступи */
+.card,
+.card-container {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+  overflow: visible !important;
+}
+
+/* 6. Забезпечити правильне обрізання (crop) у каруселі */
+.cards-carousel .carousel-container,
+.cards-carousel .carousel-track {
+  overflow: hidden !important;
+}
+
+/* 7. Для мобільних – гарантуємо, що центровано й без полів */
+@media (max-width: 768px) {
+  .falling-card {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+/* ——————————————————————————————————————————————— */
+/* 1. 3D Grid */
+.cards-grid-3d {
+  background-color: var(--bg-dark) !important;
+  color: var(--color-white)   !important;
+}
+.cards-grid-3d .cards-grid-container {
+  background: transparent    !important;
+}
+.cards-grid-3d .grid-card,
+.cards-grid-3d .grid-card-wrapper {
+  background: transparent    !important;
+  box-shadow: none           !important;
+}
+.cards-grid-3d .grid-card img {
+  width: 100%     !important;
+  height: 100%    !important;
+  object-fit: cover !important;
+}
+
+/* 2. Deck (колода) */
+.cards-deck,
+.card-deck-section {
+  background-color: var(--bg-dark) !important;
+  color:            var(--color-white) !important;
+}
+.card-deck,
+.card-stack,
+.stack-card,
+.deck-card {
+  background: transparent !important;
+  box-shadow: none        !important;
+}
+.stack-card img,
+.deck-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;      /* ← заповнює всю площу без полів */
+  object-position: center center;    /* ← центрирує картинку */
+  background-color: transparent;     /* ← прозорий фон */
+}
+
+
+/* 3. Falling cards */
+.section.falling-cards {
+  background-color: var(--bg-dark) !important;
+}
+.falling-cards-container,
+.falling-cards-wrapper {
+  background: transparent !important;
+}
+.falling-card {
+  background: transparent !important;
+  box-shadow: none        !important;
+}
+.falling-card img {
+  width: 100%      !important;
+  height: 100%     !important;
+  object-fit: cover !important;
+}
+
+/* 4. Центрування на мобільних */
+@media (max-width: 768px) {
+  .falling-card {
+    left: 50%           !important;
+    transform: translateX(-50%) !important;
+  }
+}
+/* ==== Виправлення для колоди карт ==== */
+.card-deck-container,
+.deck-card {
+  background: transparent !important;
+}
+
+.deck-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
+  object-position: center center;
+  background-color: transparent !important;
+}
+
+/* ==== Якщо є анімація «витягання», вона тепер точно без полів ==== */
+.drawn-card img {
+  object-fit: cover !important;
+}
+/* ==== deck-card: fill image edge-to-edge ==== */
+.card-deck-section .deck-card {
+  overflow: hidden !important;          /* ховаємо все, що видає за межі */
+  background: transparent !important;    /* прибираємо будь-який фон */
+}
+
+.card-deck-section .deck-card img {
+  display: block !important;            /* щоб не було inline-пробілів */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;         /* ключ: розтягуємо/обрізаємо зображення */
+  object-position: center center !important; /* центр по вертикалі/горизонталі */
+  background: transparent !important;    /* на випадок, якщо img має background */
+}
+/* ===== Повністю прибрати білий фон і поля в Deck-картках ===== */
+.card-deck-section .deck-card {
+  background-color: transparent !important;
+  overflow: hidden            !important;
+  box-shadow: none            !important;
+  padding: 0                  !important;
+  margin: 0 auto              !important; /* центруємо, якщо потрібно */
+}
+
+/* Зображення в картці — edge-to-edge */
+.card-deck-section .deck-card img {
+  display: block              !important;
+  width: 100%                 !important;
+  height: 100%                !important;
+  object-fit: cover           !important; /* повне заповнення контейнера */
+  object-position: center     !important;
+  background-color: transparent !important;
+}
+/* === Жорстке обмеження контейнера і карток у Deck === */
+.card-deck-container {
+  width: 280px !important;       /* бажана ширина колоди */
+  height: auto !important;       /* прибираємо жорстку висоту */
+  aspect-ratio: 2 / 3 !important;/* співвідношення сторін 2:3 */
+  overflow: hidden !important;   /* усе зайве за межами ховаємо */
+  position: relative !important; /* щоб deck-card позиціювались відносно */
+}
+
+.card-deck-container .deck-card {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 2 / 3 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.card-deck-container .deck-card img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;       /* заповнюємо весь контейнер */
+  object-position: center center !important;
+  background: transparent !important;
+}
+/* ==== Зробити Deck-картки ідентичними Grid-карткам ==== */
+.card-deck-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
+  margin: 0 auto;
+  overflow: visible !important;
+}
+
+.card-deck-container .deck-card {
+  position: relative;
+  width: var(--card-width) !important;     /* з root-перемінної */
+  height: var(--card-height) !important;   /* з root-перемінної */
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-md) !important;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.card-deck-container .deck-card img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+/* Hover-ефект як у grid */
+.card-deck-container .deck-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: var(--shadow-lg) !important;
+  z-index: var(--z-med);
+}
+
+/* Mobile: трохи менші */
+@media (max-width: 768px) {
+  .card-deck-container .deck-card {
+    width: calc(var(--card-width) * 0.8) !important;
+    height: calc(var(--card-height) * 0.8) !important;
+  }
+
+  @media (max-width: 768px) {
+    .deck-section {
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 450px;
+    }
+    
+    .deck-section .card-container {
+        position: relative !important;
+        width: 85vw !important;
+        height: 85vw !important;
+        max-width: 350px !important;
+        max-height: 350px !important;
+        margin: 0 auto !important;
+        transform: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+    
+    .deck-section .card {
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute !important;
+        transform-origin: center !important;
+    }
+    
+    .deck-section .card img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+    }
+}
+
+  /* Додаємо центрування колоди на мобільних */
+  .card-deck-container {
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  
+  .card-deck-section .container,
+  .cards-deck .container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .card-deck, 
+  .drawn-card-container {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 auto 40px auto !important;
+  }
+  
+  .draw-button {
+    margin: 20px auto !important;
+    display: block !important;
+  }
+}
+@media (max-width: 768px) {
+  /* 1) Контейнер над кнопкою: 90vw (але не більше 300px), співвідношення 2:3 */
+  .card-deck-section .card-deck-container {
+    width: 90vw !important;
+    max-width: 300px !important;
+    aspect-ratio: 2 / 3 !important;
+    margin: 0 auto var(--space-md) !important;
+    position: relative !important;
+    overflow: visible !important;
+    perspective: 1000px !important;
+  }
+  @media (max-width: 768px) {
+    /* Контейнер без заокруглень і без обрізання, щоб стек карток був видимим */
+    .card-deck-section .card-deck-container {
+      border-radius: 0 !important;
+      overflow: visible !important;
+    }
+  
+    /* Кожна витягнута картка має свої заокруглені кути */
+    .card-deck-section .deck-card {
+      border-radius: var(--radius-md) !important; /* або напиши 8px */
+      overflow: hidden !important;
+    }
+  
+    /* І зображення всередині наслідує округлення */
+    .card-deck-section .deck-card img {
+      border-radius: inherit !important;
+    }
+  }
+  
+
+  /* 2) Кожна карта — займає весь контейнер, без padding/margin */
+  .card-deck-section .deck-card {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* 3) Зображення в картці — full display без обрізання */
+  .card-deck-section .deck-card img {
+    display: block !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: transparent !important;
+  }
+
+  /* 4) Кнопка точно по центру під контейнером */
+  .card-deck-section .draw-button {
+    display: block !important;
+    margin: var(--space-md) auto 0 !important;
+    position: relative !important;
+    z-index: var(--z-high) !important;
+  }
+}
+/* ==== Надійне скруглення кутів саме карток у секції Deck ==== */
+.card-deck-section .card-deck-container .deck-card {
+  /* clip-path працює навіть коли overflow у контейнера видимий */
+  clip-path: inset(0 round var(--radius-md));
+  /* переконаємося, що фон і зображення не визирають за межі */  
+  background-clip: padding-box !important;
+}
+
+.card-deck-section .card-deck-container .deck-card img {
+  /* наслідує радіус батька і підтягуєся повністю */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: inherit !important;
+  display: block !important;
+}
+
+/* ============================================================
+   Секція передзамовлення (Preorder Section)
+   ============================================================ */
+.preorder-section {
+  background: var(--bg-light);
+  padding: var(--space-huge) 0;
+}
+
+.preorder-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xxl);
+  align-items: start;
+}
+
+.preorder-info h3 {
+  font-family: var(--font-secondary);
+  font-size: var(--text-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+}
+
+.preorder-description {
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--color-text-light);
+  margin-bottom: var(--space-lg);
+}
+
+.preorder-features {
+  margin-bottom: var(--space-xl);
+}
+
+.preorder-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.preorder-feature i {
+  color: var(--color-success);
+  font-size: var(--text-lg);
+}
+
+.price-block {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--color-white);
+}
+
+.old-price {
+  font-size: var(--text-lg);
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-bottom: var(--space-sm);
+}
+
+.new-price {
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-sm);
+}
+
+.price-note {
+  font-size: var(--text-sm);
+  opacity: 0.9;
+}
+
+.preorder-form {
+  background: var(--color-white);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.preorder-form h3 {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.preorder-form .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.preorder-form label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.preorder-form input,
+.preorder-form textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 2px solid var(--color-light-gray);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  transition: border-color var(--transition-medium);
+}
+
+.preorder-form input:focus,
+.preorder-form textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.preorder-form input[type="number"] {
+  max-width: 120px;
+}
+
+.total-price {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+  text-align: center;
+  margin: var(--space-lg) 0;
+  padding: var(--space-md);
+  background: var(--color-off-white);
+  border-radius: var(--radius-md);
+}
+
+.total-price span {
+  color: var(--color-accent);
+  font-size: var(--text-2xl);
+}
+
+.btn-preorder {
+  width: 100%;
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.btn-preorder:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.payment-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+}
+
+.payment-info i {
+  color: var(--color-success);
+}
+
+.preorder-success-message,
+.preorder-error-message {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-md);
+  text-align: center;
+  font-weight: var(--weight-medium);
+}
+
+.preorder-success-message {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.preorder-error-message {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+/* Адаптивний дизайн для секції передзамовлення */
+@media (max-width: 992px) {
+  .preorder-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .preorder-section {
+    padding: var(--space-xl) 0;
+  }
+
+  .preorder-info h3 {
+    font-size: var(--text-xl);
+  }
+
+  .preorder-description {
+    font-size: var(--text-base);
+  }
+
+  .new-price {
+    font-size: var(--text-3xl);
+  }
+
+  .preorder-form {
+    padding: var(--space-lg);
+  }
+
+  .preorder-form h3 {
+    font-size: var(--text-lg);
+  }
+
+  .total-price {
+    font-size: var(--text-lg);
+  }
+
+  .total-price span {
+    font-size: var(--text-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .preorder-feature {
+    font-size: var(--text-sm);
+  }
+
+  .price-block {
+    padding: var(--space-md);
+  }
+
+  .new-price {
+    font-size: var(--text-2xl);
+  }
+
+  .preorder-form {
+    padding: var(--space-md);
+  }
+
+  .btn-preorder {
+    padding: var(--space-md);
+    font-size: var(--text-base);
+  }
+}
+
+/* ============================================================
+   Додаткові покращення мобільної адаптації
+   ============================================================ */
+
+/* Покращення читабельності на малих екранах */
+@media (max-width: 768px) {
+  /* Зменшення шрифтів заголовків для мобільних */
+  .hero-title {
+    font-size: var(--text-2xl) !important;
+    line-height: 1.3 !important;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lg) !important;
+  }
+
+  .section-title {
+    font-size: var(--text-xl) !important;
+  }
+
+  /* Покращення відступів секцій */
+  .section {
+    padding: var(--space-xl) 0 !important;
+  }
+
+  /* Оптимізація карток */
+  .feature-card,
+  .target-card {
+    padding: var(--space-lg) !important;
+  }
+
+  .feature-card h3,
+  .target-card h3 {
+    font-size: var(--text-md) !important;
+  }
+
+  .feature-card p,
+  .target-card p {
+    font-size: var(--text-sm) !important;
+  }
+
+  /* Покращення форм */
+  .contact-form,
+  .preorder-form {
+    padding: var(--space-lg) !important;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px !important; /* Запобігання автомасштабуванню в iOS */
+  }
+
+  /* Покращення кнопок */
+  .btn {
+    padding: var(--space-md) var(--space-lg) !important;
+    font-size: var(--text-base) !important;
+    min-height: 48px; /* Мінімальна висота для зручного натискання */
+  }
+
+  /* Покращення навігації */
+  .nav-list,
+  .mobile-nav-list {
+    gap: var(--space-sm) !important;
+  }
+
+  /* Покращення місії */
+  .mission-text {
+    font-size: var(--text-base) !important;
+    line-height: 1.6 !important;
+  }
+}
+
+/* Покращення для дуже малих екранів */
+@media (max-width: 480px) {
+  /* Контейнер */
+  .container {
+    padding: 0 var(--space-md) !important;
+  }
+
+  /* Заголовки */
+  .hero-title {
+    font-size: var(--text-xl) !important;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-md) !important;
+  }
+
+  .section-title {
+    font-size: var(--text-lg) !important;
+  }
+
+  /* Текст */
+  body {
+    font-size: 14px !important;
+  }
+
+  /* Карточки авторів */
+  .author-card {
+    padding: var(--space-md) !important;
+  }
+
+  .author-photo {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  /* Секції */
+  .section {
+    padding: var(--space-lg) 0 !important;
+  }
+
+  /* Відступи між елементами */
+  .hero-buttons {
+    flex-direction: column !important;
+    gap: var(--space-md) !important;
+  }
+
+  .hero-buttons .btn {
+    width: 100% !important;
+  }
+}
+
+/* Покращення продуктивності через оптимізацію анімацій */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Оптимізація для landscape орієнтації на мобільних */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto !important;
+    padding: var(--space-xl) 0 !important;
+  }
+
+  .hero-content {
+    min-height: auto !important;
+  }
+
+  .preloader {
+    padding: var(--space-xl) !important;
+  }
+}
+
+/* Покращення доступності для touch екранів */
+@media (hover: none) and (pointer: coarse) {
+  /* Збільшення зони натискання */
+  a,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* Видалення hover ефектів */
+  .btn:hover,
+  .nav-link:hover,
+  .feature-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Оптимізація зображень для retina дисплеїв */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Покращення швидкодії через hardware acceleration */
+.carousel-3d,
+.falling-card,
+.grid-card,
+.deck-card {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Гарантія відображення зображень */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lazy loading зображень без блокування відображення */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+/* Link button for inline modal triggers in forms */
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  transition: color var(--transition-fast);
+}
+
+.link-button:hover {
+  color: var(--color-accent-darker);
+  text-decoration: none;
+}
+
+.link-button:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Hero section - new features list and CTA */
+.hero-features-list {
+  margin: var(--space-lg) 0;
+}
+
+.hero-feature {
+  font-size: var(--text-base);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-sm);
+  line-height: 1.6;
+}
+
+.hero-cta-text {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent);
+  margin-bottom: var(--space-lg);
+  margin-top: var(--space-md);
+}
+
+/* Improved checkbox styles for preorder form */
+.form-group label[style*="display: flex"] {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.form-group input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+.form-group label span {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Enhanced checkbox group styles */
+.checkbox-group {
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px;
+  cursor: pointer;
+  padding: var(--space-md);
+  background: var(--color-light-gray);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.checkbox-label:hover {
+  background: rgba(230, 126, 34, 0.05);
+  border-color: rgba(230, 126, 34, 0.3);
+}
+
+.checkbox-label input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+.checkbox-label span {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.checkbox-label .link-button {
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
+}

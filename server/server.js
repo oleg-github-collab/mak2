@@ -53,8 +53,15 @@ app.use('/api/', limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from parent directory
-app.use(express.static(path.join(__dirname, '..')));
+// Serve static files
+// For Railway (Docker): files in /app/public/
+// For local development: files in parent directory
+const publicDir = process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, 'public')
+    : path.join(__dirname, '..');
+
+app.use(express.static(publicDir));
+logger.info(`📁 Serving static files from: ${publicDir}`);
 
 // API routes
 app.use('/api/payment', paymentRoutes);
@@ -79,16 +86,16 @@ app.get('/api/health', (req, res) => {
 
 // Serve success and error pages
 app.get('/success', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'success.html'));
+    res.sendFile(path.join(publicDir, 'success.html'));
 });
 
 app.get('/error', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'error.html'));
+    res.sendFile(path.join(publicDir, 'error.html'));
 });
 
 // Serve main index page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Error handling middleware

@@ -10,7 +10,7 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci --only=production
 
-# Copy application files
+# Copy all server files (includes public/ directory with frontend)
 COPY . .
 
 # Create logs directory
