@@ -84,18 +84,60 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Debug endpoint - check file system
+app.get('/api/debug/files', (req, res) => {
+    const fs = require('fs');
+    try {
+        const files = {
+            __dirname: __dirname,
+            publicDir: publicDir,
+            'public exists': fs.existsSync(path.join(__dirname, 'public')),
+            'public contents': fs.existsSync(path.join(__dirname, 'public'))
+                ? fs.readdirSync(path.join(__dirname, 'public'))
+                : 'directory not found',
+            'index.html exists': fs.existsSync(path.join(publicDir, 'index.html')),
+            'success.html exists': fs.existsSync(path.join(publicDir, 'success.html')),
+            'error.html exists': fs.existsSync(path.join(publicDir, 'error.html'))
+        };
+        res.json(files);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Serve success and error pages
 app.get('/success', (req, res) => {
-    res.sendFile(path.join(publicDir, 'success.html'));
+    const filePath = path.join(publicDir, 'success.html');
+    logger.info(`📄 Serving success.html from: ${filePath}`);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            logger.error(`❌ Error serving success.html:`, err.message);
+            res.status(500).send('Error loading page');
+        }
+    });
 });
 
 app.get('/error', (req, res) => {
-    res.sendFile(path.join(publicDir, 'error.html'));
+    const filePath = path.join(publicDir, 'error.html');
+    logger.info(`📄 Serving error.html from: ${filePath}`);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            logger.error(`❌ Error serving error.html:`, err.message);
+            res.status(500).send('Error loading page');
+        }
+    });
 });
 
 // Serve main index page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
+    const filePath = path.join(publicDir, 'index.html');
+    logger.info(`📄 Serving index.html from: ${filePath}`);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            logger.error(`❌ Error serving index.html:`, err.message);
+            res.status(500).send('Error loading page');
+        }
+    });
 });
 
 // Error handling middleware
