@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 const liqpay = require('../utils/liqpay');
 const { sendOrderNotification } = require('../utils/email');
-const { addOrderToSheet, updateOrderStatus } = require('../utils/sheets');
+const { sendOrderToSheets } = require('../utils/sheets');
 const logger = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
@@ -98,11 +98,11 @@ router.post('/create', async (req, res) => {
 
         saveOrder(orderData);
 
-        // Add to Google Sheets
+        // Send to Google Sheets via Apps Script
         try {
-            await addOrderToSheet(orderData);
+            await sendOrderToSheets(orderData);
         } catch (error) {
-            logger.error('Failed to add order to Google Sheets (continuing anyway):', error);
+            logger.error('Failed to send order to Google Sheets (continuing anyway):', error);
         }
 
         logger.info(`Payment created for order ${orderId}, amount: ${amount} UAH`);
@@ -164,9 +164,13 @@ router.post('/callback', async (req, res) => {
                 // Send email to admin
                 await sendOrderNotification(orderData);
 
-                // Update Google Sheets
+                // Send updated status to Google Sheets
                 try {
-                    await updateOrderStatus(paymentData.order_id, paymentData.status, paymentData.payment_id);
+                    await sendOrderToSheets({
+                        ...orderData,
+                        status: paymentData.status,
+                        paymentId: paymentData.payment_id
+                    });
                 } catch (error) {
                     logger.error('Failed to update order status in Google Sheets:', error);
                 }

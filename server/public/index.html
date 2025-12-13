@@ -613,8 +613,8 @@
                         </div>
                     </div>
                     <div class="price-block">
-                        <div class="old-price">1800 грн</div>
-                        <div class="new-price">1500 грн</div>
+                        <div class="old-price">1239 грн</div>
+                        <div class="new-price">999 грн</div>
                         <div class="price-note">Спеціальна ціна для передзамовлення</div>
                     </div>
                 </div>
@@ -958,9 +958,12 @@
                         <button class="btn-modal modal-trigger" data-modal="return-policy">
                             <i class="fas fa-undo-alt" aria-hidden="true"></i> Умови повернення
                         </button>
-                        <a href="/documents/license-guarantee.pdf" class="btn-modal" target="_blank" rel="noopener noreferrer">
-                            <i class="fas fa-file-pdf" aria-hidden="true"></i> Лист-гарантія
-                        </a>
+                        <button class="btn-modal modal-trigger" data-modal="license-kaminska-modal">
+                            <i class="fas fa-palette" aria-hidden="true"></i> Ліцензія художниці
+                        </button>
+                        <button class="btn-modal modal-trigger" data-modal="license-byrka-modal">
+                            <i class="fas fa-brain" aria-hidden="true"></i> Ліцензія психологині
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1248,6 +1251,84 @@
                     </ul>
 
                     <p>Ці умови повернення є невід'ємною частиною договору купівлі-продажу та публічної оферти.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно: Ліцензія Марини Камінської -->
+    <div class="modal-overlay" id="license-kaminska-modal" role="dialog" aria-labelledby="license-kaminska-title" aria-modal="true">
+        <div class="modal-content large-modal">
+            <button class="modal-close" aria-label="Закрити модальне вікно">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="modal-header">
+                <h2 id="license-kaminska-title">Ліцензія на використання зображень</h2>
+            </div>
+            <div class="modal-body scrollable">
+                <div class="license-document">
+                    <h3>Лист-гарантія / Ліцензія на використання зображень</h3>
+
+                    <p>Я, <strong>Камінська Марина Василівна</strong>, художниця та співрозробниця метафоричних карт «Коріння та Крила»,
+                    цим підтверджую, що є єдиною та повноправною власницею авторських прав на відповідні зображення моїх картин,
+                    використаних у зазначеному продукті.</p>
+
+                    <p>Надаю <strong>ФОП Бирка Людмила Борисівна</strong> невиключну ліцензію на використання зображень моїх картин
+                    виключно з метою виробництва, реалізації та продажу продукту "Метафоричні карти «Коріння та Крила»".</p>
+
+                    <h4>Умови ліцензії</h4>
+                    <ul>
+                        <li>Право власності на всі зображення залишається за мною, Камінською Мариною Василівною.</li>
+                        <li>Ліцензія не передбачає передачі авторських прав чи права вносити зміни до зображень.</li>
+                        <li>Забороняється використання зображень у будь-яких інших продуктах, проєктах, рекламних матеріалах чи
+                        комерційних цілях, не пов'язаних безпосередньо з продуктом «Коріння та Крила», без моєї письмової згоди.</li>
+                        <li>Ліцензія діє на території України та інших країн, де здійснюється реалізація продукту, якщо інше не погоджено окремо.</li>
+                        <li><strong>Строк дії ліцензії:</strong> 11.12.2025 - 11.12.2030</li>
+                    </ul>
+
+                    <p class="signature-block">
+                        <strong>Дата:</strong> 11.12.2025<br>
+                        <strong>Підпис:</strong> Марина Камінська
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно: Ліцензія Оксани Бирки -->
+    <div class="modal-overlay" id="license-byrka-modal" role="dialog" aria-labelledby="license-byrka-title" aria-modal="true">
+        <div class="modal-content large-modal">
+            <button class="modal-close" aria-label="Закрити модальне вікно">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="modal-header">
+                <h2 id="license-byrka-title">Ліцензія на використання методичних вправ</h2>
+            </div>
+            <div class="modal-body scrollable">
+                <div class="license-document">
+                    <h3>Лист-гарантія</h3>
+
+                    <p>Я, <strong>Бирка Оксана Олександрівна</strong>, психологиня та співрозробниця метафоричних карт «Коріння та Крила»,
+                    цим підтверджую, що є єдиною та повноправною власницею авторських прав на відповідні методичні вправи,
+                    використаних у зазначеному продукті.</p>
+
+                    <p>Надаю <strong>ФОП Бирка Людмила Борисівна</strong> невиключну ліцензію на використання методичних вправ
+                    виключно з метою виробництва, реалізації та продажу продукту "Метафоричні карти «Коріння та Крила»".</p>
+
+                    <h4>Умови ліцензії</h4>
+                    <ul>
+                        <li>Право власності на всі методичні вправи залишається за мною, Бирка Оксана.</li>
+                        <li>Ліцензія не передбачає передачі авторських прав чи права вносити зміни до вправ.</li>
+                        <li>Забороняється використання методичних вправ у будь-яких інших продуктах, проєктах, рекламних матеріалах чи
+                        комерційних цілях, не пов'язаних безпосередньо з продуктом «Коріння та Крила», без моєї письмової згоди.</li>
+                        <li>Ліцензія діє на території України та інших країн, де здійснюється реалізація продукту, якщо інше не погоджено окремо.</li>
+                        <li><strong>Строк дії ліцензії:</strong> 11.12.2025 - 11.12.2030</li>
+                    </ul>
+
+                    <p class="signature-block">
+                        <strong>Дата:</strong> 12.12.2025<br>
+                        <strong>Підпис:</strong> Бирка Оксана
+                    </p>
                 </div>
             </div>
         </div>
