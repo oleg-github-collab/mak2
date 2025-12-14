@@ -958,10 +958,10 @@
                         <button class="btn-modal modal-trigger" data-modal="return-policy">
                             <i class="fas fa-undo-alt" aria-hidden="true"></i> Умови повернення
                         </button>
-                        <button class="btn-modal modal-trigger" data-modal="license-kaminska-modal">
+                        <button class="btn-modal modal-trigger" data-modal="license-kaminska">
                             <i class="fas fa-palette" aria-hidden="true"></i> Ліцензія художниці
                         </button>
-                        <button class="btn-modal modal-trigger" data-modal="license-byrka-modal">
+                        <button class="btn-modal modal-trigger" data-modal="license-byrka">
                             <i class="fas fa-brain" aria-hidden="true"></i> Ліцензія психологині
                         </button>
                     </div>
@@ -1257,16 +1257,14 @@
     </div>
 
     <!-- Модальне вікно: Ліцензія Марини Камінської -->
-    <div class="modal-overlay" id="license-kaminska-modal" role="dialog" aria-labelledby="license-kaminska-title" aria-modal="true">
-        <div class="modal-content large-modal">
-            <button class="modal-close" aria-label="Закрити модальне вікно">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
+    <div id="license-kaminska" class="modal" aria-hidden="true" role="dialog" aria-labelledby="license-kaminska-title">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 id="license-kaminska-title">Ліцензія на використання зображень</h2>
+                <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
-            <div class="modal-body scrollable">
-                <div class="license-document">
+            <div class="modal-body">
+                <div class="text-container">
                     <h3>Лист-гарантія / Ліцензія на використання зображень</h3>
 
                     <p>Я, <strong>Камінська Марина Василівна</strong>, художниця та співрозробниця метафоричних карт «Коріння та Крила»,
@@ -1286,7 +1284,7 @@
                         <li><strong>Строк дії ліцензії:</strong> 11.12.2025 - 11.12.2030</li>
                     </ul>
 
-                    <p class="signature-block">
+                    <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
                         <strong>Дата:</strong> 11.12.2025<br>
                         <strong>Підпис:</strong> Марина Камінська
                     </p>
@@ -1296,16 +1294,14 @@
     </div>
 
     <!-- Модальне вікно: Ліцензія Оксани Бирки -->
-    <div class="modal-overlay" id="license-byrka-modal" role="dialog" aria-labelledby="license-byrka-title" aria-modal="true">
-        <div class="modal-content large-modal">
-            <button class="modal-close" aria-label="Закрити модальне вікно">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
+    <div id="license-byrka" class="modal" aria-hidden="true" role="dialog" aria-labelledby="license-byrka-title">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 id="license-byrka-title">Ліцензія на використання методичних вправ</h2>
+                <button class="modal-close" aria-label="Закрити">&times;</button>
             </div>
-            <div class="modal-body scrollable">
-                <div class="license-document">
+            <div class="modal-body">
+                <div class="text-container">
                     <h3>Лист-гарантія</h3>
 
                     <p>Я, <strong>Бирка Оксана Олександрівна</strong>, психологиня та співрозробниця метафоричних карт «Коріння та Крила»,
@@ -1325,7 +1321,7 @@
                         <li><strong>Строк дії ліцензії:</strong> 11.12.2025 - 11.12.2030</li>
                     </ul>
 
-                    <p class="signature-block">
+                    <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
                         <strong>Дата:</strong> 12.12.2025<br>
                         <strong>Підпис:</strong> Бирка Оксана
                     </p>
