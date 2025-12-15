@@ -2700,19 +2700,51 @@
      flex-direction: column;
      align-items: center;
    }
- 
+
    .hero-text {
      max-width: 100%;
      text-align: center;
-     margin-bottom: var(--space-xxl);
+     margin-bottom: 0;
+     /* Використовуємо flexbox для зміни порядку */
+     display: flex;
+     flex-direction: column;
    }
- 
+
+   /* Змінюємо порядок елементів для мобільних */
    .hero-title {
      font-size: var(--text-3xl);
+     order: 1; /* Заголовок першим */
+     margin-bottom: var(--space-md);
    }
- 
+
+   .hero-subtitle {
+     order: 2; /* Підзаголовок другим */
+     margin-bottom: var(--space-lg);
+   }
+
+   /* Зображення після заголовків, але перед описом */
    .hero-image {
-     max-width: 70%;
+     max-width: 85%;
+     order: 3; /* Зображення третім */
+     margin: var(--space-xl) 0;
+     transform: none; /* Прибираємо анімацію зсуву */
+   }
+
+   .hero-description {
+     order: 4; /* Опис четвертим */
+   }
+
+   .hero-features-list {
+     order: 5; /* Список п'ятим */
+   }
+
+   .hero-cta-text {
+     order: 6; /* CTA текст шостим */
+   }
+
+   .hero-buttons {
+     order: 7; /* Кнопки останніми */
+     margin-top: var(--space-lg);
    }
  
    .authors-grid {
