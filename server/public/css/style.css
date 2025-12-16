@@ -2696,57 +2696,58 @@
      --card-height: 360px;
    }
  
-   .hero-content {
-     flex-direction: column;
-     align-items: center;
-   }
 
-   .hero-text {
-     max-width: 100%;
-     text-align: center;
-     margin-bottom: 0;
-     /* Використовуємо flexbox для зміни порядку */
-     display: flex;
-     flex-direction: column;
-   }
+  .hero-content {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+  }
 
-   /* Змінюємо порядок елементів для мобільних */
-   .hero-title {
-     font-size: var(--text-3xl);
-     order: 1; /* Заголовок першим */
-     margin-bottom: var(--space-md);
-   }
+  /* Зображення ПЕРШИМ на мобільному - щоб юзер одразу бачив пташку! */
+  .hero-image {
+    order: 1;
+    max-width: 85%;
+    margin: 0 0 var(--space-lg) 0;
+    transform: none;
+  }
 
-   .hero-subtitle {
-     order: 3; /* Підзаголовок третім */
-     margin-bottom: var(--space-lg);
-   }
+  .hero-text {
+    order: 2;
+    max-width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
 
-   /* Зображення після заголовків, але перед описом */
-   .hero-image {
-     max-width: 85%;
-     order: 2; /* Зображення другим - відразу після заголовка Roots & Wings! */
-     margin: var(--space-xl) 0;
-     transform: none; /* Прибираємо анімацію зсуву */
-   }
+  /* Порядок всередині hero-text */
+  .hero-title {
+    font-size: var(--text-3xl);
+    order: 1;
+    margin-bottom: var(--space-md);
+  }
 
-   .hero-description {
-     order: 4; /* Опис четвертим */
-   }
+  .hero-subtitle {
+    order: 2;
+    margin-bottom: var(--space-lg);
+  }
 
-   .hero-features-list {
-     order: 5; /* Список п'ятим */
-   }
+  .hero-description {
+    order: 3;
+  }
 
-   .hero-cta-text {
-     order: 6; /* CTA текст шостим */
-   }
+  .hero-features-list {
+    order: 4;
+  }
 
-   .hero-buttons {
-     order: 7; /* Кнопки останніми */
-     margin-top: var(--space-lg);
-   }
- 
+  .hero-cta-text {
+    order: 5;
+  }
+
+  .hero-buttons {
+    order: 6;
+    margin-top: var(--space-lg);
+  }
    .authors-grid {
      flex-direction: column;
      align-items: center;
@@ -3912,9 +3913,35 @@
     padding: var(--space-lg) !important;
   }
 
-  .form-group input,
+.form-group input,
   .form-group textarea {
     font-size: 16px !important; /* Запобігання автомасштабуванню в iOS */
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+  }
+
+  .form-group {
+    margin-bottom: var(--space-md);
+  }
+
+  /* Покращений дизайн кнопки замовлення на мобільному */
+  .preorder-form .btn-primary {
+    width: 100%;
+    padding: var(--space-lg);
+    font-size: var(--text-lg);
+    border-radius: var(--radius-md);
+  }
+
+  /* Покращений дизайн чекбоксу на мобільному */
+  .form-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+  }
+
+  .form-group label span {
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   /* Покращення кнопок */
