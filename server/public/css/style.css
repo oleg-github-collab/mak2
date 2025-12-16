@@ -2718,14 +2718,14 @@
    }
 
    .hero-subtitle {
-     order: 2; /* Підзаголовок другим */
+     order: 3; /* Підзаголовок третім */
      margin-bottom: var(--space-lg);
    }
 
    /* Зображення після заголовків, але перед описом */
    .hero-image {
      max-width: 85%;
-     order: 3; /* Зображення третім */
+     order: 2; /* Зображення другим - відразу після заголовка Roots & Wings! */
      margin: var(--space-xl) 0;
      transform: none; /* Прибираємо анімацію зсуву */
    }
