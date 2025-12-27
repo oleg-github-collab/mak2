@@ -1351,10 +1351,7 @@
     <script src="js/exercise.js" defer></script>
 
 
-    <!-- LiqPay SDK -->
-    <script src="https://static.liqpay.ua/libjs/sdk_button.js" defer></script>
-
-    <!-- Скрипт для форми передзамовлення з LiqPay -->
+    <!-- Скрипт для форми передзамовлення з WayForPay -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Форма передзамовлення
@@ -1407,29 +1404,42 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.payment) {
-                        // Ініціалізація LiqPay віджету
-                        LiqPayCheckout.init({
-                            data: data.payment.data,
-                            signature: data.payment.signature,
-                            embedTo: "#liqpay_checkout",
-                            language: "uk",
-                            mode: "popup"
-                        }).on("liqpay.callback", function(paymentData){
-                            console.log('Payment callback:', paymentData.status);
-                            if(paymentData.status === 'success' || paymentData.status === 'sandbox') {
-                                window.location.href = '/success';
-                            } else if(paymentData.status === 'failure') {
-                                window.location.href = '/error';
+                        // Створення форми для WayForPay
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = data.payment.url;
+                        form.acceptCharset = 'utf-8';
+
+                        // Додаємо всі параметри як приховані поля
+                        Object.keys(data.payment.data).forEach(key => {
+                            const value = data.payment.data[key];
+
+                            if (Array.isArray(value)) {
+                                // Для масивів створюємо окремі поля з []
+                                value.forEach(item => {
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = key + '[]';
+                                    input.value = item;
+                                    form.appendChild(input);
+                                });
+                            } else {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = key;
+                                input.value = value;
+                                form.appendChild(input);
                             }
-                        }).on("liqpay.ready", function(){
-                            console.log('LiqPay ready');
-                            successMessage.classList.remove('hidden');
-                            errorMessage.classList.add('hidden');
-                        }).on("liqpay.close", function(){
-                            submitButton.disabled = false;
-                            submitButton.innerHTML = '<i class="fas fa-shopping-cart"></i> Оплатити передзамовлення';
-                            successMessage.classList.add('hidden');
                         });
+
+                        document.body.appendChild(form);
+
+                        console.log('✅ Redirecting to WayForPay...');
+                        successMessage.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
+
+                        // Відправляємо форму (редирект на WayForPay)
+                        form.submit();
                     } else {
                         throw new Error(data.error || 'Payment creation failed');
                     }
