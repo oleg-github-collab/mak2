@@ -1,6 +1,6 @@
 /**
  * Roots & Wings Payment Server
- * Backend for processing LiqPay payments
+ * Backend for processing WayForPay payments
  */
 
 require('dotenv').config();
@@ -25,7 +25,7 @@ console.log(`📌 __dirname: ${__dirname}`);
 
 // Security middleware
 app.use(helmet({
-    contentSecurityPolicy: false, // Disable for LiqPay iframe
+    contentSecurityPolicy: false, // Disable for WayForPay redirect
 }));
 
 // CORS configuration

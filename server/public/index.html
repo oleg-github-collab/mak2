@@ -87,9 +87,16 @@
       "logo": "https://rootsandwings.com.ua/images/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+380501234567",
+        "telephone": "+380963858801",
         "contactType": "customer service",
         "availableLanguage": ["Ukrainian", "English"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "вул. Азербайджанська 28 а, кв. 1",
+        "addressLocality": "Київ",
+        "postalCode": "02090",
+        "addressCountry": "UA"
       },
       "sameAs": [
         "https://facebook.com/rootsandwings",
@@ -619,7 +626,7 @@
                     </div>
                 </div>
 
-                <!-- Форма передзамовлення з LiqPay -->
+                <!-- Форма передзамовлення з WayForPay -->
                 <form class="preorder-form" id="preorderForm" method="POST" aria-labelledby="preorder-form-title">
                     <h3 id="preorder-form-title">Оформити передзамовлення</h3>
                     <div class="form-group">
@@ -673,12 +680,9 @@
                         </div>
                     </div>
 
-                    <!-- Контейнер для LiqPay віджету -->
-                    <div id="liqpay_checkout"></div>
-
                     <div class="payment-info">
                         <i class="fas fa-shield-alt"></i>
-                        <span>Безпечна оплата через LiqPay</span>
+                        <span>Безпечна оплата через WayForPay</span>
                     </div>
                 </form>
             </div>
@@ -892,6 +896,9 @@
                     Хочете дізнатися більше про передзамовлення, доставку чи використання карт?</p>
                     <p class="contact-text" style="margin-top: 1rem;">Ми поруч — напишіть нам:<br>
                     <a href="mailto:rootswings25@gmail.com" class="email-link">📩 rootswings25@gmail.com</a></p>
+                    <p class="contact-text" style="margin-top: 1rem;">
+                    <a href="tel:+380963858801" class="phone-link">📞 +38 096 385 88 01</a></p>
+                    <p class="contact-text" style="margin-top: 1rem;">📍 М. Київ, 02090, вул. Азербайджанська 28 а, кв. 1</p>
                     <p class="contact-text" style="margin-top: 1rem;">Або скористайтеся формою нижче.</p>
                 </div>
                 <!-- Оптимізована форма зворотного зв'язку для інтеграції з Google Apps Script -->
@@ -1091,7 +1098,7 @@
                     <p>Замовлення Покупця оформляється через заповнення форми замовлення на сайті. Покупець несе
                     відповідальність за достовірність наданої інформації.</p>
 
-                    <p>Оплата здійснюється за допомогою платіжної системи LiqPay згідно з тарифами, опублікованими на сайті.
+                    <p>Оплата здійснюється за допомогою платіжної системи WayForPay згідно з тарифами, опублікованими на сайті.
                     Оплата є повною передоплатою за товар.</p>
 
                     <h4>5. Доставка</h4>
@@ -1341,10 +1348,7 @@
     <script src="js/exercise.js" defer></script>
 
 
-    <!-- LiqPay SDK -->
-    <script src="https://static.liqpay.ua/libjs/sdk_button.js" defer></script>
-
-    <!-- Скрипт для форми передзамовлення з LiqPay -->
+    <!-- Скрипт для форми передзамовлення з WayForPay -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Форма передзамовлення
@@ -1397,29 +1401,42 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.payment) {
-                        // Ініціалізація LiqPay віджету
-                        LiqPayCheckout.init({
-                            data: data.payment.data,
-                            signature: data.payment.signature,
-                            embedTo: "#liqpay_checkout",
-                            language: "uk",
-                            mode: "popup"
-                        }).on("liqpay.callback", function(paymentData){
-                            console.log('Payment callback:', paymentData.status);
-                            if(paymentData.status === 'success' || paymentData.status === 'sandbox') {
-                                window.location.href = '/success';
-                            } else if(paymentData.status === 'failure') {
-                                window.location.href = '/error';
+                        // Створення форми для WayForPay
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = data.payment.url;
+                        form.acceptCharset = 'utf-8';
+
+                        // Додаємо всі параметри як приховані поля
+                        Object.keys(data.payment.data).forEach(key => {
+                            const value = data.payment.data[key];
+
+                            if (Array.isArray(value)) {
+                                // Для масивів створюємо окремі поля з []
+                                value.forEach(item => {
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = key + '[]';
+                                    input.value = item;
+                                    form.appendChild(input);
+                                });
+                            } else {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = key;
+                                input.value = value;
+                                form.appendChild(input);
                             }
-                        }).on("liqpay.ready", function(){
-                            console.log('LiqPay ready');
-                            successMessage.classList.remove('hidden');
-                            errorMessage.classList.add('hidden');
-                        }).on("liqpay.close", function(){
-                            submitButton.disabled = false;
-                            submitButton.innerHTML = '<i class="fas fa-shopping-cart"></i> Оплатити передзамовлення';
-                            successMessage.classList.add('hidden');
                         });
+
+                        document.body.appendChild(form);
+
+                        console.log('✅ Redirecting to WayForPay...');
+                        successMessage.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
+
+                        // Відправляємо форму (редирект на WayForPay)
+                        form.submit();
                     } else {
                         throw new Error(data.error || 'Payment creation failed');
                     }
